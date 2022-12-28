@@ -9,11 +9,9 @@ ApplicationWindow {
     visible: true
     title: qsTr("Hello World")
 
-    header: Label {
-            text: view.currentItem.title
-            horizontalAlignment: Text.AlignHCenter
-        }
+    header: MyHeader{
 
+    }
         StackView {
             id: view
             anchors.fill: parent

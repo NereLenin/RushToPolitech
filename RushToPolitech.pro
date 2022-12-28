@@ -8,7 +8,7 @@ resources.prefix = /$${TARGET}
 RESOURCES += resources
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
-QML_IMPORT_PATH =
+QML_IMPORT_PATH +=
 
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
@@ -19,7 +19,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    components/Header.ui.qml \
+    MyHeader.qml \
+    components/MyHeader.ui.qml \
     components/MyProgressBar.ui.qml \
     components/SquareButton.ui.qml \
     components/Ticket.ui.qml \
