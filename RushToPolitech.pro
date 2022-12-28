@@ -25,6 +25,23 @@ DISTFILES += \
     components/SquareButton.ui.qml \
     components/Ticket.ui.qml \
     components/Topic.ui.qml \
+    qml/FailedLearnScreen.ui.qml \
+    qml/FinishExamFailed.ui.qml \
+    qml/FinishExamSuccess.ui.qml \
+    qml/FinishLearnScreen.ui.qml \
+    qml/LSChooseVariant.ui.qml \
+    qml/LSInputValue.ui.qml \
+    qml/LearnTheory.ui.qml \
+    qml/LearnTheoryLastScreen.ui.qml \
+    qml/MyHeader.ui.qml \
+    qml/MyProgressBar.ui.qml \
+    qml/RepeatScreen.ui.qml \
+    qml/SquareButton.ui.qml \
+    qml/StartScreen.ui.qml \
+    qml/Ticket.ui.qml \
+    qml/TicketsOfTopic.ui.qml \
+    qml/Topic.ui.qml \
+    qml/Topics.ui.qml \
     screens/FailedLearnScreen.ui.qml \
     screens/FinishExamFailed.ui.qml \
     screens/FinishExamSuccess.ui.qml \
