@@ -1,0 +1,42 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/47686-200.png</file>
+        <file>icons/automatic.png</file>
+        <file>icons/bilets.png</file>
+        <file>icons/clock.png</file>
+        <file>icons/database.png</file>
+        <file>icons/electrical-circuit.png</file>
+        <file>icons/exam.png</file>
+        <file>icons/integrated.png</file>
+        <file>icons/learning.png</file>
+        <file>icons/logo.png</file>
+        <file>icons/newnewLogo.png</file>
+        <file>icons/person.png</file>
+        <file>icons/programming (1).png</file>
+        <file>icons/programming2.png</file>
+        <file>icons/questpic.jpg</file>
+        <file>icons/repeat.png</file>
+        <file>icons/software.png</file>
+        <file>icons/studyIcon.png</file>
+        <file>icons/theory.png</file>
+        <file>qml/FailedLearnScreen.ui.qml</file>
+        <file>qml/FinishExamFailed.ui.qml</file>
+        <file>qml/FinishExamSuccess.ui.qml</file>
+        <file>qml/FinishLearnScreen.ui.qml</file>
+        <file>qml/ItemOfDrawer.qml</file>
+        <file>qml/LearnTheory.ui.qml</file>
+        <file>qml/LearnTheoryLastScreen.ui.qml</file>
+        <file>qml/LSChooseVariant.ui.qml</file>
+        <file>qml/LSInputValue.ui.qml</file>
+        <file>qml/MyHeader.qml</file>
+        <file>qml/MyProgressBar.ui.qml</file>
+        <file>qml/RepeatScreen.ui.qml</file>
+        <file>qml/SquareButton.ui.qml</file>
+        <file>qml/StartScreen.ui.qml</file>
+        <file>qml/Ticket.ui.qml</file>
+        <file>qml/TicketsOfTopic.ui.qml</file>
+        <file>qml/Topic.ui.qml</file>
+        <file>qml/Topics.ui.qml</file>
+        <file>qml/main.qml</file>
+    </qresource>
+</RCC>
