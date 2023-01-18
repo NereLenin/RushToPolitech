@@ -19,24 +19,24 @@
         <file>icons/software.png</file>
         <file>icons/studyIcon.png</file>
         <file>icons/theory.png</file>
-        <file>qml/FailedLearnScreen.ui.qml</file>
-        <file>qml/FinishExamFailed.ui.qml</file>
-        <file>qml/FinishExamSuccess.ui.qml</file>
-        <file>qml/FinishLearnScreen.ui.qml</file>
-        <file>qml/ItemOfDrawer.qml</file>
-        <file>qml/LearnTheory.ui.qml</file>
-        <file>qml/LearnTheoryLastScreen.ui.qml</file>
-        <file>qml/LSChooseVariant.ui.qml</file>
-        <file>qml/LSInputValue.ui.qml</file>
         <file>qml/MyHeader.qml</file>
+        <file>qml/main.qml</file>
+        <file>qml/StartScreen.qml</file>
+        <file>qml/FailedLearnScreen.qml</file>
+        <file>qml/FinishExamFailed.qml</file>
+        <file>qml/FinishExamSuccess.qml</file>
+        <file>qml/FinishLearnScreen.qml</file>
+        <file>qml/ItemOfDrawer.qml</file>
+        <file>qml/LearnTheory.qml</file>
+        <file>qml/LearnTheoryLastScreen.qml</file>
+        <file>qml/LSChooseVariant.qml</file>
+        <file>qml/LSInputValue.qml</file>
         <file>qml/MyProgressBar.ui.qml</file>
-        <file>qml/RepeatScreen.ui.qml</file>
+        <file>qml/RepeatScreen.qml</file>
         <file>qml/SquareButton.ui.qml</file>
-        <file>qml/StartScreen.ui.qml</file>
         <file>qml/Ticket.ui.qml</file>
         <file>qml/TicketsOfTopic.ui.qml</file>
         <file>qml/Topic.ui.qml</file>
-        <file>qml/Topics.ui.qml</file>
-        <file>qml/main.qml</file>
+        <file>qml/Topics.qml</file>
     </qresource>
 </RCC>

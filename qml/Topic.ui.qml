@@ -14,7 +14,7 @@ Item {
     property bool subtopic: false
 
     property string nameTopic: "Программирование"
-    property string pathTopicIcon: "../../../../YandexDisk/RushPolytech/icons/theory.png"
+    property string pathTopicIcon: "qrc:/icons/theory.png"
 
     height: 150
     width: 500
@@ -78,7 +78,7 @@ Item {
 
             //anchors.bottom: myProgressBar.top //поменять на наш компонент
             //anchors.margins: 5
-            source: "../../../../YandexDisk/RushPolytech/icons/bilets.png"
+            source: "qrc:/icons/bilets.png"
             //mirror: true
             fillMode: Image.PreserveAspectFit
             //debag border

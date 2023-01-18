@@ -8,14 +8,14 @@ Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on
 */
 import QtQuick
 import QtQuick.Controls
-import RushPoliTech
+import QtQuick.Controls.Material
 
 Rectangle {
     id: mainScreenRectangle
 
-    width: 420
-    height: 736
-    anchors.fill: parent
+    //anchors.fill: parent
+    width: view.width
+    height: view.height
     color: "#edecec"
     border.color: "#ffffff"
 
@@ -46,7 +46,7 @@ Rectangle {
 
             anchors.fill: imageBorder
             opacity: 1
-            source: "../../../../YandexDisk/RushPolytech/icons/learning.png"
+            source: "qrc:/icons/learning.png"
             mirror: true
             fillMode: Image.PreserveAspectFit
         }
@@ -182,7 +182,7 @@ Rectangle {
             anchors.fill: parent
             anchors.margins: 10
             opacity: 1
-            source: "../../../../YandexDisk/RushPolytech/icons/bilets.png"
+            source: "qrc:/icons/bilets.png"
             fillMode: Image.PreserveAspectFit
         }
     }
@@ -219,7 +219,7 @@ Rectangle {
             anchors.fill: parent
             anchors.margins: 10
             opacity: 1
-            source: "../../../../YandexDisk/RushPolytech/icons/programming (1).png"
+            source: "qrc:/icons/programming (1).png"
             fillMode: Image.PreserveAspectFit
         }
     }

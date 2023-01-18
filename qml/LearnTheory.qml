@@ -8,20 +8,21 @@ Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on
 */
 import QtQuick
 import QtQuick.Controls
-import RushPoliTech
+import QtQuick.Controls.Material
 
 Rectangle {
     id: mainScreenRectangle
 
-    width: 420
-    height: 736
-    anchors.fill: parent
+    //anchors.fill: parent
+    width: view.width
+    height: view.height
     color: "#edecec"
 
     property string theoryText: "Обширный лекционный материал по этой теме невероятное количество тексто проверяем количество символов которые нужно здесь уместить чтобы было читаемо скока вот тут щас да хуй его знает но мы все пишим и пишим пишим и пишим и все и пиздец жизнь это что за шутка такая кто я чем я занят венец природы усажен в офисное кресло и подвергнут пыткам а все ради чего что это за симулякр жизни стали ли мы счастливей променяв пещеру из камня на пещеру из стекла и бетона мама помоги я так больше могу и еще смогу и так пока не сдохну"
 
     property bool haveImage: true
     property bool isImageUp: true
+
 
     Item {
         id: imageWithBorder
@@ -45,7 +46,7 @@ Rectangle {
 
             anchors.fill: imageBorder
             opacity: 1
-            source: "../../../../YandexDisk/RushPolytech/icons/questpic.jpg"
+            source: "qrc:/icons/questpic.jpg"
             mirror: true
             fillMode: Image.PreserveAspectFit
         }

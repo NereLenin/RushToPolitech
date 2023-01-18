@@ -8,14 +8,14 @@ Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on
 */
 import QtQuick
 import QtQuick.Controls
-import RushPoliTech
+import QtQuick.Controls.Material
 
 Rectangle {
     id: mainScreenRectangle
 
-    width: 420
-    height: 736
-    anchors.fill: parent
+    //anchors.fill: parent
+    width: view.width
+    height: view.height
     color: "#edecec"
 
     Text {
@@ -54,7 +54,7 @@ Rectangle {
         anchors.bottom: submitButtonItem.top
         anchors.margins: 20
 
-        source: "../../../../YandexDisk/RushPolytech/icons/logo.png"
+        source: "qrc:/icons/logo.png"
 
         fillMode: Image.PreserveAspectFit
     }

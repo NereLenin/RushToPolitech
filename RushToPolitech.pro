@@ -20,22 +20,22 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    qml/FailedLearnScreen.ui.qml \
-    qml/FinishExamFailed.ui.qml \
-    qml/FinishExamSuccess.ui.qml \
-    qml/FinishLearnScreen.ui.qml \
+    qml/FailedLearnScreen.qml \
+    qml/FinishExamFailed.qml \
+    qml/FinishExamSuccess.qml \
+    qml/FinishLearnScreen.qml \
     qml/ItemOfDrawer.qml \
-    qml/LSChooseVariant.ui.qml \
-    qml/LSInputValue.ui.qml \
-    qml/LearnTheory.ui.qml \
-    qml/LearnTheoryLastScreen.ui.qml \
+    qml/LSChooseVariant.qml \
+    qml/LSInputValue.qml \
+    qml/LearnTheory.qml \
+    qml/LearnTheoryLastScreen.qml \
     qml/MyHeader.qml \
     qml/MyProgressBar.ui.qml \
-    qml/RepeatScreen.ui.qml \
+    qml/RepeatScreen.qml \
     qml/SquareButton.ui.qml \
-    qml/StartScreen.ui.qml \
+    qml/StartScreen.qml \
     qml/Ticket.ui.qml \
     qml/TicketsOfTopic.ui.qml \
     qml/Topic.ui.qml \
-    qml/Topics.ui.qml \
+    qml/Topics.qml \
     qml/main.qml \

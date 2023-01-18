@@ -11,19 +11,31 @@ ApplicationWindow {
 
     header: MyHeader{
         id: myAppHeader
+        state: "MainScreen"
         x:0
         y:0
         anchors.left: parent.left
         anchors.right: parent.right
 
 
-        height: parent.height /12
+        height: parent.height / 12
 
         onBurgerButtonClicked: {
+            console.log("burg button");
             if(drawer.opened)
+            {
+                console.log("draw close");
                 drawer.close();
-            else
+
+            }
+                else
+            {
+                console.log("draw open");
+                drawer.visible = true;
                 drawer.open();
+                drawer.visible = true;
+            }
+
         }
     }
 
@@ -33,30 +45,20 @@ ApplicationWindow {
         anchors.top: myAppHeader.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-
-        Page {
-            title: qsTr("Home")
-        }
-        Page {
-            title: qsTr("Discover")
-        }
-        Page {
-            title: qsTr("Activity")
-        }
+        anchors.bottom: parent.bottom
+        initialItem: "qrc:/qml/StartScreen.qml"
     }
-
 
     Drawer {
         id: drawer
         y: myAppHeader.height
         width: parent.width * 0.4
         height: parent.height
-        //visible: (stackView.currentItem.title === "Соединение с Moodle")||(stackView.currentItem.title === "Авторизация с Moodle")||(stackView.currentItem.title === "Загрузка данных")
 
         Column {
             anchors.fill: parent
 
-            ItemDelegate {
+            ItemDelegate {//на главную
                 width: parent.width
                 height: parent.height/14
 
@@ -65,12 +67,14 @@ ApplicationWindow {
                     textOfItem: "На главную"
 
                     onClicked: {
+                        myAppHeader.state = "MainScreen"
+                        view.push("qrc:/qml/StartScreen.qml")
                         drawer.close()
                     }
                 }
             }
 
-            ItemDelegate {
+            ItemDelegate {//учить
                 width: parent.width
                 height: parent.height/14
                 ItemOfDrawer{
@@ -78,12 +82,14 @@ ApplicationWindow {
                     textOfItem: "Учить"
 
                     onClicked: {
+                        myAppHeader.state = "LearnScreen"
+                        view.push("qrc:/qml/LSChooseVariant.qml")
                         drawer.close()
                     }
                 }
             }
 
-            ItemDelegate {
+            ItemDelegate {//повторить
                 width: parent.width
                 height: parent.height/14
 
@@ -92,12 +98,14 @@ ApplicationWindow {
                     textOfItem: "Повторить"
 
                     onClicked: {
+                        myAppHeader.state = "RepeatScreen"
+                        view.push("qrc:/qml/RepeatScreen.qml")
                         drawer.close()
                     }
                 }
             }
 
-            ItemDelegate {
+            ItemDelegate {//экзамен
                 width: parent.width
                 height: parent.height/14
                 ItemOfDrawer{
@@ -105,12 +113,14 @@ ApplicationWindow {
                     textOfItem: "Экзамен"
 
                     onClicked: {
+                        myAppHeader.state = "ExamScreen"
+                        view.push("qrc:/qml/LSInputValue.qml")
                         drawer.close()
                     }
                 }
             }
 
-            ItemDelegate {
+            ItemDelegate {//теория
                 width: parent.width
                 height: parent.height/14
                 ItemOfDrawer{
@@ -118,12 +128,14 @@ ApplicationWindow {
                     textOfItem: "Теория"
 
                     onClicked: {
+                        myAppHeader.state = "TheoryScreen"
+                        view.push("qrc:/qml/LearnTheory.qml")
                         drawer.close()
                     }
                 }
             }
 
-            ItemDelegate {
+            ItemDelegate {//статистика
                 width: parent.width
                 height: parent.height/14
                 ItemOfDrawer{
@@ -136,7 +148,7 @@ ApplicationWindow {
                 }
             }
 
-            ItemDelegate {
+            ItemDelegate {//настройки
                 width: parent.width
                 height: parent.height/14
                 ItemOfDrawer{
@@ -149,7 +161,7 @@ ApplicationWindow {
                 }
             }
 
-            ItemDelegate {
+            ItemDelegate {//выход
                 width: parent.width
                 height: parent.height/14
                 ItemOfDrawer{

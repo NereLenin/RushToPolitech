@@ -8,15 +8,13 @@ Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on
 */
 import QtQuick
 import QtQuick.Controls
-import RushPoliTech
-import QtQuick.Studio.Components 1.0
 
 Rectangle {
     id: mainScreenRectangle
 
-    width: 420
-    height: 736
-    anchors.fill: parent
+    //anchors.fill: parent
+    width: view.width
+    height: view.height
     color: "#edecec"
 
     ListView {
@@ -29,13 +27,13 @@ Rectangle {
         model: ListModel {
             ListElement {
                 myNameTopic: "Программирование"
-                myPathTopicIcon: "../../../../YandexDisk/RushPolytech/icons/theory.png"
+                myPathTopicIcon: "qrc:/icons/theory.png"
                 mySubtopic: false
             }
 
             ListElement {
                 myNameTopic: "Автоматизация"
-                myPathTopicIcon: "../../../../YandexDisk/RushPolytech/icons/automatic.png"
+                myPathTopicIcon: "qrc:/icons/automatic.png"
                 mySubtopic: false
             }
             ListElement {

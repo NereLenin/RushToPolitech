@@ -1,21 +1,15 @@
-
-
-/*
-This is a UI file (.ui.qml) that is intended to be edited in Qt Design Studio only.
-It is supposed to be strictly declarative and only uses a subset of QML. If you edit
-this file manually, you might introduce QML code that is not supported by Qt Design Studio.
-Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on .ui.qml files.
-*/
 import QtQuick
 import QtQuick.Controls
-import RushPoliTech
+import QtQuick.Controls.Material
+
 
 Rectangle {
     id: mainScreenRectangle
 
-    width: 420
-    height: 736
-    anchors.fill: parent
+    //anchors.fill: parent
+    width: view.width
+    height: view.height
+
     color: "#edecec"
 
     property int chanceToPassExam: 10
@@ -62,7 +56,7 @@ Rectangle {
 
         anchors.margins: 5
 
-        source: "../../../../YandexDisk/RushPolytech/icons/person.png"
+        source: "qrc:/icons/person.png"
         mirror: true
 
         fillMode: Image.PreserveAspectFit
@@ -149,9 +143,63 @@ Rectangle {
             anchors.topMargin: 20
             anchors.bottomMargin: 20
 
-            source: "../../../../YandexDisk/RushPolytech/icons/learning.png"
+            source: "qrc:/icons/learning.png"
             mirror: true
             fillMode: Image.PreserveAspectFit
+        }
+
+
+        onClicked:
+        {
+
+            /*
+
+    property int indexOfCorrectVariant: 2
+
+    property string textOfQuestion: "Это что за покемон неизвестная зверь тварь неясного сельского происхождения непонятной родословной???777"
+    property string pathToImage: "qrc:/icons/questpic.jpg"
+
+    property string variant4Text: "" //"Вариант 4"
+    property string variant4PathToImg: ""//"qrc:/icons/questpic.jpg"
+
+    property string variant3Text: "Вариант 3" //"Вариант 3"
+    property string variant3PathToImg: "qrc:/icons/questpic.jpg" //"../../../../YandexDisk/RushPolytech/icons/questpic.jpg"
+
+    property string variant2Text: "Секси" //"Вариант 4"
+    property string variant2PathToImg: "" // "../../../../YandexDisk/RushPolytech/icons/questpic.jpg"
+
+    property string variant1Text: "Жмых" //"Вариант 4"
+    property string variant1PathToImg: "" // "../../../../YandexDisk/RushPolytech/icons/questpic.jpg"
+            */
+            /*
+    property string correctAnswer: "жепич"
+    property string textOfQuestion: "Это что за покемон неизвестная зверь тварь неясного сельского происхождения непонятной родословной???777"
+    //property string pathToImage: ""
+    property string pathToImage: "qrc:/icons/learning.png"
+            */
+
+            //-------------------отдать вот этот момент контроллеру?
+            //
+
+            view.push([ "qrc:/qml/FinishLearnScreen.qml", {"procOfAllLearned": "99"},
+
+                       "qrc:/qml/LSChooseVariant.qml", {"variant1Text": "Чита",
+                                                        "variant2Text": "Бирабиджан",
+                                                        "variant3Text": "Там где нет Юли",
+                                                        "variant4Text": "",
+                                                        "textOfQuestion": "Худшее место на земле",
+                                                        "indexOfCorrectVariant": "3"},
+                       "qrc:/qml/LSInputValue.qml", {"textOfQuestion": "Сколько раз смотрели фильм с госленгом где он типа нацист? (введите число)",
+                                                        "pathToImage": "qrc:/icons/questpic.jpg",
+                                                        "correctAnswer": "1488"},
+                       "qrc:/qml/LSChooseVariant.qml", {"variant1Text": "Пинус",
+                                                        "variant2Text": "Повербанк в виде палки",
+                                                        "variant3Text": "Палка с водой заряженой",
+                                                        "variant4Text": "Палка которую поставили на ставку (зарядили)",
+                                                        "textOfQuestion": "ЗАГАДКА ЕБАТЬ\nПалка заряжена не стреляет",
+                                                        "indexOfCorrectVariant": "1"}
+
+                        ]);
         }
     }
 
@@ -216,7 +264,7 @@ Rectangle {
 
             //anchors.bottom: myProgressBar.top //поменять на наш компонент
             //anchors.margins: 5
-            source: "../../../../YandexDisk/RushPolytech/icons/exam.png"
+            source: "qrc:/icons/exam.png"
             mirror: true
             fillMode: Image.PreserveAspectFit
             //debag border
@@ -293,7 +341,7 @@ Rectangle {
 
             //anchors.bottom: myProgressBar.top //поменять на наш компонент
             //anchors.margins: 5
-            source: "../../../../YandexDisk/RushPolytech/icons/repeat.png"
+            source: "qrc:/icons/repeat.png"
             mirror: true
             fillMode: Image.PreserveAspectFit
             //debag border
@@ -367,9 +415,7 @@ Rectangle {
             anchors.topMargin: 20
             anchors.bottomMargin: 20
 
-            //anchors.bottom: myProgressBar.top //поменять на наш компонент
-            //anchors.margins: 5
-            source: "../../../../YandexDisk/RushPolytech/icons/theory.png"
+            source: "qrc:/icons/theory.png"
             mirror: true
             fillMode: Image.PreserveAspectFit
             //debag border
