@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/DB_resources">
+        <file>TestBase.json</file>
+    </qresource>
+</RCC>
