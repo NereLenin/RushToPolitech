@@ -5,7 +5,7 @@
 #include <QDate>
 #include <QJsonObject>
 #include <QDebug>
-#include <tickets.h>
+#include <src/tickets.h>
 
 enum TicketStatus{Learned, Unlearned, Hard, Forgotten, Any};
 

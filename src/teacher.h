@@ -1,6 +1,6 @@
 #ifndef TEACHER_H
 #define TEACHER_H
-#include <ticketbase.h>
+#include <src/ticketbase.h>
 #include <iostream>
 #include <QTimer>
 #include <QObject>

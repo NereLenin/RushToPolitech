@@ -3,8 +3,8 @@
 #include <QObject>
 #include <QList>
 
-#include <tickets.h>
-#include <ticketsdatabasereader.h>
+#include <src/tickets.h>
+#include <src/ticketsdatabasereader.h>
 
 class appBack : public QObject
 {

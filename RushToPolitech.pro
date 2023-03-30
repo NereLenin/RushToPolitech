@@ -14,7 +14,7 @@ SOURCES += \
 
 #resources.files = main.qml
 #resources.prefix = /$${TARGET}
-RESOURCES += qml_resources.qrc#resources \
+RESOURCES += qml_resources.qrc
 
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
@@ -47,8 +47,7 @@ DISTFILES += \
     qml/TicketsOfTopic.ui.qml \
     qml/Topic.ui.qml \
     qml/Topics.qml \
-    qml/main.qml \
-    src/TestBase.json
+    qml/main.qml
 
 SUBDIRS += \
     src/backAppTest.pro

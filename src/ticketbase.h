@@ -1,7 +1,7 @@
 #ifndef TICKETBASE_H
 #define TICKETBASE_H
-#include <ticketsdatabasereader.h>
-#include <ticketsstatisticservice.h>
+#include <src/ticketsdatabasereader.h>
+#include <src/ticketsstatisticservice.h>
 
 
 class TicketBase : public ITicketStatistic

@@ -1,10 +1,10 @@
 #ifndef TICKETSTATISTICDATABASEDRIVER_H
 #define TICKETSTATISTICDATABASEDRIVER_H
-#include <tickets.h>
-#include <ticketinfo.h>
+#include <src/tickets.h>
+#include <src/ticketinfo.h>
 #include <QJsonDocument>
 #include <QFile>
-#include "ticketsstatisticservice.h"
+#include "src/ticketsstatisticservice.h"
 
 //предварительное обьявление сервиса для которого реализуем чтение запись
 class TicketsStatisticService;
