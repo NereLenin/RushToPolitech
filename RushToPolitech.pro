@@ -1,7 +1,16 @@
 QT += quick
 
 SOURCES += \
-        main.cpp
+        main.cpp \
+        src/appback.cpp \
+        src/teacher.cpp \
+        src/ticket.cpp \
+        src/ticketbase.cpp \
+        src/ticketinfo.cpp \
+        src/tickets.cpp \
+        src/ticketsdatabasereader.cpp \
+        src/ticketsstatisticservice.cpp \
+        src/ticketstatisticdatabasedriver.cpp
 
 #resources.files = main.qml
 #resources.prefix = /$${TARGET}
@@ -39,3 +48,18 @@ DISTFILES += \
     qml/Topic.ui.qml \
     qml/Topics.qml \
     qml/main.qml \
+    src/TestBase.json
+
+SUBDIRS += \
+    src/backAppTest.pro
+
+HEADERS += \
+    src/appback.h \
+    src/teacher.h \
+    src/ticket.h \
+    src/ticketbase.h \
+    src/ticketinfo.h \
+    src/tickets.h \
+    src/ticketsdatabasereader.h \
+    src/ticketsstatisticservice.h \
+    src/ticketstatisticdatabasedriver.h

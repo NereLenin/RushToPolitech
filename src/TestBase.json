@@ -1,0 +1,76 @@
+{
+  "name": "TicketBase",
+  "version": 1.1,
+  "tickets": [
+    {
+      "index": 0,
+      "type": "selectableAnswerTicket",
+      "text": "Пример вопроса с текстом вот такой вопрос?",
+      "imageURL": "https://clck.ru/327wEJ",
+      "answers": [
+                    "Да",
+                    "Нет",
+                    "Возможно",
+                    "Наверно"
+                 ],
+
+       "answersImageURL": [
+              "",
+              "",
+              "",
+              ""
+           ],
+      "correctAnswerIndex": 1
+    },
+    {
+      "index": 1,
+      "type": "selectableAnswerTicket",
+      "text": "Пример вопроса с текстом вот такой вопрос?",
+      "imageURL": "",
+
+"answers": [
+              "",
+              "",
+              "",
+              ""
+           ],
+
+ "answersImageURL": [
+        "https://clck.ru/327wEJ",
+        "",
+        "https://clck.ru/327wEJ",
+        ""
+     ],
+    "correctAnswerIndex": 1
+
+    },
+    {
+      "index": 2,
+      "type": "selectableAnswerTicket",
+      "text": "",
+      "imageURL": "https://clck.ru/327wEJ",
+
+"answers": [
+              "Да",
+              "",
+              "Возможно",
+              ""
+           ],
+
+ "answersImageURL": [
+        "",
+        "https://clck.ru/327wEJ",
+        "",
+        "https://clck.ru/327wEJ"
+     ],
+    "correctAnswerIndex": 3
+    },
+    {
+      "index": 3,
+      "type": "inputAnswerTicket",
+      "text": "Введите длинну члэна",
+      "imageURL": "https://clck.ru/327wEJ",
+      "correctAnswer": "0,3"
+    }
+  ]
+}
