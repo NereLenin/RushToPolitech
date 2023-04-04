@@ -12,9 +12,9 @@ Rectangle {
 
     color: "#edecec"
 
-    property int chanceToPassExam: 10
-    property int procOfAllLearned: 30
-    property int procOfTodayLearned: 10
+    property int chanceToPassExam: appEngine.chanceToPassExam
+    property int procOfAllLearned: appEngine.procOfAllLearned
+    property int procOfTodayLearned: appEngine.procOfTodayLearned
 
     Text {
         id: chanceToPassExamText
@@ -151,55 +151,8 @@ Rectangle {
 
         onClicked:
         {
-
-            /*
-
-    property int indexOfCorrectVariant: 2
-
-    property string textOfQuestion: "Это что за покемон неизвестная зверь тварь неясного сельского происхождения непонятной родословной???777"
-    property string pathToImage: "qrc:/icons/questpic.jpg"
-
-    property string variant4Text: "" //"Вариант 4"
-    property string variant4PathToImg: ""//"qrc:/icons/questpic.jpg"
-
-    property string variant3Text: "Вариант 3" //"Вариант 3"
-    property string variant3PathToImg: "qrc:/icons/questpic.jpg" //"../../../../YandexDisk/RushPolytech/icons/questpic.jpg"
-
-    property string variant2Text: "Секси" //"Вариант 4"
-    property string variant2PathToImg: "" // "../../../../YandexDisk/RushPolytech/icons/questpic.jpg"
-
-    property string variant1Text: "Жмых" //"Вариант 4"
-    property string variant1PathToImg: "" // "../../../../YandexDisk/RushPolytech/icons/questpic.jpg"
-            */
-            /*
-    property string correctAnswer: "жепич"
-    property string textOfQuestion: "Это что за покемон неизвестная зверь тварь неясного сельского происхождения непонятной родословной???777"
-    //property string pathToImage: ""
-    property string pathToImage: "qrc:/icons/learning.png"
-            */
-
-            //-------------------отдать вот этот момент контроллеру?
-            //
-
-            view.push([ "qrc:/qml/FinishLearnScreen.qml", {"procOfAllLearned": "99"},
-
-                       "qrc:/qml/LSChooseVariant.qml", {"variant1Text": "Чита",
-                                                        "variant2Text": "Бирабиджан",
-                                                        "variant3Text": "Там где нет Юли",
-                                                        "variant4Text": "",
-                                                        "textOfQuestion": "Худшее место на земле",
-                                                        "indexOfCorrectVariant": "3"},
-                       "qrc:/qml/LSInputValue.qml", {"textOfQuestion": "Сколько раз смотрели фильм с госленгом где он типа нацист? (введите число)",
-                                                        "pathToImage": "qrc:/icons/questpic.jpg",
-                                                        "correctAnswer": "1488"},
-                       "qrc:/qml/LSChooseVariant.qml", {"variant1Text": "Пинус",
-                                                        "variant2Text": "Повербанк в виде палки",
-                                                        "variant3Text": "Палка с водой заряженой",
-                                                        "variant4Text": "Палка которую поставили на ставку (зарядили)",
-                                                        "textOfQuestion": "ЗАГАДКА ЕБАТЬ\nПалка заряжена не стреляет",
-                                                        "indexOfCorrectVariant": "1"}
-
-                        ]);
+            //начинаем сессию обучения
+            rootItem.startLearningSession();
         }
     }
 
@@ -354,6 +307,11 @@ Rectangle {
                 border.color: red
             }
             */
+        }
+
+        onClicked: {
+            myAppHeader.state = "RepeatScreen"
+            view.push("qrc:/qml/RepeatScreen.qml")
         }
     }
 

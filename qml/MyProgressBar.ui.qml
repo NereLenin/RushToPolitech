@@ -6,7 +6,7 @@ Item {
     height: 80
     width: 500
 
-    property int procOfProgress: 55
+    property int procOfProgress: 0
     property int procIncreasedProgress: 0
 
     Rectangle {
@@ -32,7 +32,7 @@ Item {
 
         Rectangle {
             id: buffedProgress
-            width: ((parent.width) / 100) * procIncreasedProgress
+            width: ((rootItem.width) / 100) * procIncreasedProgress
 
             anchors.top: parent.top
             anchors.bottom: parent.bottom

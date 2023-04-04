@@ -2,12 +2,15 @@ import QtQuick
 import QtQuick.Controls
 
 ApplicationWindow {
-
+    id: rootItem
     width: 420
     height: 736
 
     visible: true
-    title: qsTr("Hello World")
+    title: appEngine.title//qsTr("Hello World")
+
+
+
 
     header: MyHeader{
         id: myAppHeader
@@ -28,7 +31,7 @@ ApplicationWindow {
                 drawer.close();
 
             }
-                else
+            else
             {
                 console.log("draw open");
                 drawer.visible = true;
@@ -42,11 +45,14 @@ ApplicationWindow {
 
     StackView {
         id: view
+        objectName: "mainStack"
+
         anchors.top: myAppHeader.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         initialItem: "qrc:/qml/StartScreen.qml"
+
     }
 
     Drawer {
@@ -83,7 +89,8 @@ ApplicationWindow {
 
                     onClicked: {
                         myAppHeader.state = "LearnScreen"
-                        view.push("qrc:/qml/LSChooseVariant.qml")
+                        rootItem.startLearningSession();
+                        //view.push("qrc:/qml/LSChooseVariant.qml")
                         drawer.close()
                     }
                 }
@@ -174,6 +181,63 @@ ApplicationWindow {
                 }
             }
         }//endcolumn
+
     }//end drawer
 
+
+    /*          сигналы и слоты для взаимодействия с бэком        */
+
+    // --------сигналы--------
+
+    //сигнал испускаемый при ответе, для сохранения данных в базе
+    signal saveAnswerInStatistic(index: int, isCorrect : bool);
+
+    //сигнал для начала сессии "учить"
+    signal startLearningSession();
+
+    // --------слоты--------
+    Connections {
+        target: appEngine//класс бэка
+
+        //слоты для заполнения стэка по сигналам с бэка
+        //закидываем в стэк страничку с выбором варианта
+        function onPushSelectable( index : int,
+                                    textOfQuestion, pathToImage,
+                                    variant1Text, variant1PathToImg,
+                                    variant2Text, variant2PathToImg,
+                                    variant3Text, variant3PathToImg,
+                                    variant4Text, variant4PathToImg : string,
+                                    indexOfCorrectVariant : int )
+        {
+            view.push("LSChooseVariant.qml",{"ticketIndex": index,
+                          "textOfQuestion": textOfQuestion,
+                          "pathToImage": pathToImage,
+                          "variant1Text": variant1Text,
+                          "variant1PathToImg": variant1PathToImg,
+                          "variant2Text": variant2Text,
+                          "variant2PathToImg": variant2PathToImg,
+                          "variant3Text": variant3Text,
+                          "variant3PathToImg": variant3PathToImg,
+                          "variant4Text": variant4Text,
+                          "variant4PathToImg": variant4PathToImg,
+                          "indexOfCorrectVariant": indexOfCorrectVariant
+                      });
+        }
+
+        //закидываем в стэк страничку с вводом
+        function onPushInputable(index : int, correctAnswer, textOfQuestion, pathToImage: string)
+        {
+            view.push("LSInputValue.qml",{   "ticketIndex": index,
+                          "textOfQuestion": textOfQuestion,
+                          "pathToImage": pathToImage,
+                          "correctAnswer": correctAnswer});
+        }
+
+        //закидываем в стэк рандомную страничку
+        function onPushStack(pageUrl : string){
+            view.push(pageUrl);
+        }
+
+
+    }
 }//end window

@@ -10,14 +10,14 @@ Rectangle {
 
     color: "#edecec"
 
-    property int ticketsCount: 426
-    property int learnedTicketsCount: 100
-    property int hardTicketsCount: 50
-    property int forgottenTicketsCount: 30
+    property int ticketsCount: appEngine.allTicketsCount
+    property int learnedTicketsCount: appEngine.learnedTicketsCount
+    property int hardTicketsCount: appEngine.hardTicketsCount
+    property int forgottenTicketsCount: appEngine.forgottenTicketsCount
 
-    property int chanceToPassExam: 10
-    property int procOfAllLearned: 30
-    property int procOfTodayLearned: 10
+    property int chanceToPassExam: appEngine.chanceToPassExam
+    property int procOfAllLearned: appEngine.procOfAllLearned
+    property int procOfTodayLearned: appEngine.procOfTodayLearned
 
     property int statisiticsTextHeight: parent.height / 12
 

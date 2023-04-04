@@ -17,7 +17,7 @@ private:
 
     void clearTicketBase();
 public:
-    TicketBase();
+    TicketBase(QString pathToTicketBase=":/ticketBase/TestBase.json", QString pathToStatisticBase="./statisticBase.json");
 
     QList<Ticket*> getRandomTicketList(TicketStatus status, int amountOfTickets=10);
     QList<Ticket*> getRandomTicketList(QList <TicketStatus> statuses, int amountOfTickets=10);
@@ -30,6 +30,12 @@ public:
     int getChanceToPassExam();
     int getAllLearnedProc();
     int getTodayLearnedProc();
+
+    int getAllTicketsCount();
+    int getLearnedTicketsCount();
+    int getHardTicketsCount();
+    int getForgottenTicketsCount();
+
 
     //--убрать?
     void printTicketInfo(int ticketIndex)

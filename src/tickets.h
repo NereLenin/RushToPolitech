@@ -6,7 +6,7 @@
 #include <QDebug>
 
 enum TicketType {selectableAnswerTicket, inputAnswerTicket};
-enum TicketAnswerType{Correct, Wrong};
+enum TicketAnswerType{Wrong,Correct};
 
 class Ticket
 {
@@ -70,6 +70,19 @@ public:
 
     int getIndexOfCorrectAnswer();//убрать?
 
+    const QString getAnswer(int index) const {
+        if (index < 4 && index >= 0)
+            return answers[index];
+
+        return "";
+    }
+
+    const QString getAnswerImageUrl(int index) const{
+        if (index < 4 && index >= 0)
+            return answersImageUrls[index];
+
+        return "";
+    }
 
     virtual TicketAnswerType isCorrectAnswer(double answer);
     virtual TicketAnswerType isCorrectAnswer(QString answer);

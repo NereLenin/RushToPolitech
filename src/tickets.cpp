@@ -18,7 +18,7 @@ Ticket *Ticket::createTicket(TicketType type, int index)
     switch(type)
     {
      case TicketType::inputAnswerTicket: return new InputAnswerTicket(index); break;
-     case TicketType::selectableAnswerTicket: return new SelectableAnswerTicket(index); break;
+     case TicketType::selectableAnswerTicket: return new SelectableAnswerTicket(index); break;       
      default:
         //исключение
         return NULL;

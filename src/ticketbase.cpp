@@ -1,16 +1,16 @@
 #include "ticketbase.h"
 
 
-TicketBase::TicketBase()
+TicketBase::TicketBase(QString pathToTicketBase, QString pathToStatisticBase)
 {
+    this->pathToTicketsBase = pathToTicketBase;
+    this->pathToStatisticBase = pathToStatisticBase;
+
     baseVersion = 0.0;
-    //---------пути
-    pathToTicketsBase = ":/TestBase.json";
-    pathToStatisticBase = "./statisticBase.json";
-    //---------------
+
     TicketsDataBaseReader::readTicketsFromJsonDB(pathToTicketsBase,*this);
 
-    statistic.setPathToStatisticBase(pathToStatisticBase);
+    statistic.setPathToStatisticBase(this->pathToStatisticBase);
     statistic.setTicketBase(&ticketsBase);
     statistic.updateStatisticBase();
 }
@@ -81,6 +81,26 @@ int TicketBase::getAllLearnedProc()
 int TicketBase::getTodayLearnedProc()
 {
     return statistic.getTodayLearnedProc();
+}
+
+int TicketBase::getAllTicketsCount()
+{
+    return statistic.getListOfTickets(TicketStatus::Any).size();
+}
+
+int TicketBase::getLearnedTicketsCount()
+{
+    return statistic.getListOfTickets(TicketStatus::Learned).size();
+}
+
+int TicketBase::getHardTicketsCount()
+{
+    return statistic.getListOfTickets(TicketStatus::Hard).size();
+}
+
+int TicketBase::getForgottenTicketsCount()
+{
+    return statistic.getListOfTickets(TicketStatus::Forgotten).size();
 }
 
 void TicketBase::clearTicketBase()

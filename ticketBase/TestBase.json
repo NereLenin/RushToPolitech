@@ -6,7 +6,7 @@
       "index": 0,
       "type": "selectableAnswerTicket",
       "text": "Пример вопроса с текстом вот такой вопрос?",
-      "imageURL": "https://clck.ru/327wEJ",
+      "imageURL": "qrc:/ticketBase/questionImage/questpic.jpg",
       "answers": [
                     "Да",
                     "Нет",
@@ -36,9 +36,9 @@
            ],
 
  "answersImageURL": [
-        "https://clck.ru/327wEJ",
+        "qrc:/ticketBase/questionImage/questpic.jpg",
         "",
-        "https://clck.ru/327wEJ",
+        "qrc:/ticketBase/questionImage/questpic.jpg",
         ""
      ],
     "correctAnswerIndex": 1
@@ -48,7 +48,7 @@
       "index": 2,
       "type": "selectableAnswerTicket",
       "text": "",
-      "imageURL": "https://clck.ru/327wEJ",
+      "imageURL": "qrc:/ticketBase/questionImage/questpic.jpg",
 
 "answers": [
               "Да",
@@ -59,9 +59,9 @@
 
  "answersImageURL": [
         "",
-        "https://clck.ru/327wEJ",
+        "qrc:/ticketBase/questionImage/questpic.jpg",
         "",
-        "https://clck.ru/327wEJ"
+        "qrc:/ticketBase/questionImage/questpic.jpg"
      ],
     "correctAnswerIndex": 3
     },
@@ -69,7 +69,7 @@
       "index": 3,
       "type": "inputAnswerTicket",
       "text": "Введите длинну члэна",
-      "imageURL": "https://clck.ru/327wEJ",
+      "imageURL": "qrc:/ticketBase/questionImage/questpic.jpg",
       "correctAnswer": "0,3"
     }
   ]

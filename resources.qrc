@@ -38,5 +38,7 @@
         <file>qml/TicketsOfTopic.ui.qml</file>
         <file>qml/Topic.ui.qml</file>
         <file>qml/Topics.qml</file>
+        <file>ticketBase/questionImage/questpic.jpg</file>
+        <file>ticketBase/TestBase.json</file>
     </qresource>
 </RCC>

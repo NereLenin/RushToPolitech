@@ -12,7 +12,9 @@ Rectangle {
 
     color: "#edecec"
 
+    property int ticketIndex: 0
     property int indexOfCorrectVariant: 2
+    //property int indexOfChoosedVariant: 0
 
     property string textOfQuestion: "Это что за покемон неизвестная зверь тварь неясного сельского происхождения непонятной родословной???777"
     property string pathToImage: ""
@@ -20,16 +22,23 @@ Rectangle {
     property string variant4Text: "" //"Вариант 4"
     property string variant4PathToImg: ""//"qrc:/icons/questpic.jpg"
 
-    property string variant3Text: "Вариант 3" //"Вариант 3"
+    property string variant3Text: "" //"Вариант 3"
     property string variant3PathToImg: "" //"../../../../YandexDisk/RushPolytech/icons/questpic.jpg"
 
-    property string variant2Text: "Секси" //"Вариант 4"
+    property string variant2Text: "" //"Вариант 4"
     property string variant2PathToImg: "" // "../../../../YandexDisk/RushPolytech/icons/questpic.jpg"
 
-    property string variant1Text: "Жмых" //"Вариант 4"
+    property string variant1Text: "" //"Вариант 4"
     property string variant1PathToImg: "" // "../../../../YandexDisk/RushPolytech/icons/questpic.jpg"
 
     property int buttonSize: height / 2 / 4.2
+
+    property string textOfNullTicket: "Нет больше билетов брат...\nПрости брат....\n"
+
+    function sendAnswerToStatistic(indexOfChoosedVariant : int){
+        if(textOfQuestion !== textOfNullTicket)
+            rootItem.saveAnswerInStatistic(ticketIndex, (indexOfCorrectVariant === indexOfChoosedVariant));
+    }
 
     MouseArea{
         anchors.fill: parent
@@ -179,10 +188,13 @@ Rectangle {
 
             onClicked: {
                 if(mainScreenRectangle.state !== "HighliteRightAnswer")
+                {
                     mainScreenRectangle.state = "HighliteRightAnswer"
+                    sendAnswerToStatistic(4);
+                }
                 else
                 {
-                    console.log("Переключаем на следующий");
+                    console.log("Переключаем на следующий");           
                     view.pop(StackView.PushTransition);
                 }
 
@@ -268,7 +280,11 @@ Rectangle {
 
             onClicked: {
                 if(mainScreenRectangle.state !== "HighliteRightAnswer")
+                {
                     mainScreenRectangle.state = "HighliteRightAnswer"
+                    sendAnswerToStatistic(3);
+
+                }
                 else
                 {
                     console.log("Переключаем на следующий");
@@ -355,7 +371,10 @@ Rectangle {
 
             onClicked: {
                 if(mainScreenRectangle.state !== "HighliteRightAnswer")
+                {
                     mainScreenRectangle.state = "HighliteRightAnswer"
+                    sendAnswerToStatistic(2);
+                }
                 else
                 {
                     console.log("Переключаем на следующий");
@@ -441,7 +460,10 @@ Rectangle {
 
             onClicked: {
                 if(mainScreenRectangle.state !== "HighliteRightAnswer")
+                {
                     mainScreenRectangle.state = "HighliteRightAnswer"
+                    sendAnswerToStatistic(1);
+                }
                 else
                 {
                     console.log("Переключаем на следующий");

@@ -11,9 +11,9 @@ Rectangle {
     height: view.height
     color: "#edecec"
 
+    property int ticketIndex: 0
     property string correctAnswer: "жепич"
     property string textOfQuestion: "Это что за покемон неизвестная зверь тварь неясного сельского происхождения непонятной родословной???777"
-    //property string pathToImage: ""
     property string pathToImage: "qrc:/icons/learning.png"
 
 
@@ -56,6 +56,7 @@ Rectangle {
                         else{
                             mainScreenRectangle.state = "WrongAnswer"
                         }
+                        rootItem.saveAnswerInStatistic(ticketIndex, (myLowCaseAnswer === rightLowCaseAnswer));
                     }
 
 

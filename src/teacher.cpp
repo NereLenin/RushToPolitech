@@ -131,4 +131,3 @@ void Teacher::repeatRandomTickets(int amountOfTickets)
 {
     workOnTicketList(ticketBase->getRandomTicketList({TicketStatus::Learned ,TicketStatus::Hard, TicketStatus::Forgotten},amountOfTickets));
 }
-

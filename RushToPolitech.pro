@@ -1,8 +1,8 @@
 QT += quick
 
 SOURCES += \
+        appengine.cpp \
         main.cpp \
-        src/appback.cpp \
         src/teacher.cpp \
         src/ticket.cpp \
         src/ticketbase.cpp \
@@ -14,7 +14,8 @@ SOURCES += \
 
 #resources.files = main.qml
 #resources.prefix = /$${TARGET}
-RESOURCES += qml_resources.qrc
+RESOURCES += \
+    resources.qrc
 
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
@@ -53,7 +54,7 @@ SUBDIRS += \
     src/backAppTest.pro
 
 HEADERS += \
-    src/appback.h \
+    appengine.h \
     src/teacher.h \
     src/ticket.h \
     src/ticketbase.h \
