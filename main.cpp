@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <appengine.h>
+//#include "src/tickets.h"
 
 int main(int argc, char *argv[])
 {

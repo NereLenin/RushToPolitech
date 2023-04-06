@@ -47,7 +47,8 @@ Rectangle {
                     }
                     else{
                         console.log("Нажатие при активном вопросе(кнопка)");
-                        let myLowCaseAnswer = myTextField.text.toLowerCase();
+                        let myLowCaseAnswer = myTextField.text.replace(",", ".").toLowerCase();
+
                         let rightLowCaseAnswer = correctAnswer.toLowerCase();
                         if(myLowCaseAnswer === rightLowCaseAnswer)
                         {

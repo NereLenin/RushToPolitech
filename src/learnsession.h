@@ -1,4 +1,4 @@
-#ifndef LEARNSESSION_H
+﻿#ifndef LEARNSESSION_H
 #define LEARNSESSION_H
 #include <src/ticketbase.h>
 
@@ -10,7 +10,7 @@ class LearnSession : public QObject
 {
     Q_OBJECT
 private:
-    const int ticketsInOneSession = 10;
+    const int ticketsInOneSession = 4;
     TypeLearning currentRegime;
 
     int countOfRightAnswer;
@@ -19,7 +19,7 @@ private:
     QTime sessionLastTime;//переименовать
     QVariant modlelListOfWrongTickets;
 
-    QList <const Ticket*> listOfWrongTickets;
+    QList <Ticket*> listOfWrongTickets;
     TicketBase *base;
 
     void defaultLearnSession();
@@ -38,8 +38,14 @@ public:
 
     void StartSession();
 
+    int getCountRight() const;
+    int getCountWrong() const;
+
+    QList <Ticket*> getListOfWrongTicket();
+
 signals:
     void pushListOfTickets(QList <Ticket*> listOfTickets, QString finalScreen);
+    void learnSessionStatisticChanged();
 
 public slots:
     //void saveStatisticInLearningSession(int index, bool isCorrect);

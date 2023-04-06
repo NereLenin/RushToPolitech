@@ -1,5 +1,6 @@
 #ifndef TICKETS_H
 #define TICKETS_H
+
 #include <QString>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -8,8 +9,13 @@
 enum TicketType {selectableAnswerTicket, inputAnswerTicket};
 enum TicketAnswerType{Wrong,Correct};
 
-class Ticket
+class Ticket: public QObject
 {
+    Q_OBJECT
+
+    //Q_PROPERTY(QString msgId READ GetId NOTIFY idChanged)
+    //Q_PROPERTY(QString msgContent READ GetText NOTIFY textChanged)
+    //Q_PROPERTY(QString msgTime READ GetTimeCreatedUTC NOTIFY timeChanged)
 protected:
     int index;
     TicketType type;
@@ -18,7 +24,7 @@ protected:
 
     virtual void fillTicketFromJSON(QJsonObject ticket);
 
-    Ticket(int index = 0);//can't create object for this class
+    Ticket(QObject *parent = nullptr, int index = 0);//can't create object for this class
 
 public:
     static Ticket* createTicket(TicketType type, int index =0);
@@ -57,8 +63,10 @@ public:
     }
 };
 
+
 class SelectableAnswerTicket : public Ticket
 {
+    Q_OBJECT
 private:
     QString answers[4];
     QString answersImageUrls[4];
@@ -98,11 +106,14 @@ public:
 
         qDebug() << " indexOfCorrAnswer:" << indexOfCorrectAnswer;
     }
+    ~SelectableAnswerTicket(){}
 };
 
 
 class InputAnswerTicket : public Ticket
 {
+    Q_OBJECT
+
 private:
    QString correctAnswer;
 
@@ -121,6 +132,7 @@ public:
 
        qDebug() << " correctAnswer:" << correctAnswer;
    }
+   ~InputAnswerTicket(){}
 };
 
 #endif // TICKETS_H

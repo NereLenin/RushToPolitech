@@ -71,6 +71,21 @@ void LearnSession::StartSession()
     }
 }
 
+int LearnSession::getCountRight() const
+{
+    return countOfRightAnswer;
+}
+
+int LearnSession::getCountWrong() const
+{
+    return countOfWrongAnswer;
+}
+
+QList<Ticket *> LearnSession::getListOfWrongTicket()
+{
+    return listOfWrongTickets;
+}
+
 void LearnSession::onSaveStatisticInLearningSession(int index, TicketAnswerType correcness)
 {
     qDebug() << "saveStatistic in LearningSession SLOT: " << index << "correctenss: " << correcness;
@@ -78,11 +93,18 @@ void LearnSession::onSaveStatisticInLearningSession(int index, TicketAnswerType 
     if(correcness == TicketAnswerType::Wrong)
     {
         listOfWrongTickets.append(base->getTicket(index));
-        countOfRightAnswer++;
+        countOfWrongAnswer++;
     }
     else
+    {
         countOfRightAnswer++;
+    }
 
+    emit learnSessionStatisticChanged();
+
+    qDebug() << "count w:" << countOfWrongAnswer << " count right:" << countOfRightAnswer;
     base->saveAnswerInStatistic(index,correcness);
     base->updateStatisticInBase();//вот эту хуйню мож в конец сессии сунуть?
+
+
 }

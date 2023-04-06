@@ -8,7 +8,7 @@ void readJsonArrayToStringArray(QJsonArray array, QString stringArray[4])
     }
 }
 
-Ticket::Ticket(int index)
+Ticket::Ticket(QObject *parent, int index): QObject{parent}
 {
  this->index = index;
 }
@@ -18,7 +18,7 @@ Ticket *Ticket::createTicket(TicketType type, int index)
     switch(type)
     {
      case TicketType::inputAnswerTicket: return new InputAnswerTicket(index); break;
-     case TicketType::selectableAnswerTicket: return new SelectableAnswerTicket(index); break;       
+     case TicketType::selectableAnswerTicket: return new SelectableAnswerTicket(index); break;
      default:
         //исключение
         return NULL;
@@ -96,7 +96,7 @@ void Ticket::fillTicketFromJSON(QJsonObject ticket)
 
 
 /*          selectableAnswerTicket      */
-SelectableAnswerTicket::SelectableAnswerTicket(int index) : Ticket(index)
+SelectableAnswerTicket::SelectableAnswerTicket(int index) : Ticket(nullptr,index)
 {
     this->type = TicketType::selectableAnswerTicket;
 }
@@ -144,7 +144,7 @@ void SelectableAnswerTicket::fillTicketFromJSON(QJsonObject ticket)
 }
 
 /*          inputAnswerTicket      */
-InputAnswerTicket::InputAnswerTicket(int index): Ticket(index)
+InputAnswerTicket::InputAnswerTicket(int index): Ticket(nullptr,index)
 {
     this->type = TicketType::inputAnswerTicket;
 }

@@ -49,6 +49,9 @@ void AppEngine::connectCurrentSessionWithEngine()
     QObject::connect(currentSession,SIGNAL(pushListOfTickets(QList <Ticket*>, QString)),
                      this,          SLOT(onLearnSessionFillStack(QList <Ticket*>,QString)));
 
+    QObject::connect(currentSession,SIGNAL(learnSessionStatisticChanged()),
+                     this,          SLOT(onLearnSessionStatisticChanged()));
+
 }
 
 void AppEngine::disconnectCurrentSessionWithEngine()
@@ -88,14 +91,68 @@ AppEngine::AppEngine(QObject *parent, QQmlApplicationEngine *engine)
     bindQMLSlotSignalConnections(this->engine->rootObjects()[0]);
 }
 
+int AppEngine::getChanceToPassExam()
+{
+    return base.getChanceToPassExam();
+}
+
+int AppEngine::getProcOfAllLearned()
+{
+    return base.getAllLearnedProc();
+}
+
+int AppEngine::getProcOfTodayLearned()
+{
+    return base.getTodayLearnedProc();
+}
+
+int AppEngine::getAllTicketsCount()
+{
+    return base.getAllTicketsCount();
+}
+
+int AppEngine::getLearnedTicketsCount()
+{
+    return base.getLearnedTicketsCount();
+}
+
+int AppEngine::getHardTicketsCount()
+{
+    return base.getHardTicketsCount();
+}
+
+int AppEngine::getForgottenTicketsCount()
+{
+    return base.getForgottenTicketsCount();
+}
+
+QString AppEngine::getTitle()
+{
+    return "Yulya is pure sex";
+}
+
+int AppEngine::getCountOfRightAnswer()
+{
+    qDebug() << "getRightAnswer " << currentSession->getCountRight();
+    if(currentSession == nullptr) return 0;
+    return currentSession->getCountRight();
+}
+
+int AppEngine::getCountOfWrongAnswer()
+{
+    qDebug() << "getWrongAnswer " << currentSession->getCountWrong();
+    if(currentSession == nullptr) return 0;
+    return currentSession->getCountWrong();
+}
+
 void AppEngine::emitPushSignalForTicket(Ticket *ticket)
 {
 
     switch(ticket->getType())
     {
-        case TicketType::selectableAnswerTicket:
-        {
-            SelectableAnswerTicket *currentTicket = dynamic_cast<SelectableAnswerTicket*>(ticket);
+    case TicketType::selectableAnswerTicket:
+    {
+        SelectableAnswerTicket *currentTicket = dynamic_cast<SelectableAnswerTicket*>(ticket);
             emit pushSelectable(currentTicket->getIndex(), currentTicket->getQuestionText(),currentTicket->getImageUrl(),
                                   currentTicket->getAnswer(0),currentTicket->getAnswerImageUrl(0),
                                   currentTicket->getAnswer(1),currentTicket->getAnswerImageUrl(1),
@@ -150,7 +207,6 @@ void AppEngine::ExamController()
 void AppEngine::onSaveAnswerInStatistic(int index, bool isCorrect)
 {
 
-
     emit saveStatisticInLearningSession(index, (TicketAnswerType)isCorrect);
 }
 
@@ -182,4 +238,9 @@ void AppEngine::onEndLearningSessions()
 
     disconnectCurrentSessionWithEngine();
     delete currentSession;
+}
+
+void AppEngine::onLearnSessionStatisticChanged()
+{
+    emit sessionStatisticChanged();
 }

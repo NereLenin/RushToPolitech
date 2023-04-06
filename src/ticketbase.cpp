@@ -15,7 +15,7 @@ TicketBase::TicketBase(QString pathToTicketBase, QString pathToStatisticBase)
     statistic.updateStatisticBase();
 }
 
-const Ticket *TicketBase::getTicket(int index)
+Ticket *TicketBase::getTicket(int index)
 {
     if(index >=0 && index < ticketsBase.size())
     {

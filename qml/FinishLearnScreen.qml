@@ -18,11 +18,11 @@ Rectangle {
     height: view.height
     color: "#edecec"
 
-    property int chanceToPassExam: 10
-    property int todayBustToChancePassExam: 2
+    property int chanceToPassExam: appEngine.chanceToPassExam
+    property int todayBustToChancePassExam: 0
 
-    property int procOfAllLearned: 30
-    property int procOfTodayLearned: 10
+    property int procOfAllLearned: appEngine.procOfAllLearned
+    property int procOfTodayLearned: appEngine.procOfTodayLearned
 
     Text {
         id: resultText
@@ -108,8 +108,14 @@ Rectangle {
     }
 
     Text {
+        property int countRightAnswer : appEngine.countRightAnswer
+        property int countWrongAnswer : appEngine.countWrongAnswer
+        property string timeLasting: "14:88"
+
         id: failedText
-        text: "Правильно: 5 Ошибок : 3 \nЗатрачено времени: 08:59"
+        text: "Правильно: " + countRightAnswer +
+              " Ошибок : " + countWrongAnswer +
+              " \nЗатрачено времени: " + timeLasting
 
         height: (parent.height / 2) / 4.2
         width: submitButtonItem.width * 0.75
@@ -150,6 +156,11 @@ Rectangle {
             source: "qrc:/icons/bilets.png"
             fillMode: Image.PreserveAspectFit
         }
+
+        onClicked:
+        {
+            view.push("qrc:/qml/FailedLearnScreen.qml");
+        }
     }
 
     Item {
@@ -171,6 +182,11 @@ Rectangle {
             font.pointSize: 14
             font.styleName: "Полужирный"
             font.bold: true
+
+            onClicked:
+            {
+                view.pop();
+            }
         }
 
         Rectangle {
