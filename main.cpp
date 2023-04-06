@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     }, Qt::QueuedConnection);
     engine.load(url);
 
-    AppEngine myEngine(&app,&engine);
+    AppEngine myEngine(nullptr,&engine);
 
     return app.exec();
 }

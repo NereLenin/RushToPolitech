@@ -10,8 +10,6 @@ ApplicationWindow {
     title: appEngine.title//qsTr("Hello World")
 
 
-
-
     header: MyHeader{
         id: myAppHeader
         state: "MainScreen"
@@ -73,6 +71,7 @@ ApplicationWindow {
                     textOfItem: "На главную"
 
                     onClicked: {
+                        rootItem.endLearningSessions();
                         myAppHeader.state = "MainScreen"
                         view.push("qrc:/qml/StartScreen.qml")
                         drawer.close()
@@ -88,9 +87,9 @@ ApplicationWindow {
                     textOfItem: "Учить"
 
                     onClicked: {
+                        rootItem.endLearningSessions();
                         myAppHeader.state = "LearnScreen"
                         rootItem.startLearningSession();
-                        //view.push("qrc:/qml/LSChooseVariant.qml")
                         drawer.close()
                     }
                 }
@@ -105,6 +104,7 @@ ApplicationWindow {
                     textOfItem: "Повторить"
 
                     onClicked: {
+                        rootItem.endLearningSessions();
                         myAppHeader.state = "RepeatScreen"
                         view.push("qrc:/qml/RepeatScreen.qml")
                         drawer.close()
@@ -120,8 +120,10 @@ ApplicationWindow {
                     textOfItem: "Экзамен"
 
                     onClicked: {
+                        rootItem.endLearningSessions();
                         myAppHeader.state = "ExamScreen"
-                        view.push("qrc:/qml/LSInputValue.qml")
+                        rootItem.startExamSession();
+                        //view.push("qrc:/qml/LSInputValue.qml")
                         drawer.close()
                     }
                 }
@@ -135,6 +137,7 @@ ApplicationWindow {
                     textOfItem: "Теория"
 
                     onClicked: {
+                        rootItem.endLearningSessions();
                         myAppHeader.state = "TheoryScreen"
                         view.push("qrc:/qml/LearnTheory.qml")
                         drawer.close()
@@ -150,6 +153,7 @@ ApplicationWindow {
                     textOfItem: "Статистика"
 
                     onClicked: {
+                        rootItem.endLearningSessions();
                         drawer.close()
                     }
                 }
@@ -163,6 +167,7 @@ ApplicationWindow {
                     textOfItem: "Настройки"
 
                     onClicked: {
+                        rootItem.endLearningSessions();
                         drawer.close()
                     }
                 }
@@ -176,6 +181,7 @@ ApplicationWindow {
                     textOfItem: "Выход"
 
                     onClicked: {
+                        rootItem.endLearningSessions();
                         drawer.close()
                     }
                 }
@@ -194,6 +200,24 @@ ApplicationWindow {
 
     //сигнал для начала сессии "учить"
     signal startLearningSession();
+
+    //сигнал для начала сессии "повтор сложных"
+    signal startRepeatHardSession();
+
+    //сигнал для начала сессии "повтор на время"
+    signal startRepeatWithTimerSession();
+
+    //сигнал для начала сессии "повтор случайных"
+    signal startRepeatRandomSession();
+
+    //сигнал для начала сессии "повтор забытых"
+    signal startRepeatForgottenSession();
+
+    //сигнал для начала сессии "сдача экзамена"
+    signal startExamSession();
+
+    //сигнал для завершения всех текущих учебных сессий.
+    signal endLearningSessions();
 
     // --------слоты--------
     Connections {

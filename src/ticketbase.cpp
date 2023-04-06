@@ -15,6 +15,17 @@ TicketBase::TicketBase(QString pathToTicketBase, QString pathToStatisticBase)
     statistic.updateStatisticBase();
 }
 
+const Ticket *TicketBase::getTicket(int index)
+{
+    if(index >=0 && index < ticketsBase.size())
+    {
+        return ticketsBase[index];
+    }
+
+    qDebug() << "Try to get incorrect index from ticketBase getTicket(" << index << ")";
+    return nullptr;
+}
+
 QList <Ticket*> TicketBase::getRandomTicketList(TicketStatus status, int amountOfTickets)
 {
     QList <Ticket*> allTickets = statistic.getListOfTickets(status);

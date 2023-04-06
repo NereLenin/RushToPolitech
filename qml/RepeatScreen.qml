@@ -235,6 +235,10 @@ Rectangle {
 
             styleColor: "#383b39"
         }
+
+        onClicked: {
+            rootItem.startRepeatHardSession();
+        }
     }
 
     Button {
@@ -281,6 +285,10 @@ Rectangle {
 
             styleColor: "#383b39"
         }
+
+        onClicked: {
+            rootItem.startRepeatRandomSession();
+        }
     }
 
     Button {
@@ -325,6 +333,9 @@ Rectangle {
 
             styleColor: "#383b39"
         }
+        onClicked: {
+            rootItem.startRepeatWithTimerSession();
+        }
     }
 
     Button {
@@ -368,6 +379,10 @@ Rectangle {
             textFormat: Text.PlainText
 
             styleColor: "#383b39"
+        }
+
+        onClicked: {
+            rootItem.startRepeatForgottenSession();
         }
     }
 }

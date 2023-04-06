@@ -19,6 +19,8 @@ private:
 public:
     TicketBase(QString pathToTicketBase=":/ticketBase/TestBase.json", QString pathToStatisticBase="./statisticBase.json");
 
+    const Ticket* getTicket(int index);
+
     QList<Ticket*> getRandomTicketList(TicketStatus status, int amountOfTickets=10);
     QList<Ticket*> getRandomTicketList(QList <TicketStatus> statuses, int amountOfTickets=10);
 

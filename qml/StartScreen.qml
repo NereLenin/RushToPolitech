@@ -231,6 +231,11 @@ Rectangle {
             }
             */
         }
+
+        onClicked:
+        {
+            rootItem.startExamSession();
+        }
     }
 
     Button {
