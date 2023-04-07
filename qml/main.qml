@@ -6,9 +6,14 @@ ApplicationWindow {
     width: 420
     height: 736
 
+
     visible: true
     title: appEngine.title//qsTr("Hello World")
 
+    Component.onCompleted:
+    {
+        //view.push("qrc:/qml/FailedLearnScreen.qml");
+    }
 
     header: MyHeader{
         id: myAppHeader
@@ -72,6 +77,7 @@ ApplicationWindow {
 
                     onClicked: {
                         rootItem.endLearningSessions();
+
                         myAppHeader.state = "MainScreen"
                         view.push("qrc:/qml/StartScreen.qml")
                         drawer.close()
@@ -88,6 +94,7 @@ ApplicationWindow {
 
                     onClicked: {
                         rootItem.endLearningSessions();
+
                         myAppHeader.state = "LearnScreen"
                         rootItem.startLearningSession();
                         drawer.close()
@@ -105,6 +112,7 @@ ApplicationWindow {
 
                     onClicked: {
                         rootItem.endLearningSessions();
+
                         myAppHeader.state = "RepeatScreen"
                         view.push("qrc:/qml/RepeatScreen.qml")
                         drawer.close()
@@ -121,6 +129,7 @@ ApplicationWindow {
 
                     onClicked: {
                         rootItem.endLearningSessions();
+
                         myAppHeader.state = "ExamScreen"
                         rootItem.startExamSession();
                         //view.push("qrc:/qml/LSInputValue.qml")
@@ -138,6 +147,7 @@ ApplicationWindow {
 
                     onClicked: {
                         rootItem.endLearningSessions();
+
                         myAppHeader.state = "TheoryScreen"
                         view.push("qrc:/qml/LearnTheory.qml")
                         drawer.close()
@@ -154,6 +164,7 @@ ApplicationWindow {
 
                     onClicked: {
                         rootItem.endLearningSessions();
+
                         drawer.close()
                     }
                 }
@@ -168,6 +179,7 @@ ApplicationWindow {
 
                     onClicked: {
                         rootItem.endLearningSessions();
+
                         drawer.close()
                     }
                 }
@@ -182,6 +194,7 @@ ApplicationWindow {
 
                     onClicked: {
                         rootItem.endLearningSessions();
+
                         drawer.close()
                     }
                 }
@@ -218,6 +231,9 @@ ApplicationWindow {
 
     //сигнал для завершения всех текущих учебных сессий.
     signal endLearningSessions();
+
+    //сигнал для работы с тикетами которые неправильно ответили в ходе сесиии
+    signal startLearnFailedTicketsSession();
 
     // --------слоты--------
     Connections {
@@ -262,6 +278,8 @@ ApplicationWindow {
             view.push(pageUrl);
         }
 
-
+        function onClearStack(){
+            view.clear();
+        }
     }
 }//end window

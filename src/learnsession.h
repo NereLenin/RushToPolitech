@@ -10,7 +10,7 @@ class LearnSession : public QObject
 {
     Q_OBJECT
 private:
-    const int ticketsInOneSession = 4;
+    const int ticketsInOneSession = 1;
     TypeLearning currentRegime;
 
     int countOfRightAnswer;
@@ -28,8 +28,11 @@ private:
     void repeatWithTimerSession();
     void repeatRandomSession();
     void repeatForgottenSession();
+    void learnFailedTicketsSession();
 
     void ExamSession();
+
+    void saveTicketInList(Ticket* ticket);
 
     explicit LearnSession(QObject *parent = nullptr);
 public:
@@ -50,6 +53,7 @@ signals:
 public slots:
     //void saveStatisticInLearningSession(int index, bool isCorrect);
     void onSaveStatisticInLearningSession(int index, TicketAnswerType correcness);
+    void onStartLearningFailedTickets();
 };
 
 #endif // LEARNSESSION_H

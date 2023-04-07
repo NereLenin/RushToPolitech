@@ -33,10 +33,38 @@ void LearnSession::repeatForgottenSession()
     this->pushListOfTickets(base->getRandomTicketList(TicketStatus::Forgotten,ticketsInOneSession),"qrc:/qml/FinishLearnScreen.qml");
 }
 
+void LearnSession::learnFailedTicketsSession()
+{
+    qDebug() << "LearnSession::LearnFailed";
+    pushListOfTickets(listOfWrongTickets,"qrc:/qml/FinishLearnScreen.qml");
+
+    //обнуляем все, чтоб статистика по повтору была корректной
+    countOfWrongAnswer = countOfRightAnswer = 0;
+    listOfWrongTickets.clear();
+}
+
 void LearnSession::ExamSession()
 {
     qDebug() << "LearnSession::ExamSession не готово";
     defaultLearnSession();
+}
+
+void LearnSession::saveTicketInList(Ticket *ticket)
+{
+    bool thereAreDublicate = false;
+
+    for(int i=0;i<listOfWrongTickets.size();i++)
+    {
+        if(listOfWrongTickets[i]->getIndex() == ticket->getIndex())
+        {
+            thereAreDublicate = true;
+            break;
+        }
+    }
+
+    if(!thereAreDublicate)
+        listOfWrongTickets.append(ticket);
+
 }
 
 LearnSession::LearnSession(QObject *parent)
@@ -87,12 +115,10 @@ QList<Ticket *> LearnSession::getListOfWrongTicket()
 }
 
 void LearnSession::onSaveStatisticInLearningSession(int index, TicketAnswerType correcness)
-{
-    qDebug() << "saveStatistic in LearningSession SLOT: " << index << "correctenss: " << correcness;
-
+{  
     if(correcness == TicketAnswerType::Wrong)
     {
-        listOfWrongTickets.append(base->getTicket(index));
+        saveTicketInList(base->getTicket(index));
         countOfWrongAnswer++;
     }
     else
@@ -100,11 +126,13 @@ void LearnSession::onSaveStatisticInLearningSession(int index, TicketAnswerType 
         countOfRightAnswer++;
     }
 
-    emit learnSessionStatisticChanged();
-
-    qDebug() << "count w:" << countOfWrongAnswer << " count right:" << countOfRightAnswer;
     base->saveAnswerInStatistic(index,correcness);
     base->updateStatisticInBase();//вот эту хуйню мож в конец сессии сунуть?
 
+    emit learnSessionStatisticChanged();
+}
 
+void LearnSession::onStartLearningFailedTickets()
+{
+    this->learnFailedTicketsSession();
 }

@@ -14,24 +14,21 @@ class AppEngine : public QObject
 
     /*  for QML */
 
-    Q_PROPERTY(QString title READ getTitle)
+    Q_PROPERTY(QString title READ getTitle CONSTANT)
 
     // statistic
-    Q_PROPERTY(int chanceToPassExam   READ getChanceToPassExam)
-    Q_PROPERTY(int procOfAllLearned   READ getProcOfAllLearned)
-    Q_PROPERTY(int procOfTodayLearned READ getProcOfTodayLearned)
+    Q_PROPERTY(int chanceToPassExam   READ getChanceToPassExam NOTIFY sessionStatisticChanged)
+    Q_PROPERTY(int procOfAllLearned   READ getProcOfAllLearned NOTIFY sessionStatisticChanged)
+    Q_PROPERTY(int procOfTodayLearned READ getProcOfTodayLearned NOTIFY sessionStatisticChanged)
 
-    Q_PROPERTY(int allTicketsCount       READ getAllTicketsCount)
-    Q_PROPERTY(int learnedTicketsCount   READ getLearnedTicketsCount)
-    Q_PROPERTY(int hardTicketsCount      READ getHardTicketsCount)
-    Q_PROPERTY(int forgottenTicketsCount READ getForgottenTicketsCount)
+    Q_PROPERTY(int allTicketsCount       READ getAllTicketsCount NOTIFY sessionStatisticChanged)
+    Q_PROPERTY(int learnedTicketsCount   READ getLearnedTicketsCount NOTIFY sessionStatisticChanged)
+    Q_PROPERTY(int hardTicketsCount      READ getHardTicketsCount NOTIFY sessionStatisticChanged)
+    Q_PROPERTY(int forgottenTicketsCount READ getForgottenTicketsCount NOTIFY sessionStatisticChanged)
 
     //learning session
     Q_PROPERTY(int countRightAnswer   READ getCountOfRightAnswer NOTIFY sessionStatisticChanged)
     Q_PROPERTY(int countWrongAnswer   READ getCountOfWrongAnswer NOTIFY sessionStatisticChanged)
-
-    //models
-    Q_PROPERTY(QVariant wrongTicketsModel READ getWrongTicketsModel NOTIFY sessionStatisticChanged)
 
 private:
     TicketBase base;
@@ -40,15 +37,15 @@ private:
     QQmlApplicationEngine *engine;
     LearnSession *currentSession;
 
-    void bindQMLSlotSignalConnections(QObject *rootObject);
-
     void connectCurrentSessionWithEngine();
     void disconnectCurrentSessionWithEngine();
 
     void startLearningSession(TypeLearning regime);
     
 public:
-    explicit AppEngine(QObject *parent = nullptr, QQmlApplicationEngine *engine = nullptr);
+    explicit AppEngine(QQmlApplicationEngine *engine = nullptr,QObject *parent = nullptr);
+
+    void bindQMLSlotSignalConnections();
 
     int getChanceToPassExam();
     int getProcOfAllLearned();
@@ -59,16 +56,19 @@ public:
     int getForgottenTicketsCount();
     QString getTitle();
 
-    QVariant getWrongTicketsModel()
-    {
+    QVariant wrongTicketsModel;
+
+    void fillTicketModelFromSession()
+    {    
+
+        wrongTicketsModel.clear();
         QList <QObject*> modelList;
         if(currentSession != nullptr)
         {
             for(int i=0;i<currentSession->getListOfWrongTicket().size();i++)
                 modelList.append((currentSession->getListOfWrongTicket())[i]);
         }
-
-    return QVariant::fromValue(modelList);
+        wrongTicketsModel.setValue(modelList);
     }
 
     int getCountOfRightAnswer();
@@ -87,13 +87,14 @@ signals:
 
     void pushInputable(int index, QString correctAnswer, QString textOfQuestion, QString pathToImage);
     void pushStack(QString pageUrl);
+    void clearStack();
 
     //update properties
     void sessionStatisticChanged();
 
     /* To LearningSession */
     void saveStatisticInLearningSession(int index, TicketAnswerType correctness);
-
+    void startLearningFailedTickets();
 
 public slots:
 
@@ -112,9 +113,15 @@ public slots:
     //переименовать onQMLSaveAnswerInStatistic
     void onSaveAnswerInStatistic(int index, bool isCorrect);//Зеркало с QML в LearningSession
 
+    //слот для сигнала о начале повтора неправильных билетов
+    void onStartLearnFailedTicketsSession();
+
     /*from Learning Session*/
     void onLearnSessionFillStack(QList <Ticket*> ticketsToPush, QString finalScreen);
     void onLearnSessionStatisticChanged();
+
+    /*from QMLEngine*/
+    void onQmlEngineObjectCreated();
 };
 
 #endif // APPENGINE_H

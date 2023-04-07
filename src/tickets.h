@@ -13,9 +13,9 @@ class Ticket: public QObject
 {
     Q_OBJECT
 
-    //Q_PROPERTY(QString msgId READ GetId NOTIFY idChanged)
-    //Q_PROPERTY(QString msgContent READ GetText NOTIFY textChanged)
-    //Q_PROPERTY(QString msgTime READ GetTimeCreatedUTC NOTIFY timeChanged)
+    Q_PROPERTY(int ticketIndex READ getIndex CONSTANT)
+    Q_PROPERTY(QString questionText READ getQuestionText CONSTANT)
+
 protected:
     int index;
     TicketType type;
@@ -67,6 +67,10 @@ public:
 class SelectableAnswerTicket : public Ticket
 {
     Q_OBJECT
+
+    Q_PROPERTY(int ticketIndex READ getIndex CONSTANT)
+    Q_PROPERTY(QString questionText READ getQuestionText CONSTANT)
+
 private:
     QString answers[4];
     QString answersImageUrls[4];
@@ -75,6 +79,9 @@ private:
     void fillTicketFromJSON(QJsonObject ticket);
 public:
     SelectableAnswerTicket(int index = 0);
+
+    int getIndex(){ return index; }
+    QString getQuestionText(){ return questionText;}
 
     int getIndexOfCorrectAnswer();//убрать?
 
@@ -114,6 +121,9 @@ class InputAnswerTicket : public Ticket
 {
     Q_OBJECT
 
+    Q_PROPERTY(int ticketIndex READ getIndex CONSTANT)
+    Q_PROPERTY(QString questionText READ getQuestionText CONSTANT)
+
 private:
    QString correctAnswer;
 
@@ -124,6 +134,8 @@ public:
    virtual TicketAnswerType isCorrectAnswer(double answer);
    virtual TicketAnswerType isCorrectAnswer(QString answer);
 
+   int getIndex(){ return index; }
+   QString getQuestionText(){ return questionText;}
 
    QString getCorrectAnswer(); //убрать?
    //----------debugFunc

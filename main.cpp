@@ -16,9 +16,11 @@ int main(int argc, char *argv[])
         if (!obj && url == objUrl)
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
+
+    AppEngine myEngine(&engine);
     engine.load(url);
 
-    AppEngine myEngine(nullptr,&engine);
+    //myEngine.bindQMLSlotSignalConnections();
 
     return app.exec();
 }

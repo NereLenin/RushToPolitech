@@ -24,6 +24,10 @@ Rectangle {
     property int procOfAllLearned: appEngine.procOfAllLearned
     property int procOfTodayLearned: appEngine.procOfTodayLearned
 
+    property int countRightAnswer : appEngine.countRightAnswer
+    property int countWrongAnswer : appEngine.countWrongAnswer
+    property string timeLasting: "14:88"
+
     Text {
         id: resultText
         text: "Ебать какой ПИ иди в НАСА работай сразу пиздец ты башка!"
@@ -108,9 +112,6 @@ Rectangle {
     }
 
     Text {
-        property int countRightAnswer : appEngine.countRightAnswer
-        property int countWrongAnswer : appEngine.countWrongAnswer
-        property string timeLasting: "14:88"
 
         id: failedText
         text: "Правильно: " + countRightAnswer +
@@ -159,7 +160,8 @@ Rectangle {
 
         onClicked:
         {
-            view.push("qrc:/qml/FailedLearnScreen.qml");
+            if(countWrongAnswer > 0)
+                view.push("qrc:/qml/FailedLearnScreen.qml");
         }
     }
 
@@ -185,7 +187,7 @@ Rectangle {
 
             onClicked:
             {
-                view.pop();
+                view.push("qrc:/qml/StartScreen.qml");
             }
         }
 

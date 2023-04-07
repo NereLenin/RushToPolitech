@@ -215,21 +215,10 @@ Rectangle {
             anchors.topMargin: 20
             anchors.bottomMargin: 20
 
-            //anchors.bottom: myProgressBar.top //поменять на наш компонент
-            //anchors.margins: 5
             source: "qrc:/icons/exam.png"
             mirror: true
             fillMode: Image.PreserveAspectFit
-            //debag border
 
-
-            /*
-            Rectangle {anchors.fill: parent
-                color: "#00FFFFFF"
-                border.width: 2
-                border.color: red
-            }
-            */
         }
 
         onClicked:
@@ -315,6 +304,7 @@ Rectangle {
         }
 
         onClicked: {
+
             myAppHeader.state = "RepeatScreen"
             view.push("qrc:/qml/RepeatScreen.qml")
         }
@@ -381,16 +371,6 @@ Rectangle {
             source: "qrc:/icons/theory.png"
             mirror: true
             fillMode: Image.PreserveAspectFit
-            //debag border
-
-
-            /*
-            Rectangle {anchors.fill: parent
-                color: "#00FFFFFF"
-                border.width: 2
-                border.color: red
-            }
-            */
         }
     }
 }

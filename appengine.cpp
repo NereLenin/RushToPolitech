@@ -1,12 +1,22 @@
 #include "appengine.h"
 
-void AppEngine::bindQMLSlotSignalConnections(QObject *rootObject)
+void AppEngine::bindQMLSlotSignalConnections()
 {
+    if(engine==nullptr)
+    {
+        qDebug() << "don't have any engine";
+        return;
+    }
+
+    QObject *rootObject = engine->rootObjects()[0];
+
     if(rootObject==nullptr)
     {
         qDebug() << "try slot/signal connection with null rootObject";
         return;
     }
+
+
 
     //соединяем сигнал выбора ответа на форме с слотом зеркалом в движке
     QObject::connect(rootObject,SIGNAL(saveAnswerInStatistic(int,bool)),
@@ -33,6 +43,9 @@ void AppEngine::bindQMLSlotSignalConnections(QObject *rootObject)
     QObject::connect(rootObject,SIGNAL(startExamSession()),
                      this,SLOT(ExamController()));
 
+    //прогон неправильно отвеченных в ходе сессии билетов
+    QObject::connect(rootObject,SIGNAL(startLearnFailedTicketsSession()),
+                     this,SLOT(onStartLearnFailedTicketsSession()));
 }
 
 void AppEngine::connectCurrentSessionWithEngine()
@@ -42,12 +55,20 @@ void AppEngine::connectCurrentSessionWithEngine()
         qDebug() << "try connect null session";
         return;
      }
-    //
-    QObject::connect(this,          SIGNAL(saveStatisticInLearningSession(int,TicketAnswerType)),
-                     currentSession,SLOT(onSaveStatisticInLearningSession(int,TicketAnswerType)));
 
+    //от движка к сессии
+    QObject::connect(this,          SIGNAL(startLearningFailedTickets()),
+                     currentSession,SLOT(onStartLearningFailedTickets()) );
+
+    QObject::connect(this,          SIGNAL(saveStatisticInLearningSession(int,TicketAnswerType)),
+                     currentSession,SLOT(onSaveStatisticInLearningSession(int,TicketAnswerType)) );
+
+    //сигналы от сессии к нашему движку
     QObject::connect(currentSession,SIGNAL(pushListOfTickets(QList <Ticket*>, QString)),
                      this,          SLOT(onLearnSessionFillStack(QList <Ticket*>,QString)));
+
+    QObject::connect(currentSession,SIGNAL(learnSessionStatisticChanged()),
+                     this,          SLOT(onLearnSessionStatisticChanged()));
 
     QObject::connect(currentSession,SIGNAL(learnSessionStatisticChanged()),
                      this,          SLOT(onLearnSessionStatisticChanged()));
@@ -77,7 +98,7 @@ void AppEngine::startLearningSession(TypeLearning regime)
 
 
 
-AppEngine::AppEngine(QObject *parent, QQmlApplicationEngine *engine)
+AppEngine::AppEngine(QQmlApplicationEngine *engine, QObject *parent)
     : QObject{parent}
 {
     currentSession = nullptr;
@@ -86,9 +107,12 @@ AppEngine::AppEngine(QObject *parent, QQmlApplicationEngine *engine)
 
     teacher.setTicketBase(&base);
 
-    this->engine->rootContext()->setContextProperty("appEngine",this);
 
-    bindQMLSlotSignalConnections(this->engine->rootObjects()[0]);
+    this->engine->rootContext()->setContextProperty("appEngine",this);
+    this->engine->rootContext()->setContextProperty("listWrongTickets",wrongTicketsModel);
+
+    QObject::connect(this->engine,&QQmlApplicationEngine::objectCreated,
+                     this        ,&AppEngine::onQmlEngineObjectCreated);
 }
 
 int AppEngine::getChanceToPassExam()
@@ -133,14 +157,12 @@ QString AppEngine::getTitle()
 
 int AppEngine::getCountOfRightAnswer()
 {
-    qDebug() << "getRightAnswer " << currentSession->getCountRight();
     if(currentSession == nullptr) return 0;
     return currentSession->getCountRight();
 }
 
 int AppEngine::getCountOfWrongAnswer()
 {
-    qDebug() << "getWrongAnswer " << currentSession->getCountWrong();
     if(currentSession == nullptr) return 0;
     return currentSession->getCountWrong();
 }
@@ -206,19 +228,25 @@ void AppEngine::ExamController()
 
 void AppEngine::onSaveAnswerInStatistic(int index, bool isCorrect)
 {
-
+    qDebug() << "AppEngine::onSaveAnswerInStatistic";
     emit saveStatisticInLearningSession(index, (TicketAnswerType)isCorrect);
+}
+
+void AppEngine::onStartLearnFailedTicketsSession()
+{
+    emit startLearningFailedTickets();
 }
 
 void AppEngine::onLearnSessionFillStack(QList<Ticket *> ticketsToPush, QString finalScreen)
 {
+
         if(ticketsToPush.size() == 0)
         {
            qDebug() << "Пушим нулевой билет";
            emit pushSelectable(0,"Нет больше билетов брат...\nПрости брат....\n","qrc:/icons/logo.png","Спасибо......\n я понял брат.....","","Ты чо попутал я за\n тебя 0 руб заплатил....","","","","","",1);
            return;
         }
-
+        emit clearStack();
         emit pushStack(finalScreen);
 
         for(int i=0;i<ticketsToPush.size();i++)
@@ -243,4 +271,12 @@ void AppEngine::onEndLearningSessions()
 void AppEngine::onLearnSessionStatisticChanged()
 {
     emit sessionStatisticChanged();
+
+    fillTicketModelFromSession();
+    this->engine->rootContext()->setContextProperty("listWrongTickets",this->wrongTicketsModel);
+}
+
+void AppEngine::onQmlEngineObjectCreated()
+{
+    this->bindQMLSlotSignalConnections();
 }
