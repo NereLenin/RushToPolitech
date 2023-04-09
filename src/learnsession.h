@@ -1,6 +1,7 @@
 ﻿#ifndef LEARNSESSION_H
 #define LEARNSESSION_H
 #include <src/ticketbase.h>
+#include <src/mytimer.h>
 
 #include <QObject>
 
@@ -16,7 +17,10 @@ private:
     int countOfRightAnswer;
     int countOfWrongAnswer;
 
-    QTime sessionLastTime;//переименовать
+    MyTimer sessionLasting;
+
+    MyTimer timer;
+
     QVariant modlelListOfWrongTickets;
 
     QList <Ticket*> listOfWrongTickets;
@@ -28,11 +32,13 @@ private:
     void repeatWithTimerSession();
     void repeatRandomSession();
     void repeatForgottenSession();
+
     void learnFailedTicketsSession();
 
     void ExamSession();
 
     void saveTicketInList(Ticket* ticket);
+
 
     explicit LearnSession(QObject *parent = nullptr);
 public:
@@ -43,17 +49,22 @@ public:
 
     int getCountRight() const;
     int getCountWrong() const;
-
     QList <Ticket*> getListOfWrongTicket();
+
+    QTime getSessionLasting() const;
+
 
 signals:
     void pushListOfTickets(QList <Ticket*> listOfTickets, QString finalScreen);
     void learnSessionStatisticChanged();
+    void learnSessionLastingTimeChanged();
 
 public slots:
     //void saveStatisticInLearningSession(int index, bool isCorrect);
     void onSaveStatisticInLearningSession(int index, TicketAnswerType correcness);
     void onStartLearningFailedTickets();
+
+    void onLastingTimerChanged();
 };
 
 #endif // LEARNSESSION_H

@@ -41,6 +41,8 @@ void LearnSession::learnFailedTicketsSession()
     //обнуляем все, чтоб статистика по повтору была корректной
     countOfWrongAnswer = countOfRightAnswer = 0;
     listOfWrongTickets.clear();
+    sessionLasting.Stop();//останавливаем подсчет времени на сессию
+    sessionLasting.Start();//начинаем с начала
 }
 
 void LearnSession::ExamSession()
@@ -74,8 +76,15 @@ LearnSession::LearnSession(QObject *parent)
     countOfRightAnswer = countOfWrongAnswer = 0;
 
     currentRegime = TypeLearning::DefaultLearning;
-    //запуск таймера
 
+
+    //запуск таймера отмеряющего время сессии
+    sessionLasting.setRegime(TimerType::Stopwatch);
+
+    QObject::connect(&sessionLasting, &MyTimer::timeUpdated,
+                     this, &LearnSession::onLastingTimerChanged);
+
+    sessionLasting.Start();
 }
 
 LearnSession *LearnSession::createSession(TicketBase *ticketBase, TypeLearning regime)
@@ -114,6 +123,11 @@ QList<Ticket *> LearnSession::getListOfWrongTicket()
     return listOfWrongTickets;
 }
 
+QTime LearnSession::getSessionLasting() const
+{
+    return sessionLasting.getCurrentTime();
+}
+
 void LearnSession::onSaveStatisticInLearningSession(int index, TicketAnswerType correcness)
 {  
     if(correcness == TicketAnswerType::Wrong)
@@ -135,4 +149,9 @@ void LearnSession::onSaveStatisticInLearningSession(int index, TicketAnswerType 
 void LearnSession::onStartLearningFailedTickets()
 {
     this->learnFailedTicketsSession();
+}
+
+void LearnSession::onLastingTimerChanged()
+{
+    emit learnSessionLastingTimeChanged();
 }

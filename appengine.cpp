@@ -17,7 +17,6 @@ void AppEngine::bindQMLSlotSignalConnections()
     }
 
 
-
     //соединяем сигнал выбора ответа на форме с слотом зеркалом в движке
     QObject::connect(rootObject,SIGNAL(saveAnswerInStatistic(int,bool)),
                      this,SLOT(onSaveAnswerInStatistic(int,bool)));
@@ -73,6 +72,9 @@ void AppEngine::connectCurrentSessionWithEngine()
     QObject::connect(currentSession,SIGNAL(learnSessionStatisticChanged()),
                      this,          SLOT(onLearnSessionStatisticChanged()));
 
+    QObject::connect(currentSession,SIGNAL(learnSessionLastingTimeChanged()),
+                     this,          SLOT(onLearnSessionLastingTimeChanged()));
+
 }
 
 void AppEngine::disconnectCurrentSessionWithEngine()
@@ -113,6 +115,8 @@ AppEngine::AppEngine(QQmlApplicationEngine *engine, QObject *parent)
 
     QObject::connect(this->engine,&QQmlApplicationEngine::objectCreated,
                      this        ,&AppEngine::onQmlEngineObjectCreated);
+
+
 }
 
 int AppEngine::getChanceToPassExam()
@@ -153,6 +157,19 @@ int AppEngine::getForgottenTicketsCount()
 QString AppEngine::getTitle()
 {
     return "Yulya is pure sex";
+}
+
+void AppEngine::fillTicketModelFromSession()
+{
+
+    wrongTicketsModel.clear();
+    QList <QObject*> modelList;
+    if(currentSession != nullptr)
+    {
+        for(int i=0;i<currentSession->getListOfWrongTicket().size();i++)
+            modelList.append((currentSession->getListOfWrongTicket())[i]);
+    }
+    wrongTicketsModel.setValue(modelList);
 }
 
 int AppEngine::getCountOfRightAnswer()
@@ -274,6 +291,11 @@ void AppEngine::onLearnSessionStatisticChanged()
 
     fillTicketModelFromSession();
     this->engine->rootContext()->setContextProperty("listWrongTickets",this->wrongTicketsModel);
+}
+
+void AppEngine::onLearnSessionLastingTimeChanged()
+{
+    emit sessionLastingTimeChanging();
 }
 
 void AppEngine::onQmlEngineObjectCreated()

@@ -6,6 +6,7 @@
 #include <src/learnsession.h>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <src/mytimer.h>
 
 class AppEngine : public QObject
 {
@@ -30,12 +31,15 @@ class AppEngine : public QObject
     Q_PROPERTY(int countRightAnswer   READ getCountOfRightAnswer NOTIFY sessionStatisticChanged)
     Q_PROPERTY(int countWrongAnswer   READ getCountOfWrongAnswer NOTIFY sessionStatisticChanged)
 
+    Q_PROPERTY(QString sessionLasting   READ getSessionLasting NOTIFY sessionLastingTimeChanging)
+
 private:
     TicketBase base;
     Teacher teacher;
 
     QQmlApplicationEngine *engine;
     LearnSession *currentSession;
+
 
     void connectCurrentSessionWithEngine();
     void disconnectCurrentSessionWithEngine();
@@ -58,21 +62,20 @@ public:
 
     QVariant wrongTicketsModel;
 
-    void fillTicketModelFromSession()
-    {    
-
-        wrongTicketsModel.clear();
-        QList <QObject*> modelList;
-        if(currentSession != nullptr)
-        {
-            for(int i=0;i<currentSession->getListOfWrongTicket().size();i++)
-                modelList.append((currentSession->getListOfWrongTicket())[i]);
-        }
-        wrongTicketsModel.setValue(modelList);
-    }
+    void fillTicketModelFromSession();
 
     int getCountOfRightAnswer();
     int getCountOfWrongAnswer();
+
+    QString getSessionLasting()
+    {
+        if( currentSession == nullptr)
+        {
+            return "00:00";
+        }
+
+        return currentSession->getSessionLasting().toString("m:s");
+    }
 
     void emitPushSignalForTicket(Ticket *ticket);
 signals:
@@ -89,8 +92,9 @@ signals:
     void pushStack(QString pageUrl);
     void clearStack();
 
-    //update properties
+    //update properties for QML
     void sessionStatisticChanged();
+    void sessionLastingTimeChanging();
 
     /* To LearningSession */
     void saveStatisticInLearningSession(int index, TicketAnswerType correctness);
@@ -119,6 +123,7 @@ public slots:
     /*from Learning Session*/
     void onLearnSessionFillStack(QList <Ticket*> ticketsToPush, QString finalScreen);
     void onLearnSessionStatisticChanged();
+    void onLearnSessionLastingTimeChanged();
 
     /*from QMLEngine*/
     void onQmlEngineObjectCreated();

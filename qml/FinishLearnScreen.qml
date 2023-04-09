@@ -26,7 +26,7 @@ Rectangle {
 
     property int countRightAnswer : appEngine.countRightAnswer
     property int countWrongAnswer : appEngine.countWrongAnswer
-    property string timeLasting: "14:88"
+    property string timeLasting: appEngine.sessionLasting
 
     Text {
         id: resultText

@@ -6,7 +6,6 @@ ApplicationWindow {
     width: 420
     height: 736
 
-
     visible: true
     title: appEngine.title//qsTr("Hello World")
 

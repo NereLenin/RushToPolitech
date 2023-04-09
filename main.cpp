@@ -20,7 +20,5 @@ int main(int argc, char *argv[])
     AppEngine myEngine(&engine);
     engine.load(url);
 
-    //myEngine.bindQMLSlotSignalConnections();
-
     return app.exec();
 }
