@@ -28,6 +28,9 @@ void MyTimer::Start()
 
 void MyTimer::Stop()
 {
+    if(regime == TimerType::Timer)
+        currentTime = QTime::fromString("00:00:00");
+
     oneSecTimer.stop();
 }
 

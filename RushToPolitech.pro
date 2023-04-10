@@ -5,8 +5,6 @@ SOURCES += \
         main.cpp \
         src/learnsession.cpp \
         src/mytimer.cpp \
-        src/teacher.cpp \
-        src/ticket.cpp \
         src/ticketbase.cpp \
         src/ticketinfo.cpp \
         src/tickets.cpp \
@@ -59,8 +57,6 @@ HEADERS += \
     appengine.h \
     src/learnsession.h \
     src/mytimer.h \
-    src/teacher.h \
-    src/ticket.h \
     src/ticketbase.h \
     src/ticketinfo.h \
     src/tickets.h \

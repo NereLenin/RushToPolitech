@@ -2,7 +2,7 @@
 
 void LearnSession::defaultLearnSession()
 {
-    this->pushListOfTickets(base->getRandomTicketList(TicketStatus::Unlearned,ticketsInOneSession),"qrc:/qml/FinishLearnScreen.qml");
+    pushListOfTickets(base->getRandomTicketList(TicketStatus::Unlearned,ticketsInOneSession));
 
     qDebug() << "LearnSession::defaultLearnSession";
 
@@ -10,33 +10,37 @@ void LearnSession::defaultLearnSession()
 
 void LearnSession::repeatHardSession()
 {
-    this->pushListOfTickets(base->getRandomTicketList(TicketStatus::Hard,ticketsInOneSession),"qrc:/qml/FinishLearnScreen.qml");
+    pushListOfTickets(base->getRandomTicketList(TicketStatus::Hard,ticketsInOneSession));
 
     qDebug() << "LearnSession::repeatHardSession";
 }
 
 void LearnSession::repeatWithTimerSession()
 {
-    qDebug() << "LearnSession::repeatWithTimerSession Этот режим пока не готов так что лови ";
-    defaultLearnSession();
+    timer.Stop();
+    timer.setTime(QTime(0,timeToFinishSessionInMinutes,0));
+
+    pushListOfTickets(base->getRandomTicketList(TicketStatus::Learned,ticketsInOneSession));
+
+    timer.Start();
 }
 
 void LearnSession::repeatRandomSession()
 {
-    this->pushListOfTickets(base->getRandomTicketList({TicketStatus::Hard, TicketStatus::Forgotten, TicketStatus::Learned, TicketStatus::Unlearned},ticketsInOneSession),"qrc:/qml/FinishLearnScreen.qml");
+    pushListOfTickets(base->getRandomTicketList({TicketStatus::Hard, TicketStatus::Forgotten, TicketStatus::Learned, TicketStatus::Unlearned},ticketsInOneSession));
     qDebug() << "LearnSession::repeatRandomSession";
 }
 
 void LearnSession::repeatForgottenSession()
 {
     qDebug() << "LearnSession::repeatForgottenSession";
-    this->pushListOfTickets(base->getRandomTicketList(TicketStatus::Forgotten,ticketsInOneSession),"qrc:/qml/FinishLearnScreen.qml");
+    pushListOfTickets(base->getRandomTicketList(TicketStatus::Forgotten,ticketsInOneSession));
 }
 
 void LearnSession::learnFailedTicketsSession()
 {
     qDebug() << "LearnSession::LearnFailed";
-    pushListOfTickets(listOfWrongTickets,"qrc:/qml/FinishLearnScreen.qml");
+    pushListOfTickets(listOfWrongTickets);
 
     //обнуляем все, чтоб статистика по повтору была корректной
     countOfWrongAnswer = countOfRightAnswer = 0;
@@ -47,8 +51,17 @@ void LearnSession::learnFailedTicketsSession()
 
 void LearnSession::ExamSession()
 {
-    qDebug() << "LearnSession::ExamSession не готово";
-    defaultLearnSession();
+    qDebug() << "LearnSession::ExamSession";
+
+    timer.Stop();
+    timer.setTime(QTime(0,examTime,0));
+
+    this->pushListOfTickets(base->getRandomTicketList(TicketStatus::Any,ticketsInExamSession));
+
+    timer.Start();
+    sessionLasting.Stop();//останавливаем подсчет времени на сессию
+    sessionLasting.Start();//начинаем с начала
+
 }
 
 void LearnSession::saveTicketInList(Ticket *ticket)
@@ -57,6 +70,7 @@ void LearnSession::saveTicketInList(Ticket *ticket)
 
     for(int i=0;i<listOfWrongTickets.size();i++)
     {
+        //это можно получше сделать дядь ты чо гонеш
         if(listOfWrongTickets[i]->getIndex() == ticket->getIndex())
         {
             thereAreDublicate = true;
@@ -78,13 +92,19 @@ LearnSession::LearnSession(QObject *parent)
     currentRegime = TypeLearning::DefaultLearning;
 
 
-    //запуск таймера отмеряющего время сессии
+    //запуск таймера отмеряющего время длительности сессии
     sessionLasting.setRegime(TimerType::Stopwatch);
 
     QObject::connect(&sessionLasting, &MyTimer::timeUpdated,
                      this, &LearnSession::onLastingTimerChanged);
 
     sessionLasting.Start();
+
+    //настройка таймера обратного отчета для режимов со временем
+
+    QObject::connect(&timer, &MyTimer::timeOut,
+                     this, &LearnSession::onTimerTimeOut);
+
 }
 
 LearnSession *LearnSession::createSession(TicketBase *ticketBase, TypeLearning regime)
@@ -108,6 +128,11 @@ void LearnSession::StartSession()
     }
 }
 
+TypeLearning LearnSession::getCurrentRegime() const
+{
+    return currentRegime;
+}
+
 int LearnSession::getCountRight() const
 {
     return countOfRightAnswer;
@@ -126,6 +151,11 @@ QList<Ticket *> LearnSession::getListOfWrongTicket()
 QTime LearnSession::getSessionLasting() const
 {
     return sessionLasting.getCurrentTime();
+}
+
+QTime LearnSession::getTimerTime() const
+{
+    return timer.getCurrentTime();
 }
 
 void LearnSession::onSaveStatisticInLearningSession(int index, TicketAnswerType correcness)
@@ -153,5 +183,19 @@ void LearnSession::onStartLearningFailedTickets()
 
 void LearnSession::onLastingTimerChanged()
 {
+    emit learnSessionLastingTimeChanged();
+}
+
+void LearnSession::onTimerTimeOut()
+{
+    timer.Stop();
+    sessionLasting.Stop();
+    emit pushFinalScreen();
+}
+
+void LearnSession::onFinishSession()
+{
+    timer.Stop();
+    sessionLasting.Stop();
     emit learnSessionLastingTimeChanged();
 }

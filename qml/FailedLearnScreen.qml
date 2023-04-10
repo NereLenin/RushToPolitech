@@ -12,8 +12,6 @@ import QtQuick.Controls.Material
 
 Rectangle {
 
-
-
     id: mainScreenRectangle
 
     //anchors.fill: parent

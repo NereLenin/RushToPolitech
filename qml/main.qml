@@ -9,10 +9,7 @@ ApplicationWindow {
     visible: true
     title: appEngine.title//qsTr("Hello World")
 
-    Component.onCompleted:
-    {
-        //view.push("qrc:/qml/FailedLearnScreen.qml");
-    }
+
 
     header: MyHeader{
         id: myAppHeader
@@ -54,6 +51,24 @@ ApplicationWindow {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         initialItem: "qrc:/qml/StartScreen.qml"
+
+        //вот это вот мерзость пизда просто, но
+        //у нас первый раз стек видит финиш скрин когда мы его пушим в общей пачке
+        //второй когда он пушен таймером или до него дошли из пачки
+        //получается каждый раз когда мы его видим ВТОРОЙ раз у нас окончание учебной сессии
+        property int countOfViewFinishScreen: 0
+        onCurrentItemChanged:
+        {
+            if(currentItem.objectName === "finishLearningScreen")
+                countOfViewFinishScreen++;
+
+            if(countOfViewFinishScreen == 2)
+            {
+                rootItem.finishLearningSession();
+                console.log("SessionFinish");
+                countOfViewFinishScreen = 0;
+            }
+        }
 
     }
 
@@ -228,8 +243,11 @@ ApplicationWindow {
     //сигнал для начала сессии "сдача экзамена"
     signal startExamSession();
 
-    //сигнал для завершения всех текущих учебных сессий.
+    //сигнал для завершения (и отчистки) всех текущих учебных сессий.
     signal endLearningSessions();
+
+    //текущая учебная сессия на финальном экране со статистикой
+    signal finishLearningSession();
 
     //сигнал для работы с тикетами которые неправильно ответили в ходе сесиии
     signal startLearnFailedTicketsSession();

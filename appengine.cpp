@@ -45,6 +45,14 @@ void AppEngine::bindQMLSlotSignalConnections()
     //прогон неправильно отвеченных в ходе сессии билетов
     QObject::connect(rootObject,SIGNAL(startLearnFailedTicketsSession()),
                      this,SLOT(onStartLearnFailedTicketsSession()));
+
+    //прошел все тикеты и дошел до последнего экрана
+    QObject::connect(rootObject,SIGNAL(finishLearningSession()),
+                     this,SLOT(onFinishLearningSession()));
+    //убежал из сессии
+    QObject::connect(rootObject,SIGNAL(endLearningSessions()),
+                     this,SLOT(onEndLearningSessions()));
+
 }
 
 void AppEngine::connectCurrentSessionWithEngine()
@@ -62,9 +70,12 @@ void AppEngine::connectCurrentSessionWithEngine()
     QObject::connect(this,          SIGNAL(saveStatisticInLearningSession(int,TicketAnswerType)),
                      currentSession,SLOT(onSaveStatisticInLearningSession(int,TicketAnswerType)) );
 
+    QObject::connect(this,          SIGNAL(finishSession()),
+                     currentSession,SLOT(onFinishSession()) );
+
     //сигналы от сессии к нашему движку
-    QObject::connect(currentSession,SIGNAL(pushListOfTickets(QList <Ticket*>, QString)),
-                     this,          SLOT(onLearnSessionFillStack(QList <Ticket*>,QString)));
+    QObject::connect(currentSession,SIGNAL(pushListOfTickets(QList <Ticket*>)),
+                     this,          SLOT(onLearnSessionFillStack(QList <Ticket*>)));
 
     QObject::connect(currentSession,SIGNAL(learnSessionStatisticChanged()),
                      this,          SLOT(onLearnSessionStatisticChanged()));
@@ -74,6 +85,13 @@ void AppEngine::connectCurrentSessionWithEngine()
 
     QObject::connect(currentSession,SIGNAL(learnSessionLastingTimeChanged()),
                      this,          SLOT(onLearnSessionLastingTimeChanged()));
+
+    QObject::connect(currentSession,SIGNAL(pushFinalScreen()),
+                     this,          SLOT(onLearnSessionPushFinalPage()));
+
+    //QObject::connect(currentSession,SIGNAL(learnSessionTimeOut()),
+    //                 this,          SLOT(onLearnSessionTimerTimeOut()));
+
 
 }
 
@@ -98,6 +116,18 @@ void AppEngine::startLearningSession(TypeLearning regime)
     currentSession->StartSession();//фу блять с большой буквы почему
 }
 
+QMap<TypeLearning, QString> AppEngine::fillFinishScreens()
+{
+    QMap<TypeLearning, QString> finishScreens;
+    finishScreens[TypeLearning::DefaultLearning] = "qrc:/qml/FinishLearnScreen.qml";
+    finishScreens[TypeLearning::RepeatHard] = "qrc:/qml/FinishLearnScreen.qml";
+    finishScreens[TypeLearning::RepeatWithTimer] = "qrc:/qml/FinishLearnScreen.qml";
+    finishScreens[TypeLearning::RepeatRandom] = "qrc:/qml/FinishLearnScreen.qml";
+    finishScreens[TypeLearning::RepeatForgotten] = "qrc:/qml/FinishLearnScreen.qml";
+    finishScreens[TypeLearning::Exam] = "qrc:/qml/FinishExamSuccess.qml";
+    return finishScreens;
+}
+
 
 
 AppEngine::AppEngine(QQmlApplicationEngine *engine, QObject *parent)
@@ -117,6 +147,7 @@ AppEngine::AppEngine(QQmlApplicationEngine *engine, QObject *parent)
                      this        ,&AppEngine::onQmlEngineObjectCreated);
 
 
+    finishScreens = fillFinishScreens();
 }
 
 int AppEngine::getChanceToPassExam()
@@ -213,8 +244,6 @@ void AppEngine::emitPushSignalForTicket(Ticket *ticket)
 
 void AppEngine::learnController()
 {
-    qDebug() << "AppEngine::learnController";
-
     startLearningSession(TypeLearning::DefaultLearning);
 }
 
@@ -254,7 +283,7 @@ void AppEngine::onStartLearnFailedTicketsSession()
     emit startLearningFailedTickets();
 }
 
-void AppEngine::onLearnSessionFillStack(QList<Ticket *> ticketsToPush, QString finalScreen)
+void AppEngine::onLearnSessionFillStack(QList<Ticket *> ticketsToPush)
 {
 
         if(ticketsToPush.size() == 0)
@@ -264,13 +293,20 @@ void AppEngine::onLearnSessionFillStack(QList<Ticket *> ticketsToPush, QString f
            return;
         }
         emit clearStack();
-        emit pushStack(finalScreen);
+
+        onLearnSessionPushFinalPage();
 
         for(int i=0;i<ticketsToPush.size();i++)
         {
             emitPushSignalForTicket(ticketsToPush[i]);
         }
 
+}
+
+void AppEngine::onLearnSessionPushFinalPage()
+{
+    if(currentSession!=nullptr)
+        emit pushStack(finishScreens[currentSession->getCurrentRegime()]);
 }
 
 void AppEngine::onEndLearningSessions()
@@ -285,6 +321,11 @@ void AppEngine::onEndLearningSessions()
     delete currentSession;
 }
 
+void AppEngine::onFinishLearningSession()
+{
+    emit finishSession();
+}
+
 void AppEngine::onLearnSessionStatisticChanged()
 {
     emit sessionStatisticChanged();
@@ -297,6 +338,14 @@ void AppEngine::onLearnSessionLastingTimeChanged()
 {
     emit sessionLastingTimeChanging();
 }
+
+//void AppEngine::onLearnSessionTimerTimeOut()
+//{
+//    //вот эту штуку перенести в LS
+//    //emit clearStack();
+//    //emit pushStack("qrc:/qml/FinishLearnScreen.qml");
+//    //qDebug() << "Time is out bro";
+//}
 
 void AppEngine::onQmlEngineObjectCreated()
 {

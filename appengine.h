@@ -14,7 +14,6 @@ class AppEngine : public QObject
     Q_OBJECT
 
     /*  for QML */
-
     Q_PROPERTY(QString title READ getTitle CONSTANT)
 
     // statistic
@@ -31,7 +30,8 @@ class AppEngine : public QObject
     Q_PROPERTY(int countRightAnswer   READ getCountOfRightAnswer NOTIFY sessionStatisticChanged)
     Q_PROPERTY(int countWrongAnswer   READ getCountOfWrongAnswer NOTIFY sessionStatisticChanged)
 
-    Q_PROPERTY(QString sessionLasting   READ getSessionLasting NOTIFY sessionLastingTimeChanging)
+    Q_PROPERTY(QString sessionLasting   READ getSessionLasting           NOTIFY sessionLastingTimeChanging)
+    Q_PROPERTY(QString timerTime        READ getLearningSessionTimerTime NOTIFY sessionLastingTimeChanging)
 
 private:
     TicketBase base;
@@ -40,12 +40,14 @@ private:
     QQmlApplicationEngine *engine;
     LearnSession *currentSession;
 
-
     void connectCurrentSessionWithEngine();
     void disconnectCurrentSessionWithEngine();
 
     void startLearningSession(TypeLearning regime);
-    
+
+    QMap<TypeLearning,QString> finishScreens;
+
+    QMap<TypeLearning,QString> fillFinishScreens();
 public:
     explicit AppEngine(QQmlApplicationEngine *engine = nullptr,QObject *parent = nullptr);
 
@@ -74,7 +76,17 @@ public:
             return "00:00";
         }
 
-        return currentSession->getSessionLasting().toString("m:s");
+        return currentSession->getSessionLasting().toString("mm:ss");
+    }
+
+    QString getLearningSessionTimerTime()
+    {
+        if( currentSession == nullptr)
+        {
+            return "00:00";
+        }
+
+        return currentSession->getTimerTime().toString("mm:ss");
     }
 
     void emitPushSignalForTicket(Ticket *ticket);
@@ -99,6 +111,7 @@ signals:
     /* To LearningSession */
     void saveStatisticInLearningSession(int index, TicketAnswerType correctness);
     void startLearningFailedTickets();
+    void finishSession();
 
 public slots:
 
@@ -114,6 +127,9 @@ public slots:
     //окончание учебной сессии (сьебался в процессе или ушел с экрана с результатами)
     void onEndLearningSessions();
 
+    //прошел все тикеты и дошел до экрана со статистикой
+    void onFinishLearningSession();
+
     //переименовать onQMLSaveAnswerInStatistic
     void onSaveAnswerInStatistic(int index, bool isCorrect);//Зеркало с QML в LearningSession
 
@@ -121,7 +137,9 @@ public slots:
     void onStartLearnFailedTicketsSession();
 
     /*from Learning Session*/
-    void onLearnSessionFillStack(QList <Ticket*> ticketsToPush, QString finalScreen);
+    void onLearnSessionFillStack(QList <Ticket*> ticketsToPush);
+    void onLearnSessionPushFinalPage();
+
     void onLearnSessionStatisticChanged();
     void onLearnSessionLastingTimeChanged();
 

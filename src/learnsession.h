@@ -11,7 +11,12 @@ class LearnSession : public QObject
 {
     Q_OBJECT
 private:
-    const int ticketsInOneSession = 1;
+    const int ticketsInOneSession = 10;
+    const int timeToFinishSessionInMinutes = 5;
+
+    const int ticketsInExamSession = 40;
+    const int examTime = 20;
+
     TypeLearning currentRegime;
 
     int countOfRightAnswer;
@@ -39,7 +44,6 @@ private:
 
     void saveTicketInList(Ticket* ticket);
 
-
     explicit LearnSession(QObject *parent = nullptr);
 public:
 
@@ -47,24 +51,29 @@ public:
 
     void StartSession();
 
+    TypeLearning getCurrentRegime() const;
     int getCountRight() const;
     int getCountWrong() const;
     QList <Ticket*> getListOfWrongTicket();
 
     QTime getSessionLasting() const;
-
+    QTime getTimerTime() const;
 
 signals:
-    void pushListOfTickets(QList <Ticket*> listOfTickets, QString finalScreen);
+    void pushListOfTickets(QList <Ticket*> listOfTickets);
+    void pushFinalScreen();
+
     void learnSessionStatisticChanged();
     void learnSessionLastingTimeChanged();
-
 public slots:
-    //void saveStatisticInLearningSession(int index, bool isCorrect);
+
     void onSaveStatisticInLearningSession(int index, TicketAnswerType correcness);
     void onStartLearningFailedTickets();
 
-    void onLastingTimerChanged();
+    void onLastingTimerChanged();//переименовать просто в time changed
+    void onTimerTimeOut();
+
+    void onFinishSession();
 };
 
 #endif // LEARNSESSION_H

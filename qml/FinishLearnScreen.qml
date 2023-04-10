@@ -11,6 +11,7 @@ import QtQuick.Controls
 import QtQuick.Controls.Material
 
 Rectangle {
+    objectName: "finishLearningScreen"
     id: mainScreenRectangle
 
     //anchors.fill: parent
