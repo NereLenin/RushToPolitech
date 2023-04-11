@@ -83,8 +83,8 @@ void AppEngine::connectCurrentSessionWithEngine()
     QObject::connect(currentSession,SIGNAL(learnSessionStatisticChanged()),
                      this,          SLOT(onLearnSessionStatisticChanged()));
 
-    QObject::connect(currentSession,SIGNAL(learnSessionLastingTimeChanged()),
-                     this,          SLOT(onLearnSessionLastingTimeChanged()));
+    QObject::connect(currentSession,SIGNAL(learnSessionTimeChanged()),
+                     this,          SLOT(onLearnSessionTimeChanged()));
 
     QObject::connect(currentSession,SIGNAL(pushFinalScreen()),
                      this,          SLOT(onLearnSessionPushFinalPage()));
@@ -124,7 +124,7 @@ QMap<TypeLearning, QString> AppEngine::fillFinishScreens()
     finishScreens[TypeLearning::RepeatWithTimer] = "qrc:/qml/FinishLearnScreen.qml";
     finishScreens[TypeLearning::RepeatRandom] = "qrc:/qml/FinishLearnScreen.qml";
     finishScreens[TypeLearning::RepeatForgotten] = "qrc:/qml/FinishLearnScreen.qml";
-    finishScreens[TypeLearning::Exam] = "qrc:/qml/FinishExamSuccess.qml";
+    finishScreens[TypeLearning::Exam] = "qrc:/qml/FinishExamFailed.qml";
     return finishScreens;
 }
 
@@ -136,9 +136,6 @@ AppEngine::AppEngine(QQmlApplicationEngine *engine, QObject *parent)
     currentSession = nullptr;
 
     this->engine = engine;
-
-    teacher.setTicketBase(&base);
-
 
     this->engine->rootContext()->setContextProperty("appEngine",this);
     this->engine->rootContext()->setContextProperty("listWrongTickets",wrongTicketsModel);
@@ -289,9 +286,11 @@ void AppEngine::onLearnSessionFillStack(QList<Ticket *> ticketsToPush)
         if(ticketsToPush.size() == 0)
         {
            qDebug() << "Пушим нулевой билет";
-           emit pushSelectable(0,"Нет больше билетов брат...\nПрости брат....\n","qrc:/icons/logo.png","Спасибо......\n я понял брат.....","","Ты чо попутал я за\n тебя 0 руб заплатил....","","","","","",1);
+           emit pushSelectable(0,textOfNullTicket,"qrc:/icons/logo.png","Спасибо......\n я понял брат.....","","Всм нет я за\n тебя 0 руб заплатил....\nДАЙ","","","","","",1);
+           emit finishSession();
            return;
         }
+
         emit clearStack();
 
         onLearnSessionPushFinalPage();
@@ -319,6 +318,7 @@ void AppEngine::onEndLearningSessions()
 
     disconnectCurrentSessionWithEngine();
     delete currentSession;
+    currentSession = nullptr;
 }
 
 void AppEngine::onFinishLearningSession()
@@ -334,9 +334,9 @@ void AppEngine::onLearnSessionStatisticChanged()
     this->engine->rootContext()->setContextProperty("listWrongTickets",this->wrongTicketsModel);
 }
 
-void AppEngine::onLearnSessionLastingTimeChanged()
+void AppEngine::onLearnSessionTimeChanged()
 {
-    emit sessionLastingTimeChanging();
+    emit sessionTimeChanging();
 }
 
 //void AppEngine::onLearnSessionTimerTimeOut()

@@ -64,13 +64,13 @@ signals:
     void pushFinalScreen();
 
     void learnSessionStatisticChanged();
-    void learnSessionLastingTimeChanged();
+    void learnSessionTimeChanged();
 public slots:
 
     void onSaveStatisticInLearningSession(int index, TicketAnswerType correcness);
     void onStartLearningFailedTickets();
 
-    void onLastingTimerChanged();//переименовать просто в time changed
+    void onTimeChanged();//переименовать просто в time changed
     void onTimerTimeOut();
 
     void onFinishSession();

@@ -53,13 +53,26 @@ QList<Ticket *> TicketBase::getRandomTicketList(QList<TicketStatus> statuses, in
         if(amountOfRepeatStatuses == 0)
             return getRandomTicketList(TicketStatus::Any, amountOfTickets);
 
-
         int sizeOfListOneStatus = amountOfTickets/amountOfRepeatStatuses;
 
         QList <Ticket*> ticketsList;
+        QList <Ticket*> listOfCurrentStatus;
 
         for(int i=0;i<statuses.size();i++)
-            ticketsList.append(getRandomTicketList(statuses[i],sizeOfListOneStatus));
+        {
+            listOfCurrentStatus.clear();
+            listOfCurrentStatus = getRandomTicketList(statuses[i],sizeOfListOneStatus);
+
+            if(listOfCurrentStatus.size() < sizeOfListOneStatus)//если билетов меньше чем нужно
+            {
+                int neededAddFromOtherStatuses = sizeOfListOneStatus - listOfCurrentStatus.size();//определяем сколько не хватает
+                if(amountOfRepeatStatuses > 1) amountOfRepeatStatuses--;//нет билетов текущего статуса, его исключаем
+                sizeOfListOneStatus = (double)(sizeOfListOneStatus) + ((double)neededAddFromOtherStatuses/(double)amountOfRepeatStatuses);
+                qDebug() << "size list of one Status " << sizeOfListOneStatus << " list of current ststus " << listOfCurrentStatus.size() << " " << neededAddFromOtherStatuses;
+            }
+
+            ticketsList.append(listOfCurrentStatus);
+        }
 
         return ticketsList;
 }

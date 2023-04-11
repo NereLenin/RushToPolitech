@@ -18,9 +18,14 @@ Rectangle {
     height: view.height
     color: "#edecec"
 
+    property string mainText: "Экзамен сдан с ошибками...\n" + "Придется идти работать в макдональдс\n"
+    property int countRightAnswer : appEngine.countRightAnswer
+    property int countWrongAnswer : appEngine.countWrongAnswer
+    property string timeLasting: appEngine.sessionLasting
+
     Text {
         id: resultText
-        text: "Экзамен сдан с ошибками...\n" + "Придется идти работать в макдональдс\n"
+        text: mainText
 
         height: parent.height / 6
 
@@ -64,7 +69,7 @@ Rectangle {
 
     Text {
         id: statisticText
-        text: "Правильно: 5 Ошибок : 3 \nЗатрачено времени: 08:59"
+        text: "Правильно: " + countRightAnswer + " Ошибок : " + countWrongAnswer +" \nЗатрачено времени: " + timeLasting
 
         height: (parent.height / 2) / 4.2
         width: submitButtonItem.width * 0.75
@@ -128,6 +133,10 @@ Rectangle {
             font.pointSize: 14
             font.styleName: "Полужирный"
             font.bold: true
+
+            onClicked: {
+            //signal startExamSession
+            }
         }
 
         Rectangle {

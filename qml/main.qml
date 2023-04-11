@@ -9,6 +9,11 @@ ApplicationWindow {
     visible: true
     title: appEngine.title//qsTr("Hello World")
 
+    Component.onCompleted:
+    {
+        view.push("qrc:/qml/FinishExamFailed.qml");
+    }
+
 
 
     header: MyHeader{

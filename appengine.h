@@ -2,7 +2,6 @@
 #define APPENGINE_H
 
 #include <QObject>
-#include <src/teacher.h>
 #include <src/learnsession.h>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -15,6 +14,7 @@ class AppEngine : public QObject
 
     /*  for QML */
     Q_PROPERTY(QString title READ getTitle CONSTANT)
+    Q_PROPERTY(QString textOfNullTicket READ getTextOfNullTicket CONSTANT)
 
     // statistic
     Q_PROPERTY(int chanceToPassExam   READ getChanceToPassExam NOTIFY sessionStatisticChanged)
@@ -30,12 +30,12 @@ class AppEngine : public QObject
     Q_PROPERTY(int countRightAnswer   READ getCountOfRightAnswer NOTIFY sessionStatisticChanged)
     Q_PROPERTY(int countWrongAnswer   READ getCountOfWrongAnswer NOTIFY sessionStatisticChanged)
 
-    Q_PROPERTY(QString sessionLasting   READ getSessionLasting           NOTIFY sessionLastingTimeChanging)
-    Q_PROPERTY(QString timerTime        READ getLearningSessionTimerTime NOTIFY sessionLastingTimeChanging)
+    Q_PROPERTY(QString sessionLasting   READ getSessionLasting           NOTIFY sessionTimeChanging)
+    Q_PROPERTY(QString timerTime        READ getLearningSessionTimerTime NOTIFY sessionTimeChanging)
 
 private:
+    const QString textOfNullTicket = "Для данного режима билетов больше нет\n Ты чего все выучил шоле?\nНу ты могеш внатуре я в шоке...";
     TicketBase base;
-    Teacher teacher;
 
     QQmlApplicationEngine *engine;
     LearnSession *currentSession;
@@ -49,6 +49,9 @@ private:
 
     QMap<TypeLearning,QString> fillFinishScreens();
 public:
+    const QString getTextOfNullTicket() const {
+        return textOfNullTicket;
+    }
     explicit AppEngine(QQmlApplicationEngine *engine = nullptr,QObject *parent = nullptr);
 
     void bindQMLSlotSignalConnections();
@@ -106,7 +109,7 @@ signals:
 
     //update properties for QML
     void sessionStatisticChanged();
-    void sessionLastingTimeChanging();
+    void sessionTimeChanging();
 
     /* To LearningSession */
     void saveStatisticInLearningSession(int index, TicketAnswerType correctness);
@@ -141,7 +144,7 @@ public slots:
     void onLearnSessionPushFinalPage();
 
     void onLearnSessionStatisticChanged();
-    void onLearnSessionLastingTimeChanged();
+    void onLearnSessionTimeChanged();
 
     /*from QMLEngine*/
     void onQmlEngineObjectCreated();

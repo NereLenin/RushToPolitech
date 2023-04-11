@@ -27,8 +27,9 @@ void LearnSession::repeatWithTimerSession()
 
 void LearnSession::repeatRandomSession()
 {
-    pushListOfTickets(base->getRandomTicketList({TicketStatus::Hard, TicketStatus::Forgotten, TicketStatus::Learned, TicketStatus::Unlearned},ticketsInOneSession));
-    qDebug() << "LearnSession::repeatRandomSession";
+    QList <Ticket*> randomTickets = base->getRandomTicketList({TicketStatus::Hard, TicketStatus::Forgotten, TicketStatus::Learned, TicketStatus::Unlearned},ticketsInOneSession);
+    pushListOfTickets(randomTickets);
+    qDebug() << "LearnSession::repeatRandomSession " << randomTickets.size();
 }
 
 void LearnSession::repeatForgottenSession()
@@ -96,7 +97,7 @@ LearnSession::LearnSession(QObject *parent)
     sessionLasting.setRegime(TimerType::Stopwatch);
 
     QObject::connect(&sessionLasting, &MyTimer::timeUpdated,
-                     this, &LearnSession::onLastingTimerChanged);
+                     this, &LearnSession::onTimeChanged);
 
     sessionLasting.Start();
 
@@ -181,21 +182,25 @@ void LearnSession::onStartLearningFailedTickets()
     this->learnFailedTicketsSession();
 }
 
-void LearnSession::onLastingTimerChanged()
+void LearnSession::onTimeChanged()
 {
-    emit learnSessionLastingTimeChanged();
+    emit learnSessionTimeChanged();
 }
 
 void LearnSession::onTimerTimeOut()
 {
+
     timer.Stop();
     sessionLasting.Stop();
+    qDebug() << "onTimeout";
     emit pushFinalScreen();
 }
 
 void LearnSession::onFinishSession()
 {
+    qDebug() << "onFinishSession";
     timer.Stop();
     sessionLasting.Stop();
-    emit learnSessionLastingTimeChanged();
+    //обновляем инФу о таймерах после остановки
+    emit learnSessionTimeChanged();
 }

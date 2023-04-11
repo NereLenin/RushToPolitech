@@ -33,7 +33,7 @@ Rectangle {
 
     property int buttonSize: height / 2 / 4.2
 
-    property string textOfNullTicket: "Нет больше билетов брат...\nПрости брат....\n"
+    property string textOfNullTicket: appEngine.textOfNullTicket
 
     function sendAnswerToStatistic(indexOfChoosedVariant : int){
         if(textOfQuestion !== textOfNullTicket)

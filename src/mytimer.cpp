@@ -28,10 +28,12 @@ void MyTimer::Start()
 
 void MyTimer::Stop()
 {
+
+    oneSecTimer.stop();
+
     if(regime == TimerType::Timer)
         currentTime = QTime::fromString("00:00:00");
 
-    oneSecTimer.stop();
 }
 
 void MyTimer::setRegime(TimerType regime)
@@ -46,7 +48,8 @@ void MyTimer::oneSecGone()
     if(currentTime.hour()==0 && currentTime.minute()==0 && currentTime.second()==0)
     {
         Stop();
-        emit timeOut();
+        if(oneSecTimer.isActive())
+            emit timeOut();
     }
     else
     {
