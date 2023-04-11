@@ -5,7 +5,7 @@ import QtQuick.Controls.Material
 
 Rectangle {
     id: mainScreenRectangle
-
+    objectName: "StartScreen"
     //anchors.fill: parent
     width: view.width
     height: view.height
@@ -152,6 +152,7 @@ Rectangle {
         onClicked:
         {
             //начинаем сессию обучения
+            myAppHeader.state = "LearnScreen"
             rootItem.startLearningSession();
         }
     }
@@ -223,6 +224,7 @@ Rectangle {
 
         onClicked:
         {
+            myAppHeader.state = "ExamScreen"
             rootItem.startExamSession();
         }
     }

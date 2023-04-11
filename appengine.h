@@ -6,6 +6,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <src/mytimer.h>
+#include <QThread>
 
 class AppEngine : public QObject
 {
@@ -27,6 +28,9 @@ class AppEngine : public QObject
     Q_PROPERTY(int forgottenTicketsCount READ getForgottenTicketsCount NOTIFY sessionStatisticChanged)
 
     //learning session
+    Q_PROPERTY(int currentTicketNumber   READ getCurrentTicketNumber NOTIFY sessionStatisticChanged)
+    Q_PROPERTY(int countOfTicketsInSession   READ getCountOfTicketsInSession CONSTANT)
+
     Q_PROPERTY(int countRightAnswer   READ getCountOfRightAnswer NOTIFY sessionStatisticChanged)
     Q_PROPERTY(int countWrongAnswer   READ getCountOfWrongAnswer NOTIFY sessionStatisticChanged)
 
@@ -49,10 +53,10 @@ private:
 
     QMap<TypeLearning,QString> fillFinishScreens();
 public:
-    const QString getTextOfNullTicket() const {
-        return textOfNullTicket;
-    }
+
     explicit AppEngine(QQmlApplicationEngine *engine = nullptr,QObject *parent = nullptr);
+
+    const QString getTextOfNullTicket() const;
 
     void bindQMLSlotSignalConnections();
 
@@ -63,6 +67,11 @@ public:
     int getLearnedTicketsCount();
     int getHardTicketsCount();
     int getForgottenTicketsCount();
+
+    int getCurrentTicketNumber();
+    int getCountOfTicketsInSession();
+
+
     QString getTitle();
 
     QVariant wrongTicketsModel;

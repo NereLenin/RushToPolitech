@@ -41,7 +41,8 @@ Rectangle {
 
             onClicked:
             {
-                view.push("qrc:/qml/StartScreen.qml");;
+                myAppHeader.state = "StartScreen"
+                view.popTo("StartScreen");
             }
         }
 
@@ -178,49 +179,5 @@ Rectangle {
         color: "#7A9DBF"
         opacity: 0.6
     }
-
-    ListModel {
-    ListElement {
-        myTicketNumber: 69
-        myShortText: "Фуууутбольчик мальчики походят на качков игра в ножечки плавно переходит на улицу чо сутулишся трапеция норм"
-        myCanBeLearned: true
-    }
-
-    ListElement {
-        myTicketNumber: 1238
-        myShortText: "Привет, и ты проходишь мимо, я спрятала улыбку мне важно чтобы ты узнал секрет"
-        myCanBeLearned: false
-    }
-    ListElement {
-        myTicketNumber: 1187
-        myShortText: "Фуууутбольчик мальчики походят на качков игра в ножечки плавно переходит на улицу чо сутулишся трапеция норм"
-        myCanBeLearned: true
-    }
-
-    ListElement {
-        myTicketNumber: 1987
-        myShortText: "Я взял твою бу я ее ебу и мой глог или бля тт издаст туту здесь бля шутера и они не врут"
-        myCanBeLearned: true
-    }
-    ListElement {
-        myTicketNumber: 1941
-        myShortText: "Фуууутбольчик мальчики походят на качков игра в ножечки плавно переходит на улицу чо сутулишся трапеция норм"
-    }
-
-    ListElement {
-        myTicketNumber: 1488
-        myShortText: "Главное степень искренности и я говорю тебе мысленное соси нам в этой близости не вырасти"
-    }
-    ListElement {
-        myTicketNumber: 69
-        myShortText: "Фуууутбольчик мальчики походят на качков игра в ножечки плавно переходит на улицу чо сутулишся трапеция норм"
-    }
-
-    ListElement {
-        myTicketNumber: 1488
-        myShortText: "Вот ты индеец я балдею бом бом спасибо ботяне за это прилажение черного света двадцатого века"
-        myCanBeLearned: true
-    }
-}
 
 }

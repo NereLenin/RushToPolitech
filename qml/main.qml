@@ -11,10 +11,8 @@ ApplicationWindow {
 
     Component.onCompleted:
     {
-        view.push("qrc:/qml/FinishExamFailed.qml");
+        //view.push("qrc:/qml/FinishExamFailed.qml");
     }
-
-
 
     header: MyHeader{
         id: myAppHeader
@@ -64,7 +62,8 @@ ApplicationWindow {
         property int countOfViewFinishScreen: 0
         onCurrentItemChanged:
         {
-            if(currentItem.objectName === "finishLearningScreen")
+            if(currentItem.objectName === "finishLearningScreen" ||
+               currentItem.objectName === "finishExamScreen")
                 countOfViewFinishScreen++;
 
             if(countOfViewFinishScreen == 2)
@@ -73,6 +72,12 @@ ApplicationWindow {
                 console.log("SessionFinish");
                 countOfViewFinishScreen = 0;
             }
+        }
+
+        function popTo(objectName : string)
+        {
+            while(currentItem.objectName !== objectName || currentItem.objectName !== "StartScreen")
+                view.pop();
         }
 
     }
@@ -98,7 +103,7 @@ ApplicationWindow {
                         rootItem.endLearningSessions();
 
                         myAppHeader.state = "MainScreen"
-                        view.push("qrc:/qml/StartScreen.qml")
+                        view.popTo("StartScreen");
                         drawer.close()
                     }
                 }
@@ -151,7 +156,6 @@ ApplicationWindow {
 
                         myAppHeader.state = "ExamScreen"
                         rootItem.startExamSession();
-                        //view.push("qrc:/qml/LSInputValue.qml")
                         drawer.close()
                     }
                 }
@@ -271,7 +275,7 @@ ApplicationWindow {
                                     variant4Text, variant4PathToImg : string,
                                     indexOfCorrectVariant : int )
         {
-            view.push("LSChooseVariant.qml",{"ticketIndex": index,
+            view.push(["LSChooseVariant.qml",{"ticketIndex": index,
                           "textOfQuestion": textOfQuestion,
                           "pathToImage": pathToImage,
                           "variant1Text": variant1Text,
@@ -283,16 +287,16 @@ ApplicationWindow {
                           "variant4Text": variant4Text,
                           "variant4PathToImg": variant4PathToImg,
                           "indexOfCorrectVariant": indexOfCorrectVariant
-                      });
+                      }]);
         }
 
         //закидываем в стэк страничку с вводом
         function onPushInputable(index : int, correctAnswer, textOfQuestion, pathToImage: string)
         {
-            view.push("LSInputValue.qml",{   "ticketIndex": index,
+            view.push(["LSInputValue.qml",{   "ticketIndex": index,
                           "textOfQuestion": textOfQuestion,
                           "pathToImage": pathToImage,
-                          "correctAnswer": correctAnswer});
+                          "correctAnswer": correctAnswer}]);
         }
 
         //закидываем в стэк рандомную страничку

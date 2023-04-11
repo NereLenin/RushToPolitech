@@ -17,6 +17,8 @@ private:
     const int ticketsInExamSession = 40;
     const int examTime = 20;
 
+    int currentLearnedTicketNumber;
+
     TypeLearning currentRegime;
 
     int countOfRightAnswer;
@@ -52,8 +54,13 @@ public:
     void StartSession();
 
     TypeLearning getCurrentRegime() const;
+
     int getCountRight() const;
     int getCountWrong() const;
+
+    int getCurrentTicketNumber() const;
+    int getCountOfTicketsInSession() const;
+
     QList <Ticket*> getListOfWrongTicket();
 
     QTime getSessionLasting() const;

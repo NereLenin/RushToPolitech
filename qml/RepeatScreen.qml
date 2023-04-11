@@ -7,6 +7,7 @@ Rectangle {
 
     width: view.width
     height: view.height
+    objectName: "RepeatScreen"
 
     color: "#edecec"
 
@@ -19,7 +20,7 @@ Rectangle {
     property int procOfAllLearned: appEngine.procOfAllLearned
     property int procOfTodayLearned: appEngine.procOfTodayLearned
 
-    property int statisiticsTextHeight: parent.height / 12
+    property int statisiticsTextHeight: view.height / 12
 
     Text {
         id: allTicketsText

@@ -12,7 +12,7 @@ import QtQuick.Controls.Material
 
 Rectangle {
     id: mainScreenRectangle
-
+    objectName: "finishExamScreen"
     //anchors.fill: parent
     width: view.width
     height: view.height
@@ -112,6 +112,11 @@ Rectangle {
 
             fillMode: Image.PreserveAspectFit
         }
+        onClicked:
+        {
+            if(countWrongAnswer > 0)
+                view.push("FailedLearnScreen.qml");
+        }
     }
 
     Item {
@@ -135,7 +140,7 @@ Rectangle {
             font.bold: true
 
             onClicked: {
-            //signal startExamSession
+              rootItem.startExamSession();
             }
         }
 
@@ -191,6 +196,13 @@ Rectangle {
             font.pointSize: 14
             font.styleName: "Полужирный"
             font.bold: true
+
+            onClicked:
+            {
+                myAppHeader.state = "StartScreen"
+                view.popTo("StartScreen");
+                //view.push("qrc:/qml/StartScreen.qml");
+            }
         }
 
         Rectangle {

@@ -38,6 +38,7 @@ Rectangle {
     function sendAnswerToStatistic(indexOfChoosedVariant : int){
         if(textOfQuestion !== textOfNullTicket)
             rootItem.saveAnswerInStatistic(ticketIndex, (indexOfCorrectVariant === indexOfChoosedVariant));
+
     }
 
     MouseArea{

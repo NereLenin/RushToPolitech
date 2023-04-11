@@ -162,7 +162,7 @@ Rectangle {
         onClicked:
         {
             if(countWrongAnswer > 0)
-                view.push("qrc:/qml/FailedLearnScreen.qml");
+                view.push("FailedLearnScreen.qml");
         }
     }
 
@@ -188,7 +188,10 @@ Rectangle {
 
             onClicked:
             {
-                view.push("qrc:/qml/StartScreen.qml");
+                //view.push("qrc:/qml/StartScreen.qml");
+                myAppHeader.state = "StartScreen"
+                view.popTo("StartScreen");
+                //view.pop(StartScreen)
             }
         }
 

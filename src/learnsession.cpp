@@ -5,6 +5,7 @@ void LearnSession::defaultLearnSession()
     pushListOfTickets(base->getRandomTicketList(TicketStatus::Unlearned,ticketsInOneSession));
 
     qDebug() << "LearnSession::defaultLearnSession";
+    learnSessionStatisticChanged();
 
 }
 
@@ -13,6 +14,7 @@ void LearnSession::repeatHardSession()
     pushListOfTickets(base->getRandomTicketList(TicketStatus::Hard,ticketsInOneSession));
 
     qDebug() << "LearnSession::repeatHardSession";
+    learnSessionStatisticChanged();
 }
 
 void LearnSession::repeatWithTimerSession()
@@ -23,6 +25,7 @@ void LearnSession::repeatWithTimerSession()
     pushListOfTickets(base->getRandomTicketList(TicketStatus::Learned,ticketsInOneSession));
 
     timer.Start();
+    learnSessionStatisticChanged();
 }
 
 void LearnSession::repeatRandomSession()
@@ -30,12 +33,15 @@ void LearnSession::repeatRandomSession()
     QList <Ticket*> randomTickets = base->getRandomTicketList({TicketStatus::Hard, TicketStatus::Forgotten, TicketStatus::Learned, TicketStatus::Unlearned},ticketsInOneSession);
     pushListOfTickets(randomTickets);
     qDebug() << "LearnSession::repeatRandomSession " << randomTickets.size();
+    learnSessionStatisticChanged();
+
 }
 
 void LearnSession::repeatForgottenSession()
 {
     qDebug() << "LearnSession::repeatForgottenSession";
     pushListOfTickets(base->getRandomTicketList(TicketStatus::Forgotten,ticketsInOneSession));
+    learnSessionStatisticChanged();
 }
 
 void LearnSession::learnFailedTicketsSession()
@@ -45,14 +51,20 @@ void LearnSession::learnFailedTicketsSession()
 
     //обнуляем все, чтоб статистика по повтору была корректной
     countOfWrongAnswer = countOfRightAnswer = 0;
+
+    timer.Stop();
+
     listOfWrongTickets.clear();
     sessionLasting.Stop();//останавливаем подсчет времени на сессию
     sessionLasting.Start();//начинаем с начала
+    learnSessionStatisticChanged();
 }
 
 void LearnSession::ExamSession()
 {
     qDebug() << "LearnSession::ExamSession";
+
+    currentLearnedTicketNumber = 1;
 
     timer.Stop();
     timer.setTime(QTime(0,examTime,0));
@@ -62,8 +74,9 @@ void LearnSession::ExamSession()
     timer.Start();
     sessionLasting.Stop();//останавливаем подсчет времени на сессию
     sessionLasting.Start();//начинаем с начала
-
+    learnSessionStatisticChanged();
 }
+//----------end of sessions-----------------
 
 void LearnSession::saveTicketInList(Ticket *ticket)
 {
@@ -88,7 +101,8 @@ LearnSession::LearnSession(QObject *parent)
     : QObject{parent}
 {
     base = nullptr;
-    countOfRightAnswer = countOfWrongAnswer = 0;
+    countOfRightAnswer = countOfWrongAnswer =
+    currentLearnedTicketNumber = 0;
 
     currentRegime = TypeLearning::DefaultLearning;
 
@@ -144,6 +158,19 @@ int LearnSession::getCountWrong() const
     return countOfWrongAnswer;
 }
 
+int LearnSession::getCurrentTicketNumber() const
+{
+    return this->currentLearnedTicketNumber;
+}
+
+int LearnSession::getCountOfTicketsInSession() const
+{
+    switch(currentRegime){
+    case Exam: return ticketsInExamSession; break;
+    default: return ticketsInOneSession; break;
+    }
+}
+
 QList<Ticket *> LearnSession::getListOfWrongTicket()
 {
     return listOfWrongTickets;
@@ -172,7 +199,11 @@ void LearnSession::onSaveStatisticInLearningSession(int index, TicketAnswerType 
     }
 
     base->saveAnswerInStatistic(index,correcness);
-    base->updateStatisticInBase();//вот эту хуйню мож в конец сессии сунуть?
+
+    //Этот слот обрабатывается когда пользователь отвечает на вопрос
+    //поэтому мы тут обновляем количество пройденных билетов
+    if(currentLearnedTicketNumber < getCountOfTicketsInSession())
+        currentLearnedTicketNumber++;
 
     emit learnSessionStatisticChanged();
 }
@@ -199,8 +230,14 @@ void LearnSession::onTimerTimeOut()
 void LearnSession::onFinishSession()
 {
     qDebug() << "onFinishSession";
+
+    //сохраняем результаты сесси в базе статистики/в файле
+    base->updateStatisticInBase();
+
+    //стопим таймеры
     timer.Stop();
     sessionLasting.Stop();
+
     //обновляем инФу о таймерах после остановки
     emit learnSessionTimeChanged();
 }

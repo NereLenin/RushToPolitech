@@ -1,5 +1,16 @@
 #include "appengine.h"
 
+#include <QEventLoop>
+
+void delay(int millisecondsWait)
+{
+    QEventLoop loop;
+    QTimer t;
+    t.connect(&t, &QTimer::timeout, &loop, &QEventLoop::quit);
+    t.start(millisecondsWait);
+    loop.exec();
+}
+
 void AppEngine::bindQMLSlotSignalConnections()
 {
     if(engine==nullptr)
@@ -119,13 +130,18 @@ void AppEngine::startLearningSession(TypeLearning regime)
 QMap<TypeLearning, QString> AppEngine::fillFinishScreens()
 {
     QMap<TypeLearning, QString> finishScreens;
-    finishScreens[TypeLearning::DefaultLearning] = "qrc:/qml/FinishLearnScreen.qml";
-    finishScreens[TypeLearning::RepeatHard] = "qrc:/qml/FinishLearnScreen.qml";
-    finishScreens[TypeLearning::RepeatWithTimer] = "qrc:/qml/FinishLearnScreen.qml";
-    finishScreens[TypeLearning::RepeatRandom] = "qrc:/qml/FinishLearnScreen.qml";
-    finishScreens[TypeLearning::RepeatForgotten] = "qrc:/qml/FinishLearnScreen.qml";
-    finishScreens[TypeLearning::Exam] = "qrc:/qml/FinishExamFailed.qml";
+    finishScreens[TypeLearning::DefaultLearning] =
+    finishScreens[TypeLearning::RepeatHard] =
+    finishScreens[TypeLearning::RepeatWithTimer] =
+    finishScreens[TypeLearning::RepeatRandom] =
+    finishScreens[TypeLearning::RepeatForgotten] = "FinishLearnScreen.qml";
+
+    finishScreens[TypeLearning::Exam] = "FinishExamFailed.qml";
     return finishScreens;
+}
+
+const QString AppEngine::getTextOfNullTicket() const {
+    return textOfNullTicket;
 }
 
 
@@ -180,6 +196,22 @@ int AppEngine::getHardTicketsCount()
 int AppEngine::getForgottenTicketsCount()
 {
     return base.getForgottenTicketsCount();
+}
+
+int AppEngine::getCurrentTicketNumber(){
+    if(currentSession!=nullptr)
+    {
+        return currentSession->getCurrentTicketNumber();
+    }
+    return 0;
+}
+
+int AppEngine::getCountOfTicketsInSession(){
+    if(currentSession!=nullptr)
+    {
+        return currentSession->getCountOfTicketsInSession();
+    }
+    return 0;
 }
 
 QString AppEngine::getTitle()
@@ -291,13 +323,14 @@ void AppEngine::onLearnSessionFillStack(QList<Ticket *> ticketsToPush)
            return;
         }
 
-        emit clearStack();
+        //emit clearStack();
 
         onLearnSessionPushFinalPage();
 
         for(int i=0;i<ticketsToPush.size();i++)
         {
             emitPushSignalForTicket(ticketsToPush[i]);
+            //delay(500);
         }
 
 }
@@ -316,6 +349,7 @@ void AppEngine::onEndLearningSessions()
         return;
     }
 
+    emit finishSession();
     disconnectCurrentSessionWithEngine();
     delete currentSession;
     currentSession = nullptr;
@@ -323,7 +357,7 @@ void AppEngine::onEndLearningSessions()
 
 void AppEngine::onFinishLearningSession()
 {
-    emit finishSession();
+    emit finishSession();   
 }
 
 void AppEngine::onLearnSessionStatisticChanged()
@@ -338,14 +372,6 @@ void AppEngine::onLearnSessionTimeChanged()
 {
     emit sessionTimeChanging();
 }
-
-//void AppEngine::onLearnSessionTimerTimeOut()
-//{
-//    //вот эту штуку перенести в LS
-//    //emit clearStack();
-//    //emit pushStack("qrc:/qml/FinishLearnScreen.qml");
-//    //qDebug() << "Time is out bro";
-//}
 
 void AppEngine::onQmlEngineObjectCreated()
 {
