@@ -41,6 +41,17 @@ Rectangle {
 
     }
 
+    Keys.onPressed: (event)=> {
+                        switch(event.key)
+                        {
+                            case Qt.Key_1: variant1Button.clicked(); break;
+                            case Qt.Key_2: variant2Button.clicked(); break;
+                            case Qt.Key_3: variant3Button.clicked(); break;
+                            case Qt.Key_4: variant4Button.clicked(); break;
+                        }
+                        event.accepted = true;
+                    }
+
     MouseArea{
         anchors.fill: parent
 
@@ -195,7 +206,7 @@ Rectangle {
                 }
                 else
                 {
-                    console.log("Переключаем на следующий");           
+                    console.log("Переключаем на следующий");
                     view.pop(StackView.PushTransition);
                 }
 
@@ -478,8 +489,8 @@ Rectangle {
             if(mainScreenRectangle.state === "HighliteRightAnswer")
             {
 
-                    console.log("Переключаем на следующий");
-                    view.pop(StackView.PushTransition);
+                console.log("Переключаем на следующий");
+                view.pop(StackView.PushTransition);
 
             }
             else{

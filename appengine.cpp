@@ -136,7 +136,7 @@ QMap<TypeLearning, QString> AppEngine::fillFinishScreens()
     finishScreens[TypeLearning::RepeatRandom] =
     finishScreens[TypeLearning::RepeatForgotten] = "FinishLearnScreen.qml";
 
-    finishScreens[TypeLearning::Exam] = "FinishExamFailed.qml";
+    finishScreens[TypeLearning::Exam] = "FinishExamScreen.qml";
     return finishScreens;
 }
 
@@ -244,6 +244,45 @@ int AppEngine::getCountOfWrongAnswer()
     return currentSession->getCountWrong();
 }
 
+QString AppEngine::getSessionLasting()
+{
+    if( currentSession == nullptr)
+    {
+        return "00:00";
+    }
+
+    return currentSession->getSessionLasting().toString("mm:ss");
+}
+
+QString AppEngine::getLearningSessionTimerTime()
+{
+    if( currentSession == nullptr)
+    {
+        return "00:00";
+    }
+
+    return currentSession->getTimerTime().toString("mm:ss");
+}
+
+QString AppEngine::getFinishScreenText(){
+    if(currentSession!=nullptr)
+    {
+        Mood currentMood;
+
+        double procPerOneAnswer = 100.0/ (double)(getCountOfRightAnswer() + getCountOfWrongAnswer());
+        int wrongAnswersInProc = (double)getCountOfWrongAnswer() * procPerOneAnswer;
+
+        if(wrongAnswersInProc > procWrongAnswerForBadMood)
+            currentMood = Mood::Bad;
+        else
+            currentMood = Mood::Good;
+
+        return exclamation.getOne(currentMood,currentSession->getCurrentRegime());
+
+    }else
+        return "";
+}
+
 void AppEngine::emitPushSignalForTicket(Ticket *ticket)
 {
 
@@ -252,10 +291,10 @@ void AppEngine::emitPushSignalForTicket(Ticket *ticket)
     case TicketType::selectableAnswerTicket:
     {
         SelectableAnswerTicket *currentTicket = dynamic_cast<SelectableAnswerTicket*>(ticket);
-            emit pushSelectable(currentTicket->getIndex(), currentTicket->getQuestionText(),currentTicket->getImageUrl(),
-                                  currentTicket->getAnswer(0),currentTicket->getAnswerImageUrl(0),
-                                  currentTicket->getAnswer(1),currentTicket->getAnswerImageUrl(1),
-                                  currentTicket->getAnswer(2),currentTicket->getAnswerImageUrl(2),
+        emit pushSelectable(currentTicket->getIndex(), currentTicket->getQuestionText(),currentTicket->getImageUrl(),
+                            currentTicket->getAnswer(0),currentTicket->getAnswerImageUrl(0),
+                            currentTicket->getAnswer(1),currentTicket->getAnswerImageUrl(1),
+                            currentTicket->getAnswer(2),currentTicket->getAnswerImageUrl(2),
                                   currentTicket->getAnswer(3),currentTicket->getAnswerImageUrl(3),
                                   currentTicket->getIndexOfCorrectAnswer());
         }

@@ -16,9 +16,20 @@ Rectangle {
     property string textOfQuestion: "Это что за покемон неизвестная зверь тварь неясного сельского происхождения непонятной родословной???777"
     property string pathToImage: "qrc:/icons/learning.png"
 
+    Keys.onPressed: (event)=> {
+            if (event.key === Qt.Key_Enter ||
+                event.key === Qt.Key_Space ||
+                event.key === Qt.Key_Return) {
+                submitItemButton.clicked()
+                event.accepted = true;
+    }
+    }
 
     MouseArea{
         anchors.fill: parent
+
+
+
 
         Item {
             id: submitButtonItem
@@ -33,6 +44,7 @@ Rectangle {
             anchors.bottomMargin: 20
 
             Button {
+                id: submitItemButton//Чо за нейминг ты чо бля ебанулся дядь
                 anchors.fill: parent
 
                 font.family: "Courier new"
@@ -195,6 +207,7 @@ Rectangle {
             placeholderTextColor: "#383b39"
             selectedTextColor: "#7A9DBF"
             Material.accent: "#cc0061c0"
+
 
 
 

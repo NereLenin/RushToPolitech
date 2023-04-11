@@ -18,7 +18,7 @@ Rectangle {
     height: view.height
     color: "#edecec"
 
-    property string mainText: "Экзамен сдан с ошибками...\n" + "Придется идти работать в макдональдс\n"
+    property string mainText: appEngine.finishScreenText
     property int countRightAnswer : appEngine.countRightAnswer
     property int countWrongAnswer : appEngine.countWrongAnswer
     property string timeLasting: appEngine.sessionLasting

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <src/learnsession.h>
+#include <exclamations.h>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <src/mytimer.h>
@@ -10,25 +11,25 @@
 
 class AppEngine : public QObject
 {
-
     Q_OBJECT
+
 
     /*  for QML */
     Q_PROPERTY(QString title READ getTitle CONSTANT)
     Q_PROPERTY(QString textOfNullTicket READ getTextOfNullTicket CONSTANT)
 
     // statistic
-    Q_PROPERTY(int chanceToPassExam   READ getChanceToPassExam NOTIFY sessionStatisticChanged)
-    Q_PROPERTY(int procOfAllLearned   READ getProcOfAllLearned NOTIFY sessionStatisticChanged)
+    Q_PROPERTY(int chanceToPassExam   READ getChanceToPassExam   NOTIFY sessionStatisticChanged)
+    Q_PROPERTY(int procOfAllLearned   READ getProcOfAllLearned   NOTIFY sessionStatisticChanged)
     Q_PROPERTY(int procOfTodayLearned READ getProcOfTodayLearned NOTIFY sessionStatisticChanged)
 
-    Q_PROPERTY(int allTicketsCount       READ getAllTicketsCount NOTIFY sessionStatisticChanged)
-    Q_PROPERTY(int learnedTicketsCount   READ getLearnedTicketsCount NOTIFY sessionStatisticChanged)
-    Q_PROPERTY(int hardTicketsCount      READ getHardTicketsCount NOTIFY sessionStatisticChanged)
+    Q_PROPERTY(int allTicketsCount       READ getAllTicketsCount       NOTIFY sessionStatisticChanged)
+    Q_PROPERTY(int learnedTicketsCount   READ getLearnedTicketsCount   NOTIFY sessionStatisticChanged)
+    Q_PROPERTY(int hardTicketsCount      READ getHardTicketsCount      NOTIFY sessionStatisticChanged)
     Q_PROPERTY(int forgottenTicketsCount READ getForgottenTicketsCount NOTIFY sessionStatisticChanged)
 
     //learning session
-    Q_PROPERTY(int currentTicketNumber   READ getCurrentTicketNumber NOTIFY sessionStatisticChanged)
+    Q_PROPERTY(int currentTicketNumber       READ getCurrentTicketNumber     NOTIFY sessionStatisticChanged)
     Q_PROPERTY(int countOfTicketsInSession   READ getCountOfTicketsInSession CONSTANT)
 
     Q_PROPERTY(int countRightAnswer   READ getCountOfRightAnswer NOTIFY sessionStatisticChanged)
@@ -37,9 +38,13 @@ class AppEngine : public QObject
     Q_PROPERTY(QString sessionLasting   READ getSessionLasting           NOTIFY sessionTimeChanging)
     Q_PROPERTY(QString timerTime        READ getLearningSessionTimerTime NOTIFY sessionTimeChanging)
 
+    Q_PROPERTY(QString finishScreenText READ getFinishScreenText NOTIFY finishSession)
 private:
     const QString textOfNullTicket = "Для данного режима билетов больше нет\n Ты чего все выучил шоле?\nНу ты могеш внатуре я в шоке...";
+    const int procWrongAnswerForBadMood = 70;
+
     TicketBase base;
+    Exclamations exclamation;
 
     QQmlApplicationEngine *engine;
     LearnSession *currentSession;
@@ -81,25 +86,10 @@ public:
     int getCountOfRightAnswer();
     int getCountOfWrongAnswer();
 
-    QString getSessionLasting()
-    {
-        if( currentSession == nullptr)
-        {
-            return "00:00";
-        }
+    QString getSessionLasting();
+    QString getLearningSessionTimerTime();
 
-        return currentSession->getSessionLasting().toString("mm:ss");
-    }
-
-    QString getLearningSessionTimerTime()
-    {
-        if( currentSession == nullptr)
-        {
-            return "00:00";
-        }
-
-        return currentSession->getTimerTime().toString("mm:ss");
-    }
+    QString getFinishScreenText();
 
     void emitPushSignalForTicket(Ticket *ticket);
 signals:

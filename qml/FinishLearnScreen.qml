@@ -19,6 +19,7 @@ Rectangle {
     height: view.height
     color: "#edecec"
 
+    property string mainText: appEngine.finishScreenText
     property int chanceToPassExam: appEngine.chanceToPassExam
     property int todayBustToChancePassExam: 0
 
@@ -31,7 +32,7 @@ Rectangle {
 
     Text {
         id: resultText
-        text: "Ебать какой ПИ иди в НАСА работай сразу пиздец ты башка!"
+        text: mainText
 
         height: parent.height / 8
 

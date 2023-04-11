@@ -2,6 +2,7 @@ QT += quick
 
 SOURCES += \
         appengine.cpp \
+        exclamations.cpp \
         main.cpp \
         src/learnsession.cpp \
         src/mytimer.cpp \
@@ -32,7 +33,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES += \
     qml/FailedLearnScreen.qml \
     qml/FinishExamFailed.qml \
-    qml/FinishExamSuccess.qml \
+    qml/FinishExamScreen.qml \
     qml/FinishLearnScreen.qml \
     qml/ItemOfDrawer.qml \
     qml/LSChooseVariant.qml \
@@ -55,6 +56,7 @@ SUBDIRS += \
 
 HEADERS += \
     appengine.h \
+    exclamations.h \
     src/learnsession.h \
     src/mytimer.h \
     src/ticketbase.h \

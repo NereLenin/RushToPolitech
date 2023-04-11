@@ -23,8 +23,7 @@
         <file>qml/main.qml</file>
         <file>qml/StartScreen.qml</file>
         <file>qml/FailedLearnScreen.qml</file>
-        <file>qml/FinishExamFailed.qml</file>
-        <file>qml/FinishExamSuccess.qml</file>
+        <file>qml/FinishExamScreen.qml</file>
         <file>qml/FinishLearnScreen.qml</file>
         <file>qml/ItemOfDrawer.qml</file>
         <file>qml/LearnTheory.qml</file>
@@ -40,5 +39,6 @@
         <file>qml/Topics.qml</file>
         <file>ticketBase/questionImage/questpic.jpg</file>
         <file>ticketBase/TestBase.json</file>
+        <file>ticketBase/ExclamationsBase.json</file>
     </qresource>
 </RCC>
