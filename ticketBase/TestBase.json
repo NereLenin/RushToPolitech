@@ -3,7 +3,6 @@
   "version": 1.1,
   "tickets": [
     {
-      "index": 0,
       "type": "selectableAnswerTicket",
       "text": "Пример вопроса с текстом вот такой вопрос?",
       "imageURL": "qrc:/ticketBase/questionImage/questpic.jpg",
@@ -23,7 +22,6 @@
       "correctAnswerIndex": 1
     },
     {
-      "index": 1,
       "type": "selectableAnswerTicket",
       "text": "Пример вопроса с текстом вот такой вопрос?",
       "imageURL": "",
@@ -45,7 +43,6 @@
 
     },
     {
-      "index": 2,
       "type": "selectableAnswerTicket",
       "text": "",
       "imageURL": "qrc:/ticketBase/questionImage/questpic.jpg",
@@ -66,7 +63,6 @@
     "correctAnswerIndex": 3
     },
     {
-      "index": 3,
       "type": "inputAnswerTicket",
       "text": "Введите длинну члэна",
       "imageURL": "qrc:/ticketBase/questionImage/questpic.jpg",

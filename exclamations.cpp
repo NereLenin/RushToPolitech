@@ -19,7 +19,7 @@ Exclamations::~Exclamations()
 {
     if(randomGenerator != nullptr)
     {
-        delete randomGenerator;
+        //delete randomGenerator;
         randomGenerator = nullptr;
     }
 }
@@ -79,10 +79,8 @@ void Exclamations::readExclamationsFromTheBase(QString pathToBase)
     goodLearnExclamations = jsonArrayToListString(otherGood);
     badLearnExclamations = jsonArrayToListString(otherBad);
 
-
-    qDebug() << "Load Exam Good/Bad" << goodExamExclamations.size() << "/" << badExamExclamations.size();
-    qDebug() << "     other Good/Bad " << goodLearnExclamations.size() << "/" << badLearnExclamations.size();
-    qDebug() << "baseVersion:" << version;
+    qDebug() << "Loaded" << goodExamExclamations.size()+badExamExclamations.size()+goodLearnExclamations.size()+badLearnExclamations.size() <<
+    "exclamations, baseName|version:" <<  exclamationsDocument.object().value("name").toString() << "|" << version ;
 
 }
 

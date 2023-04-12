@@ -57,13 +57,19 @@ void TicketsDataBaseReader::readTicketsFromJsonDB(QString pathToJsonDB, TicketBa
     for(int i = 0; i < jsonTickets.size(); i++)
     {
         jsonTicket = jsonTickets[i].toObject();
-        Ticket *currentTicket = Ticket::createTicket(jsonTicket);
+
+        if(jsonTicket.isEmpty())
+        {
+            qDebug() << "ошибка парса на" << i;
+            return;
+        }
+
+        Ticket *currentTicket = Ticket::createTicket(jsonTicket,i);
+
         baseInto.ticketsBase.append(currentTicket);
     }
 
-    qDebug() << "Load " << baseInto.ticketsBase.size() << " tickets from " << pathToJsonDB << " baseVersion:" << baseInto.baseVersion;
-
-
+    qDebug() << "Loaded" << baseInto.ticketsBase.size() << "tickets, baseName|version:" << ticketsDocument.object().value("name").toString() << "|" << baseInto.baseVersion;
 }
 
 

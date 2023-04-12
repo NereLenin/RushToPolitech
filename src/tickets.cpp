@@ -28,9 +28,9 @@ Ticket *Ticket::createTicket(TicketType type, int index)
 }
 
 
-Ticket *Ticket::createTicket(QJsonObject ticket)
+Ticket *Ticket::createTicket(QJsonObject ticket, int index)
 {
-   Ticket *new_ticket = Ticket::createTicket(qStringToTicketType(ticket.value("type").toString()));
+   Ticket *new_ticket = Ticket::createTicket(qStringToTicketType(ticket.value("type").toString()),index);
    new_ticket->fillTicketFromJSON(ticket);
    return new_ticket;
 }
@@ -88,8 +88,6 @@ void Ticket::fillTicketFromJSON(QJsonObject ticket)
         qDebug() << "empty JSON ticket";
         return;
     }
-
-    index = ticket.value("index").toInt();
     questionText = ticket.value("text").toString();
     imageUrl = ticket.value("imageURL").toString();
 }
@@ -104,6 +102,74 @@ SelectableAnswerTicket::SelectableAnswerTicket(int index) : Ticket(nullptr,index
 int SelectableAnswerTicket::getIndexOfCorrectAnswer()
 {
     return indexOfCorrectAnswer;
+}
+
+const QString SelectableAnswerTicket::getAnswer(int index) const {
+    if (index < 4 && index >= 0)
+        return answers[index];
+
+    return "";
+}
+
+const QString SelectableAnswerTicket::getAnswerImageUrl(int index) const{
+    if (index < 4 && index >= 0)
+        return answersImageUrls[index];
+
+    return "";
+}
+
+void SelectableAnswerTicket::mixAnswers()
+{
+    QString savedAnswers[4];
+    QString savedAnswersUrl[4];
+
+    for(int i=0;i<4;i++)
+    {
+        savedAnswers[i] = answers[i];
+        savedAnswersUrl[i] = answersImageUrls[i];
+    }
+    //мешаем ответы сдвигом
+    QRandomGenerator *randomGenerator = QRandomGenerator::global();
+
+    int shiftNumber = randomGenerator->bounded(0,3);
+
+    //shiftим индексы
+
+    int shiftedIndex = 0;
+    for(int i = 0; i < 4; i++)
+    {
+        shiftedIndex = i + shiftNumber;
+        if(shiftedIndex > 3) shiftedIndex -= 4;
+
+        answers[i] = savedAnswers[shiftedIndex];
+        answersImageUrls[i] = savedAnswersUrl[shiftedIndex];
+    }
+
+    shiftedIndex = indexOfCorrectAnswer + shiftNumber;//рассчитываем индекс для правильного варианта
+    if(shiftedIndex > 3) shiftedIndex -= 4;
+
+    indexOfCorrectAnswer = shiftedIndex;//устанавливаем
+    //конец сдвига
+
+    //меняем одну сладкую парочку
+    int indexOfFirstVictim = randomGenerator->bounded(0,3);
+
+    randomGenerator = nullptr;
+
+    int indexOfSecondVictim = indexOfFirstVictim + shiftNumber;
+
+    if(indexOfSecondVictim > 3) indexOfSecondVictim -= 4;
+
+    //вот тут говной пахнет за версту дядь
+    if(indexOfCorrectAnswer == indexOfFirstVictim)
+        indexOfCorrectAnswer = indexOfSecondVictim;
+    else
+    if(indexOfCorrectAnswer == indexOfSecondVictim)
+        indexOfCorrectAnswer = indexOfFirstVictim;
+
+     QString tempAnswer = answers[indexOfFirstVictim];
+     answers[indexOfFirstVictim] = answers[indexOfSecondVictim];
+     answers[indexOfSecondVictim] = tempAnswer;
 }
 
 TicketAnswerType SelectableAnswerTicket::isCorrectAnswer(double answer)
@@ -143,6 +209,7 @@ void SelectableAnswerTicket::fillTicketFromJSON(QJsonObject ticket)
     indexOfCorrectAnswer = ticket.value("correctAnswerIndex").toInt();
 }
 
+
 /*          inputAnswerTicket      */
 InputAnswerTicket::InputAnswerTicket(int index): Ticket(nullptr,index)
 {
@@ -173,9 +240,6 @@ void InputAnswerTicket::fillTicketFromJSON(QJsonObject ticket)
     if(type != TicketType::inputAnswerTicket){
         //исключение несовместимые типы для заполнения
     }
-    index = ticket.value("index").toInt();
-    questionText = ticket.value("text").toString();
-
     correctAnswer = (ticket.value("correctAnswer").toString());
     correctAnswer = correctAnswer.replace(',','.');//на случай если ответ число, чтобы привести к double если понадобится
 }

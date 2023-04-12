@@ -5,6 +5,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QDebug>
+#include <QRandomGenerator>
 
 enum TicketType {selectableAnswerTicket, inputAnswerTicket};
 enum TicketAnswerType{Wrong,Correct};
@@ -15,7 +16,6 @@ class Ticket: public QObject
 
     Q_PROPERTY(int ticketIndex READ getIndex CONSTANT)
     Q_PROPERTY(QString questionText READ getQuestionText CONSTANT)
-
 protected:
     int index;
     TicketType type;
@@ -28,7 +28,7 @@ protected:
 
 public:
     static Ticket* createTicket(TicketType type, int index =0);
-    static Ticket* createTicket(QJsonObject ticket);
+    static Ticket* createTicket(QJsonObject ticket, int index =0);
 
     static TicketType qStringToTicketType(QString status);
 
@@ -85,19 +85,11 @@ public:
 
     int getIndexOfCorrectAnswer();//убрать?
 
-    const QString getAnswer(int index) const {
-        if (index < 4 && index >= 0)
-            return answers[index];
+    const QString getAnswer(int index) const;
 
-        return "";
-    }
+    const QString getAnswerImageUrl(int index) const;
 
-    const QString getAnswerImageUrl(int index) const{
-        if (index < 4 && index >= 0)
-            return answersImageUrls[index];
-
-        return "";
-    }
+    void mixAnswers();
 
     virtual TicketAnswerType isCorrectAnswer(double answer);
     virtual TicketAnswerType isCorrectAnswer(QString answer);

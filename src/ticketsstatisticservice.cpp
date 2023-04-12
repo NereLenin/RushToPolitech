@@ -211,7 +211,7 @@ int TicketsStatisticService::getTodayLearnedProc()
 
 TicketsStatisticService::~TicketsStatisticService()
 {
-    delete randomGenerator;
+    randomGenerator = nullptr;
 }
 
 

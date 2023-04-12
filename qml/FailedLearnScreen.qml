@@ -19,6 +19,16 @@ Rectangle {
     height: view.height
     color: "#edecec"
 
+    Keys.onPressed: (event)=> {
+            if (event.key === Qt.Key_Enter ||
+                event.key === Qt.Key_Space ||
+                event.key === Qt.Key_Return)
+                {
+                submitItemButton.clicked()
+                event.accepted = true;
+                }
+    }
+
     Item {
         id: submitButtonItem
 
@@ -32,6 +42,7 @@ Rectangle {
         anchors.bottomMargin: 20
 
         Button {
+            id:submitItemButton
             anchors.fill: parent
 
             font.family: "Courier new"

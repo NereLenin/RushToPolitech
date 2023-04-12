@@ -96,12 +96,15 @@ void TicketStatisticDataBaseDriver::parseStatisticJsonDoc(QJsonDocument statisti
     into.ticketStatisticBase.clear();
 
     QJsonObject jsonTicketInfo;
+
     for(int i = 0; i < jsonStatistic.size(); i++)
     {
+
         jsonTicketInfo = jsonStatistic[i].toObject();
+
         into.ticketStatisticBase.append(*TicketInfo::createTicketInfo(jsonTicketInfo));
+
     }
 
-    qDebug() << "Load " << into.ticketStatisticBase.size() << " infoTickets "
-             << " name | verison of base " << statisticJsonDocFrom.object().value("name").toString() <<  " | " << statisticJsonDocFrom.object().value("version").toString();
+    qDebug() << "Loaded" << into.ticketStatisticBase.size() << "infoTickets, baseName: " << statisticJsonDocFrom.object().value("name").toString();
 }

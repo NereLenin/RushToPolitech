@@ -13,10 +13,10 @@ class AppEngine : public QObject
 {
     Q_OBJECT
 
-
     /*  for QML */
     Q_PROPERTY(QString title READ getTitle CONSTANT)
     Q_PROPERTY(QString textOfNullTicket READ getTextOfNullTicket CONSTANT)
+    Q_PROPERTY(QString finishScreenText READ getFinishScreenText NOTIFY finishSession)
 
     // statistic
     Q_PROPERTY(int chanceToPassExam   READ getChanceToPassExam   NOTIFY sessionStatisticChanged)
@@ -32,13 +32,12 @@ class AppEngine : public QObject
     Q_PROPERTY(int currentTicketNumber       READ getCurrentTicketNumber     NOTIFY sessionStatisticChanged)
     Q_PROPERTY(int countOfTicketsInSession   READ getCountOfTicketsInSession CONSTANT)
 
-    Q_PROPERTY(int countRightAnswer   READ getCountOfRightAnswer NOTIFY sessionStatisticChanged)
-    Q_PROPERTY(int countWrongAnswer   READ getCountOfWrongAnswer NOTIFY sessionStatisticChanged)
+    Q_PROPERTY(int countRightAnswer   READ getCountOfRightAnswer NOTIFY finishSession)
+    Q_PROPERTY(int countWrongAnswer   READ getCountOfWrongAnswer NOTIFY finishSession)
 
-    Q_PROPERTY(QString sessionLasting   READ getSessionLasting           NOTIFY sessionTimeChanging)
+    Q_PROPERTY(QString sessionLasting   READ getSessionLasting           NOTIFY finishSession)
     Q_PROPERTY(QString timerTime        READ getLearningSessionTimerTime NOTIFY sessionTimeChanging)
 
-    Q_PROPERTY(QString finishScreenText READ getFinishScreenText NOTIFY finishSession)
 private:
     const QString textOfNullTicket = "Для данного режима билетов больше нет\n Ты чего все выучил шоле?\nНу ты могеш внатуре я в шоке...";
     const int procWrongAnswerForBadMood = 70;
@@ -92,6 +91,7 @@ public:
     QString getFinishScreenText();
 
     void emitPushSignalForTicket(Ticket *ticket);
+
 signals:
     /* to QML */
     //pushes in stack

@@ -37,7 +37,14 @@ Rectangle {
 
     function sendAnswerToStatistic(indexOfChoosedVariant : int){
         if(textOfQuestion !== textOfNullTicket)
+        {
             rootItem.saveAnswerInStatistic(ticketIndex, (indexOfCorrectVariant === indexOfChoosedVariant));
+        }
+
+        if((indexOfCorrectVariant === indexOfChoosedVariant))
+            textOfQuestion += "\nВерно!";
+        else
+            textOfQuestion += "\nНеверно!";
 
     }
 
@@ -48,7 +55,12 @@ Rectangle {
                             case Qt.Key_2: variant2Button.clicked(); break;
                             case Qt.Key_3: variant3Button.clicked(); break;
                             case Qt.Key_4: variant4Button.clicked(); break;
-                        }
+
+                            case Qt.Key_Enter: variant1Button.clicked(); break;
+                            case Qt.Key_Space: variant1Button.clicked(); break;
+                            case Qt.Key_Return: variant1Button.clicked(); break;
+
+                    }
                         event.accepted = true;
                     }
 
@@ -152,7 +164,7 @@ Rectangle {
 
             Text {
                 id:variant4ButtonText
-                text: variant4PathToImg === "" ? variant4Text : ""
+                text: variant4PathToImg === "" ? "4."+variant4Text : ""
                 anchors.fill: parent
                 padding: 5
 
@@ -244,7 +256,7 @@ Rectangle {
 
             Text {
                 id:variant3ButtonText
-                text: variant3PathToImg === "" ? variant3Text : ""
+                text: variant3PathToImg === "" ? "3."+variant3Text : ""
                 anchors.fill: parent
                 padding: 5
 
@@ -336,7 +348,7 @@ Rectangle {
 
             Text {
                 id:variant2ButtonText
-                text: (variant2PathToImg === "") ? variant2Text : ""
+                text: (variant2PathToImg === "") ? "2."+variant2Text : ""
                 anchors.fill: parent
                 padding: 5
 
@@ -424,7 +436,7 @@ Rectangle {
 
             Text {
                 id:variant1ButtonText
-                text: variant1PathToImg === "" ? variant1Text : ""
+                text: variant1PathToImg === "" ? "1."+variant1Text : ""
                 anchors.fill: parent
                 padding: 5
 

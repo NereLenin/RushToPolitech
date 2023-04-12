@@ -291,6 +291,7 @@ void AppEngine::emitPushSignalForTicket(Ticket *ticket)
     case TicketType::selectableAnswerTicket:
     {
         SelectableAnswerTicket *currentTicket = dynamic_cast<SelectableAnswerTicket*>(ticket);
+        currentTicket->mixAnswers();
         emit pushSelectable(currentTicket->getIndex(), currentTicket->getQuestionText(),currentTicket->getImageUrl(),
                             currentTicket->getAnswer(0),currentTicket->getAnswerImageUrl(0),
                             currentTicket->getAnswer(1),currentTicket->getAnswerImageUrl(1),
