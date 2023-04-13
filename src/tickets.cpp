@@ -120,6 +120,8 @@ const QString SelectableAnswerTicket::getAnswerImageUrl(int index) const{
 
 void SelectableAnswerTicket::mixAnswers()
 {
+    qDebug() << "origin:";
+    this->debugPrint();
     QString savedAnswers[4];
     QString savedAnswersUrl[4];
 
@@ -131,7 +133,7 @@ void SelectableAnswerTicket::mixAnswers()
     //мешаем ответы сдвигом
     QRandomGenerator *randomGenerator = QRandomGenerator::global();
 
-    int shiftNumber = randomGenerator->bounded(0,3);
+    int shiftNumber = 1;//randomGenerator->bounded(0,4);
 
     //shiftим индексы
 
@@ -145,14 +147,17 @@ void SelectableAnswerTicket::mixAnswers()
         answersImageUrls[i] = savedAnswersUrl[shiftedIndex];
     }
 
-    shiftedIndex = indexOfCorrectAnswer + shiftNumber;//рассчитываем индекс для правильного варианта
-    if(shiftedIndex > 3) shiftedIndex -= 4;
+    qDebug() << "был индекс: " << indexOfCorrectAnswer;
+    indexOfCorrectAnswer -= shiftNumber;
+    if(indexOfCorrectAnswer < 1) indexOfCorrectAnswer += 4;
+    qDebug() << "теперь:" << indexOfCorrectAnswer;
 
-    indexOfCorrectAnswer = shiftedIndex;//устанавливаем
     //конец сдвига
+    qDebug() << "after shift:";
+    this->debugPrint();
 
     //меняем одну сладкую парочку
-    int indexOfFirstVictim = randomGenerator->bounded(0,3);
+    int indexOfFirstVictim = randomGenerator->bounded(0,4);
 
     randomGenerator = nullptr;
 
@@ -161,15 +166,27 @@ void SelectableAnswerTicket::mixAnswers()
     if(indexOfSecondVictim > 3) indexOfSecondVictim -= 4;
 
     //вот тут говной пахнет за версту дядь
-    if(indexOfCorrectAnswer == indexOfFirstVictim)
-        indexOfCorrectAnswer = indexOfSecondVictim;
-    else
-    if(indexOfCorrectAnswer == indexOfSecondVictim)
-        indexOfCorrectAnswer = indexOfFirstVictim;
+    if(indexOfCorrectAnswer == (indexOfFirstVictim+1))
+    {
+        indexOfCorrectAnswer = indexOfSecondVictim+1;
+    }
+    else if(indexOfCorrectAnswer == indexOfSecondVictim+1)
+    {
+        indexOfCorrectAnswer = indexOfFirstVictim+1;
+    }
+
 
      QString tempAnswer = answers[indexOfFirstVictim];
      answers[indexOfFirstVictim] = answers[indexOfSecondVictim];
      answers[indexOfSecondVictim] = tempAnswer;
+
+     tempAnswer = answersImageUrls[indexOfFirstVictim];
+     answersImageUrls[indexOfFirstVictim] = answersImageUrls[indexOfSecondVictim];
+     answersImageUrls[indexOfSecondVictim] = tempAnswer;
+
+     qDebug() << "after swap:";
+     this->debugPrint();
+
 }
 
 TicketAnswerType SelectableAnswerTicket::isCorrectAnswer(double answer)
