@@ -164,7 +164,7 @@ Rectangle {
 
             Text {
                 id:variant4ButtonText
-                text: variant4PathToImg === "" ? "4."+variant4Text : ""
+                text: variant4PathToImg === "" ? "4) "+variant4Text : ""
                 anchors.fill: parent
                 padding: 5
 
@@ -256,7 +256,7 @@ Rectangle {
 
             Text {
                 id:variant3ButtonText
-                text: variant3PathToImg === "" ? "3."+variant3Text : ""
+                text: variant3PathToImg === "" ? "3) "+variant3Text : ""
                 anchors.fill: parent
                 padding: 5
 
@@ -348,7 +348,7 @@ Rectangle {
 
             Text {
                 id:variant2ButtonText
-                text: (variant2PathToImg === "") ? "2."+variant2Text : ""
+                text: (variant2PathToImg === "") ? "2) "+variant2Text : ""
                 anchors.fill: parent
                 padding: 5
 
@@ -436,7 +436,7 @@ Rectangle {
 
             Text {
                 id:variant1ButtonText
-                text: variant1PathToImg === "" ? "1."+variant1Text : ""
+                text: variant1PathToImg === "" ? "1) "+variant1Text : ""
                 anchors.fill: parent
                 padding: 5
 

@@ -40,5 +40,41 @@
         <file>ticketBase/questionImage/questpic.jpg</file>
         <file>ticketBase/TestBase.json</file>
         <file>ticketBase/ExclamationsBase.json</file>
+        <file>ticketBase/questionImage/147_1.png</file>
+        <file>ticketBase/questionImage/147_2.png</file>
+        <file>ticketBase/questionImage/147_3.png</file>
+        <file>ticketBase/questionImage/148_1.png</file>
+        <file>ticketBase/questionImage/148_2.png</file>
+        <file>ticketBase/questionImage/148_3.png</file>
+        <file>ticketBase/questionImage/149_1.png</file>
+        <file>ticketBase/questionImage/149_2.png</file>
+        <file>ticketBase/questionImage/149_3.png</file>
+        <file>ticketBase/questionImage/150_1.png</file>
+        <file>ticketBase/questionImage/150_2.png</file>
+        <file>ticketBase/questionImage/150_3.png</file>
+        <file>ticketBase/questionImage/151_1.png</file>
+        <file>ticketBase/questionImage/151_2.png</file>
+        <file>ticketBase/questionImage/151_3.png</file>
+        <file>ticketBase/questionImage/155_1.png</file>
+        <file>ticketBase/questionImage/155_2.png</file>
+        <file>ticketBase/questionImage/155_4.png</file>
+        <file>ticketBase/questionImage/156_1.png</file>
+        <file>ticketBase/questionImage/156_2.png</file>
+        <file>ticketBase/questionImage/156_3.png</file>
+        <file>ticketBase/questionImage/157_1.png</file>
+        <file>ticketBase/questionImage/157_2.png</file>
+        <file>ticketBase/questionImage/157_4.png</file>
+        <file>ticketBase/questionImage/158_1.png</file>
+        <file>ticketBase/questionImage/158_2.png</file>
+        <file>ticketBase/questionImage/158_4.png</file>
+        <file>ticketBase/questionImage/159_1.png</file>
+        <file>ticketBase/questionImage/159_2.png</file>
+        <file>ticketBase/questionImage/159_4.png</file>
+        <file>ticketBase/questionImage/160_1.png</file>
+        <file>ticketBase/questionImage/160_2.png</file>
+        <file>ticketBase/questionImage/160_4.png</file>
+        <file>ticketBase/questionImage/161_1.png</file>
+        <file>ticketBase/questionImage/161_2.png</file>
+        <file>ticketBase/questionImage/161_4.png</file>
     </qresource>
 </RCC>

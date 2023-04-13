@@ -105,14 +105,14 @@ int SelectableAnswerTicket::getIndexOfCorrectAnswer()
 }
 
 const QString SelectableAnswerTicket::getAnswer(int index) const {
-    if (index < 4 && index >= 0)
+    if (index < countOfAnswers && index >= 0)
         return answers[index];
 
     return "";
 }
 
 const QString SelectableAnswerTicket::getAnswerImageUrl(int index) const{
-    if (index < 4 && index >= 0)
+    if (index < countOfAnswers && index >= 0)
         return answersImageUrls[index];
 
     return "";
@@ -120,73 +120,23 @@ const QString SelectableAnswerTicket::getAnswerImageUrl(int index) const{
 
 void SelectableAnswerTicket::mixAnswers()
 {
-    qDebug() << "origin:";
-    this->debugPrint();
-    QString savedAnswers[4];
-    QString savedAnswersUrl[4];
-
-    for(int i=0;i<4;i++)
-    {
-        savedAnswers[i] = answers[i];
-        savedAnswersUrl[i] = answersImageUrls[i];
-    }
-    //мешаем ответы сдвигом
+    //генерируем случайные числа
     QRandomGenerator *randomGenerator = QRandomGenerator::global();
+    int shiftNumber = randomGenerator->bounded(0,countOfAnswers);
 
-    int shiftNumber = 1;//randomGenerator->bounded(0,4);
-
-    //shiftим индексы
-
-    int shiftedIndex = 0;
-    for(int i = 0; i < 4; i++)
-    {
-        shiftedIndex = i + shiftNumber;
-        if(shiftedIndex > 3) shiftedIndex -= 4;
-
-        answers[i] = savedAnswers[shiftedIndex];
-        answersImageUrls[i] = savedAnswersUrl[shiftedIndex];
-    }
-
-    qDebug() << "был индекс: " << indexOfCorrectAnswer;
-    indexOfCorrectAnswer -= shiftNumber;
-    if(indexOfCorrectAnswer < 1) indexOfCorrectAnswer += 4;
-    qDebug() << "теперь:" << indexOfCorrectAnswer;
-
-    //конец сдвига
-    qDebug() << "after shift:";
-    this->debugPrint();
-
-    //меняем одну сладкую парочку
-    int indexOfFirstVictim = randomGenerator->bounded(0,4);
+    int indexOfFirstVictim = randomGenerator->bounded(0,countOfAnswers);
+    int indexOfSecondVictim = randomGenerator->bounded(0,countOfAnswers);
 
     randomGenerator = nullptr;
 
-    int indexOfSecondVictim = indexOfFirstVictim + shiftNumber;
+    //сдвигаем на случайное количество
+    shiftAnswers(shiftNumber);
 
-    if(indexOfSecondVictim > 3) indexOfSecondVictim -= 4;
+    //меняем местами два случайных
+    swapAnswers(indexOfFirstVictim, indexOfSecondVictim);
 
-    //вот тут говной пахнет за версту дядь
-    if(indexOfCorrectAnswer == (indexOfFirstVictim+1))
-    {
-        indexOfCorrectAnswer = indexOfSecondVictim+1;
-    }
-    else if(indexOfCorrectAnswer == indexOfSecondVictim+1)
-    {
-        indexOfCorrectAnswer = indexOfFirstVictim+1;
-    }
-
-
-     QString tempAnswer = answers[indexOfFirstVictim];
-     answers[indexOfFirstVictim] = answers[indexOfSecondVictim];
-     answers[indexOfSecondVictim] = tempAnswer;
-
-     tempAnswer = answersImageUrls[indexOfFirstVictim];
-     answersImageUrls[indexOfFirstVictim] = answersImageUrls[indexOfSecondVictim];
-     answersImageUrls[indexOfSecondVictim] = tempAnswer;
-
-     qDebug() << "after swap:";
-     this->debugPrint();
-
+    //поднимаем вверх, чтоб нумерация сохранялась
+    moveNotVoidAnswersUp();
 }
 
 TicketAnswerType SelectableAnswerTicket::isCorrectAnswer(double answer)
@@ -208,6 +158,30 @@ TicketAnswerType SelectableAnswerTicket::isCorrectAnswer(QString answer){
 }
 
 
+void SelectableAnswerTicket::swapAnswers(int indexFirst, int indexSecond)
+{
+    if(indexFirst == indexSecond) return;
+
+    //вот тут говной пахнет за версту дядь
+    if(indexOfCorrectAnswer == (indexFirst+1))
+    {
+        indexOfCorrectAnswer = indexSecond+1;
+    }
+    else if(indexOfCorrectAnswer == indexSecond+1)
+    {
+        indexOfCorrectAnswer = indexFirst+1;
+    }
+
+
+     QString tempAnswer = answers[indexFirst];
+     answers[indexFirst] = answers[indexSecond];
+     answers[indexSecond] = tempAnswer;
+
+     tempAnswer = answersImageUrls[indexFirst];
+     answersImageUrls[indexFirst] = answersImageUrls[indexSecond];
+     answersImageUrls[indexSecond] = tempAnswer;
+}
+
 void SelectableAnswerTicket::fillTicketFromJSON(QJsonObject ticket)
 {
     Ticket::fillTicketFromJSON(ticket);
@@ -224,6 +198,68 @@ void SelectableAnswerTicket::fillTicketFromJSON(QJsonObject ticket)
     readJsonArrayToStringArray(JsonAnswersImageURL, answersImageUrls);
 
     indexOfCorrectAnswer = ticket.value("correctAnswerIndex").toInt();
+}
+
+void SelectableAnswerTicket::shiftAnswers(int shiftNumber)
+{
+
+    //shiftIndexes{
+    QString savedAnswers[countOfAnswers];
+    QString savedAnswersUrl[countOfAnswers];
+
+    for(int i=0;i<countOfAnswers;i++)
+    {
+        savedAnswers[i] = answers[i];
+        savedAnswersUrl[i] = answersImageUrls[i];
+    }
+    //мешаем ответы сдвигом
+
+    //сдвигаем индексы вверх
+
+    int shiftedIndex = 0;
+    for(int i = 0; i < countOfAnswers; i++)
+    {
+        shiftedIndex = i + shiftNumber;
+
+        //-1 т.к в массивах отсчет с нуля
+        if(shiftedIndex > (countOfAnswers-1)) shiftedIndex -= countOfAnswers;
+
+        answers[i] = savedAnswers[shiftedIndex];
+        answersImageUrls[i] = savedAnswersUrl[shiftedIndex];
+    }
+
+    //поскольку двигали вверх перерасчет индекса правильного ответа нужно делать так:
+    indexOfCorrectAnswer -= shiftNumber;
+
+    //<1 т.к индекс правильного ответа с 1цы
+    if(indexOfCorrectAnswer < 1) indexOfCorrectAnswer += countOfAnswers;
+
+    //}
+}
+
+void SelectableAnswerTicket::moveNotVoidAnswersUp()
+{
+    for(int i =0 ;i < countOfAnswers;i++)
+    {
+        if(answers[i] == "" && answersImageUrls[i] == "")
+        {
+            for(int j=i;j<countOfAnswers;j++)
+            {
+                if(answers[j] != "" || answersImageUrls[j] != "")
+                {
+                    swapAnswers(i,j);
+                    break;
+                }
+                if(j == (countOfAnswers-1) && (answers[j] == "" && answersImageUrls[j] == ""))
+                {  //если добежали до конца и не нашли не пустых ответов
+                  //нет смысла бегать дальше первым циклом т.к. дальше только пустота до конца массива
+                   return;
+                }
+            }
+
+        }
+    }
+
 }
 
 

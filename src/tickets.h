@@ -71,13 +71,23 @@ class SelectableAnswerTicket : public Ticket
     Q_PROPERTY(int ticketIndex READ getIndex CONSTANT)
     Q_PROPERTY(QString questionText READ getQuestionText CONSTANT)
 
+public: const static int countOfAnswers = 4;
+
 private:
-    QString answers[4];
-    QString answersImageUrls[4];
+    QString answers[countOfAnswers];
+    QString answersImageUrls[countOfAnswers];
     int indexOfCorrectAnswer;
 
+
+
     void fillTicketFromJSON(QJsonObject ticket);
+
+    void swapAnswers(int indexFirst, int indexSecond);
+    void shiftAnswers(int shiftNumber);
+    void moveNotVoidAnswersUp();
 public:
+
+
     SelectableAnswerTicket(int index = 0);
 
     int getIndex(){ return index; }
@@ -97,10 +107,10 @@ public:
     //----------debugFunc
     void debugPrint() const {
         Ticket::debugPrint();
-        for(int i=0; i< 4;i++)
+        for(int i=0; i< countOfAnswers;i++)
             qDebug() << " answers[" << i << "]: " << answers[i] ;
 
-        for(int i=0; i< 4;i++)
+        for(int i=0; i< countOfAnswers;i++)
             qDebug() << " answersImgURL[" << i << "]: " << answersImageUrls[i] ;
 
         qDebug() << " indexOfCorrAnswer:" << indexOfCorrectAnswer;
