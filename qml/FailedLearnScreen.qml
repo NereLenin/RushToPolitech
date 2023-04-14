@@ -19,6 +19,11 @@ Rectangle {
     height: view.height
     color: "#edecec"
 
+    Component.onCompleted:
+    {
+        myAppHeader.state = "WrongTicketsScreen";
+    }
+
     Keys.onPressed: (event)=> {
             if (event.key === Qt.Key_Enter ||
                 event.key === Qt.Key_Space ||
@@ -52,7 +57,7 @@ Rectangle {
 
             onClicked:
             {
-                myAppHeader.state = "StartScreen"
+                myAppHeader.state = "MainScreen";
                 view.popTo("StartScreen");
             }
         }
@@ -114,6 +119,7 @@ Rectangle {
 
             onClicked:
             {
+                myAppHeader.state = "WrongTicketsLearnSession";
                 rootItem.startLearnFailedTicketsSession();
             }
         }
@@ -168,8 +174,8 @@ Rectangle {
         delegate: Ticket {
             height: listOfFailedTickets.height / 5
 
-            anchors.left: parent.left
-            anchors.right: parent.right
+            x: listOfFailedTickets.x
+            width: listOfFailedTickets.width-15
 
             canBeLearned: true
             ticketNumber: ticketIndex

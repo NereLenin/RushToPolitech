@@ -60,8 +60,11 @@ ApplicationWindow {
         //второй когда он пушен таймером или до него дошли из пачки
         //получается каждый раз когда мы его видим ВТОРОЙ раз у нас окончание учебной сессии
         property int countOfViewFinishScreen: 0
+        property bool isFinishSessionFuncActive: true
         onCurrentItemChanged:
         {
+            if(isFinishSessionFuncActive)
+            {
             if(currentItem.objectName === "finishLearningScreen" ||
                currentItem.objectName === "finishExamScreen")
                 countOfViewFinishScreen++;
@@ -69,15 +72,25 @@ ApplicationWindow {
             if(countOfViewFinishScreen > 1)
             {
                 rootItem.finishLearningSession();
+                myAppHeader.state = "ResultScreen";
                 console.log("SessionFinish");
                 countOfViewFinishScreen = 0;
+            }
             }
         }
 
         function popTo(objectName : string)
         {
+            //сбрасываем счетчик и отключаем отслеживание конца сессии пока
+            //возвращаемся на маин скрин чтоб лишнего не насчитать
+            countOfViewFinishScreen = 0;
+            isFinishSessionFuncActive = false;
+
             while(currentItem.objectName !== objectName || currentItem.objectName !== "StartScreen")
                 view.pop();
+
+            //потом включаем обратно
+            isFinishSessionFuncActive = true;
         }
 
     }
@@ -100,10 +113,11 @@ ApplicationWindow {
                     textOfItem: "На главную"
 
                     onClicked: {
-                        rootItem.endLearningSessions();
+
+                        rootItem.endLearningSessions();             
+                        view.popTo("StartScreen");
 
                         myAppHeader.state = "MainScreen"
-                        view.popTo("StartScreen");
                         drawer.close()
                     }
                 }
@@ -117,9 +131,9 @@ ApplicationWindow {
                     textOfItem: "Учить"
 
                     onClicked: {
-                        rootItem.endLearningSessions();
-
                         myAppHeader.state = "LearnScreen"
+
+                        rootItem.endLearningSessions();
                         rootItem.startLearningSession();
                         drawer.close()
                     }
@@ -135,9 +149,9 @@ ApplicationWindow {
                     textOfItem: "Повторить"
 
                     onClicked: {
-                        rootItem.endLearningSessions();
-
                         myAppHeader.state = "RepeatScreen"
+
+                        rootItem.endLearningSessions();
                         view.push("qrc:/qml/RepeatScreen.qml")
                         drawer.close()
                     }
@@ -152,9 +166,9 @@ ApplicationWindow {
                     textOfItem: "Экзамен"
 
                     onClicked: {
-                        rootItem.endLearningSessions();
+                        myAppHeader.state = "ExamScreen";
 
-                        myAppHeader.state = "ExamScreen"
+                        rootItem.endLearningSessions();
                         rootItem.startExamSession();
                         drawer.close()
                     }
@@ -171,7 +185,6 @@ ApplicationWindow {
                     onClicked: {
                         rootItem.endLearningSessions();
 
-                        myAppHeader.state = "TheoryScreen"
                         view.push("qrc:/qml/LearnTheory.qml")
                         drawer.close()
                     }

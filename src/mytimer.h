@@ -21,6 +21,8 @@ public:
     explicit MyTimer(QObject *parent = nullptr);
 
     void setTime(QTime waitingTime);
+    void setTime(int m,int s, int ms = 0);
+
     QTime getCurrentTime() const;
 
     void Start();

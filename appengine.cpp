@@ -152,18 +152,24 @@ void AppEngine::initialize()
     currentSession = nullptr;
 
     finishScreens = fillFinishScreens();
+
+
 }
 
 void AppEngine::connectToEngine(QQmlApplicationEngine *newEngine)
 {
     if(newEngine!=nullptr && this->engine == nullptr){
-    this->engine = newEngine;
+        //base.updateStatisticInBase();
+
+        this->engine = newEngine;
 
         this->engine->rootContext()->setContextProperty("appEngine",this);
         this->engine->rootContext()->setContextProperty("listWrongTickets",wrongTicketsModel);
 
         QObject::connect(this->engine, &QQmlApplicationEngine::objectCreated,
                                  this, &AppEngine::onQmlEngineObjectCreated);
+        //обновляем информацию
+        //emit sessionStatisticChanged();
      }
 }
 

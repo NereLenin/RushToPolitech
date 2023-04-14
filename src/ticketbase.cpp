@@ -53,27 +53,36 @@ QList<Ticket *> TicketBase::getRandomTicketList(QList<TicketStatus> statuses, in
         if(amountOfRepeatStatuses == 0)
             return getRandomTicketList(TicketStatus::Any, amountOfTickets);
 
-        int sizeOfListOneStatus = amountOfTickets/amountOfRepeatStatuses;
 
         QList <Ticket*> ticketsList;
+
         QList <Ticket*> listOfCurrentStatus;
 
-        for(int i=0;i<statuses.size();i++)
+        bool baseHasTicketsWithThisStatus = false;
+        for(int i = 0; i < statuses.size();i++)
         {
-            listOfCurrentStatus.clear();
-            listOfCurrentStatus = getRandomTicketList(statuses[i],sizeOfListOneStatus);
-
-            if(listOfCurrentStatus.size() < sizeOfListOneStatus)//если билетов меньше чем нужно
+            listOfCurrentStatus = getRandomTicketList(statuses[i],1);
+            if(listOfCurrentStatus.size() > 0)
             {
-                int neededAddFromOtherStatuses = sizeOfListOneStatus - listOfCurrentStatus.size();//определяем сколько не хватает
-                if(amountOfRepeatStatuses > 1) amountOfRepeatStatuses--;//нет билетов текущего статуса, его исключаем
-                sizeOfListOneStatus = (double)(sizeOfListOneStatus) + ((double)neededAddFromOtherStatuses/(double)amountOfRepeatStatuses);
-                qDebug() << "size list of one Status " << sizeOfListOneStatus << " list of current ststus " << listOfCurrentStatus.size() << " " << neededAddFromOtherStatuses;
+                baseHasTicketsWithThisStatus = true;
+                break;
             }
-
-            ticketsList.append(listOfCurrentStatus);
         }
 
+        listOfCurrentStatus.clear();
+
+        int neededTicketOneStatus  = amountOfTickets/amountOfRepeatStatuses;
+        while(ticketsList.size() < amountOfTickets && baseHasTicketsWithThisStatus && neededTicketOneStatus > 0)
+        {
+            neededTicketOneStatus = (double)(amountOfTickets - ticketsList.size())/(double)amountOfRepeatStatuses;
+            for(int i = 0; i < statuses.size() && ticketsList.size() < amountOfTickets;i++)
+            {
+                listOfCurrentStatus = getRandomTicketList(statuses[i],neededTicketOneStatus);
+                ticketsList.append(listOfCurrentStatus);
+            }
+        }
+
+        qDebug() << "In mixed ticketsList amount of tickets:" << ticketsList.size();
         return ticketsList;
 }
 
@@ -114,7 +123,7 @@ int TicketBase::getAllTicketsCount()
 
 int TicketBase::getLearnedTicketsCount()
 {
-    if(ticketsBase.size())
+    if(ticketsBase.size() == 0)
         return 0;
 
     return statistic.getListOfTickets(TicketStatus::Learned).size();
@@ -122,7 +131,7 @@ int TicketBase::getLearnedTicketsCount()
 
 int TicketBase::getHardTicketsCount()
 {
-    if(ticketsBase.size())
+    if(ticketsBase.size() == 0)
         return 0;
 
     return statistic.getListOfTickets(TicketStatus::Hard).size();
@@ -130,7 +139,7 @@ int TicketBase::getHardTicketsCount()
 
 int TicketBase::getForgottenTicketsCount()
 {
-    if(ticketsBase.size())
+    if(ticketsBase.size() == 0)
         return 0;
 
     return statistic.getListOfTickets(TicketStatus::Forgotten).size();

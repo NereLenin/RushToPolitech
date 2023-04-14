@@ -17,9 +17,10 @@ Rectangle {
     property string pathToImage: "qrc:/icons/learning.png"
 
     Keys.onPressed: (event)=> {
-            if (event.key === Qt.Key_Enter ||
-                event.key === Qt.Key_Space ||
-                event.key === Qt.Key_Return)
+            if (event.key === Qt.Key_Enter  ||
+                event.key === Qt.Key_Space  ||
+                event.key === Qt.Key_Return ||
+                event.key === Qt.Key_Right)
                 {
                 submitItemButton.clicked()
                 event.accepted = true;

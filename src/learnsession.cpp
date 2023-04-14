@@ -5,8 +5,6 @@ void LearnSession::defaultLearnSession()
     pushListOfTickets(base->getRandomTicketList(TicketStatus::Unlearned,ticketsInOneSession));
 
     qDebug() << "LearnSession::defaultLearnSession";
-    learnSessionStatisticChanged();
-
 }
 
 void LearnSession::repeatHardSession()
@@ -14,18 +12,17 @@ void LearnSession::repeatHardSession()
     pushListOfTickets(base->getRandomTicketList(TicketStatus::Hard,ticketsInOneSession));
 
     qDebug() << "LearnSession::repeatHardSession";
-    learnSessionStatisticChanged();
 }
 
 void LearnSession::repeatWithTimerSession()
 {
     timer.Stop();
-    timer.setTime(QTime(0,timeToFinishSessionInMinutes,0));
 
-    pushListOfTickets(base->getRandomTicketList(TicketStatus::Learned,ticketsInOneSession));
+    QList<Ticket*> listToPush = base->getRandomTicketList(TicketStatus::Learned,ticketsInOneSession);
+    pushListOfTickets(listToPush);
 
-    timer.Start();
-    learnSessionStatisticChanged();
+    if(listToPush.size() > 0)//если нечего учить и таймер не нужен
+        timer.Start();
 }
 
 void LearnSession::repeatRandomSession()
@@ -33,15 +30,12 @@ void LearnSession::repeatRandomSession()
     QList <Ticket*> randomTickets = base->getRandomTicketList({TicketStatus::Hard, TicketStatus::Forgotten, TicketStatus::Learned},ticketsInOneSession);
     pushListOfTickets(randomTickets);
     qDebug() << "LearnSession::repeatRandomSession " << randomTickets.size();
-    learnSessionStatisticChanged();
-
 }
 
 void LearnSession::repeatForgottenSession()
 {
     qDebug() << "LearnSession::repeatForgottenSession";
     pushListOfTickets(base->getRandomTicketList(TicketStatus::Forgotten,ticketsInOneSession));
-    learnSessionStatisticChanged();
 }
 
 void LearnSession::learnFailedTicketsSession()
@@ -50,14 +44,13 @@ void LearnSession::learnFailedTicketsSession()
     pushListOfTickets(listOfWrongTickets);
 
     //обнуляем все, чтоб статистика по повтору была корректной
-    countOfWrongAnswer = countOfRightAnswer = 0;
+    countOfWrongAnswer = countOfRightAnswer = currentLearnedTicketNumber = 0;
 
     timer.Stop();
 
     listOfWrongTickets.clear();
     sessionLasting.Stop();//останавливаем подсчет времени на сессию
     sessionLasting.Start();//начинаем с начала
-    learnSessionStatisticChanged();
 }
 
 void LearnSession::ExamSession()
@@ -67,14 +60,19 @@ void LearnSession::ExamSession()
     currentLearnedTicketNumber = 1;
 
     timer.Stop();
-    timer.setTime(QTime(0,examTime,0));
+    timer.setTime(examTime,0);//устанавливаем сколько времени на сессию
 
-    this->pushListOfTickets(base->getRandomTicketList(TicketStatus::Any,ticketsInExamSession));
+    QList<Ticket*> listToPush = base->getRandomTicketList(TicketStatus::Any,ticketsInExamSession);
 
-    timer.Start();
+    this->pushListOfTickets(listToPush);
+
+    if(listToPush.size() > 0)//если билетов нет не запускаем таймер, чтоб небыло таймаута
+        timer.Start();
+
     sessionLasting.Stop();//останавливаем подсчет времени на сессию
     sessionLasting.Start();//начинаем с начала
-    learnSessionStatisticChanged();
+
+    emit learnSessionStatisticChanged();
 }
 //----------end of sessions-----------------
 
@@ -223,7 +221,6 @@ void LearnSession::onTimerTimeOut()
     qDebug() << "timeOut";
 
     onFinishSession();
-
     emit pushFinalScreen();
 }
 
@@ -231,12 +228,12 @@ void LearnSession::onFinishSession()
 {
     qDebug() << "onFinishSession";
 
-    //сохраняем результаты сесси в базе статистики/в файле
-    base->updateStatisticInBase();
-
     //стопим таймеры
     timer.Stop();
     sessionLasting.Stop();
+
+    //сохраняем результаты сесси в базе статистики/в файле
+    base->updateStatisticInBase();
 
     //обновляем инФу о таймерах после остановки
     emit learnSessionTimeChanged();

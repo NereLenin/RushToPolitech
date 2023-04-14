@@ -14,7 +14,7 @@ Rectangle {
 
     property int ticketIndex: 0
     property int indexOfCorrectVariant: 2
-    //property int indexOfChoosedVariant: 0
+    property int indexOfChoosedVariant: 0
 
     property string textOfQuestion: "Это что за покемон неизвестная зверь тварь неясного сельского происхождения непонятной родословной???777"
     property string pathToImage: ""
@@ -32,19 +32,18 @@ Rectangle {
     property string variant1PathToImg: "" // "../../../../YandexDisk/RushPolytech/icons/questpic.jpg"
 
     property int buttonSize: height / 2 / 4.2
+    property string colorOfRight: "#7A9DBF"
+    property string colorOfWrong: "#FCB4B1"
+
 
     property string textOfNullTicket: appEngine.textOfNullTicket
 
-    function sendAnswerToStatistic(indexOfChoosedVariant : int){
+    function sendAnswerToStatistic(){
         if(textOfQuestion !== textOfNullTicket)
         {
             rootItem.saveAnswerInStatistic(ticketIndex, (indexOfCorrectVariant === indexOfChoosedVariant));
         }
 
-        if((indexOfCorrectVariant === indexOfChoosedVariant))
-            textOfQuestion += "\nВерно!";
-        else
-            textOfQuestion += "\nНеверно!";
 
     }
 
@@ -56,9 +55,13 @@ Rectangle {
                             case Qt.Key_3: variant3Button.clicked(); break;
                             case Qt.Key_4: variant4Button.clicked(); break;
 
-                            case Qt.Key_Enter: variant1Button.clicked(); break;
-                            case Qt.Key_Space: variant1Button.clicked(); break;
-                            case Qt.Key_Return: variant1Button.clicked(); break;
+                            default:
+                            if(event.key === Qt.Key_Enter ||
+                               event.key === Qt.Key_Space ||
+                               event.key === Qt.Key_Return ||
+                               event.key === Qt.Key_Right)
+                                variant1Button.clicked();
+                            break;
 
                     }
                         event.accepted = true;
@@ -148,16 +151,17 @@ Rectangle {
             visible: variant4Text !== "" || variant4PathToImg !== ""
 
             property bool isButtonHighlited: false
+            property bool isWrongAnswer:false
 
             Rectangle {
                 id: variant4ButtonHigliter
-                visible: variant4Button.isButtonHighlited
+                visible: variant4Button.isButtonHighlited || variant4Button.isWrongAnswer
                 anchors.fill: parent
 
                 anchors.bottomMargin: 4
                 anchors.topMargin: 4
 
-                color: "#7A9DBF"
+                color: variant4Button.isWrongAnswer? colorOfWrong : colorOfRight
                 opacity: 0.3
                 radius: 4
             }
@@ -213,8 +217,10 @@ Rectangle {
             onClicked: {
                 if(mainScreenRectangle.state !== "HighliteRightAnswer")
                 {
+                    indexOfChoosedVariant = 4;
                     mainScreenRectangle.state = "HighliteRightAnswer"
-                    sendAnswerToStatistic(4);
+
+                    sendAnswerToStatistic();
                 }
                 else
                 {
@@ -240,16 +246,17 @@ Rectangle {
             visible: variant3Text !== "" || variant3PathToImg !== ""
 
             property bool isButtonHighlited: false
+            property bool isWrongAnswer:false
 
             Rectangle {
                 id: variant3ButtonHigliter
-                visible: variant3Button.isButtonHighlited
+                visible: variant3Button.isButtonHighlited || variant3Button.isWrongAnswer
                 anchors.fill: parent
 
                 anchors.bottomMargin: 4
                 anchors.topMargin: 4
 
-                color: "#7A9DBF"
+                color: variant3Button.isWrongAnswer? colorOfWrong : colorOfRight
                 opacity: 0.3
                 radius: 4
             }
@@ -305,9 +312,10 @@ Rectangle {
             onClicked: {
                 if(mainScreenRectangle.state !== "HighliteRightAnswer")
                 {
+                    indexOfChoosedVariant = 3;
                     mainScreenRectangle.state = "HighliteRightAnswer"
-                    sendAnswerToStatistic(3);
 
+                    sendAnswerToStatistic();
                 }
                 else
                 {
@@ -332,16 +340,17 @@ Rectangle {
             visible: variant2Text !== "" || variant2PathToImg !== ""
 
             property bool isButtonHighlited: false
+            property bool isWrongAnswer:false
 
             Rectangle {
                 id: variant2ButtonHigliter
-                visible: variant2Button.isButtonHighlited
+                visible: variant2Button.isButtonHighlited || variant2Button.isWrongAnswer
                 anchors.fill: parent
 
                 anchors.bottomMargin: 4
                 anchors.topMargin: 4
 
-                color: "#7A9DBF"
+                color: variant2Button.isWrongAnswer? colorOfWrong : colorOfRight
                 opacity: 0.3
                 radius: 4
             }
@@ -396,8 +405,10 @@ Rectangle {
             onClicked: {
                 if(mainScreenRectangle.state !== "HighliteRightAnswer")
                 {
+                    indexOfChoosedVariant = 2;
                     mainScreenRectangle.state = "HighliteRightAnswer"
-                    sendAnswerToStatistic(2);
+
+                    sendAnswerToStatistic();
                 }
                 else
                 {
@@ -420,16 +431,17 @@ Rectangle {
             height: variant1Text !== "" || variant1PathToImg !== "" ? buttonSize : 1
             visible: variant1Text !== "" || variant1PathToImg !== ""
             property bool isButtonHighlited: false
+            property bool isWrongAnswer: false
 
             Rectangle {
                 id: variant1ButtonHigliter
-                visible: variant1Button.isButtonHighlited
+                visible: variant1Button.isButtonHighlited || variant1Button.isWrongAnswer
                 anchors.fill: parent
 
                 anchors.bottomMargin: 4
                 anchors.topMargin: 4
 
-                color: "#7A9DBF"
+                color: variant1Button.isWrongAnswer? colorOfWrong : colorOfRight
                 opacity: 0.3
                 radius: 4
             }
@@ -485,8 +497,10 @@ Rectangle {
             onClicked: {
                 if(mainScreenRectangle.state !== "HighliteRightAnswer")
                 {
+                    indexOfChoosedVariant = 1;
                     mainScreenRectangle.state = "HighliteRightAnswer"
-                    sendAnswerToStatistic(1);
+
+                    sendAnswerToStatistic();
                 }
                 else
                 {
@@ -525,6 +539,7 @@ Rectangle {
                 target: variant1Button
                 opacity: indexOfCorrectVariant !== 1? 0.5 : 1
                 isButtonHighlited: indexOfCorrectVariant === 1
+                isWrongAnswer: (indexOfCorrectVariant != 1) && (indexOfChoosedVariant == 1)
             }
 
             //button 2
@@ -536,6 +551,7 @@ Rectangle {
                 target: variant2Button
                 opacity: indexOfCorrectVariant !== 2? 0.5 : 1
                 isButtonHighlited: indexOfCorrectVariant === 2
+                isWrongAnswer: (indexOfCorrectVariant != 2) && (indexOfChoosedVariant == 2)
             }
 
             //button 3
@@ -547,6 +563,7 @@ Rectangle {
                 target: variant3Button
                 opacity: indexOfCorrectVariant !== 3? 0.5 : 1
                 isButtonHighlited: indexOfCorrectVariant === 3
+                isWrongAnswer: (indexOfCorrectVariant != 3) && (indexOfChoosedVariant == 3)
             }
 
             //button 4
@@ -558,6 +575,12 @@ Rectangle {
                 target: variant4Button
                 opacity: indexOfCorrectVariant !== 4? 0.5 : 1
                 isButtonHighlited: indexOfCorrectVariant === 4
+                isWrongAnswer: (indexOfCorrectVariant != 4) && (indexOfChoosedVariant == 4)
+            }
+
+            PropertyChanges{
+                target: mainScreenRectangle
+                textOfQuestion: (indexOfCorrectVariant === indexOfChoosedVariant)? "Верно!":"\nНеверно!";
             }
 
         }

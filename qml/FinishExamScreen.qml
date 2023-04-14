@@ -150,6 +150,7 @@ Rectangle {
             font.bold: true
 
             onClicked: {
+              myAppHeader.state = "ExamScreen";
               rootItem.startExamSession();
             }
         }
@@ -210,7 +211,7 @@ Rectangle {
 
             onClicked:
             {
-                myAppHeader.state = "StartScreen"
+                myAppHeader.state = "mainScreen";
                 view.popTo("StartScreen");
                 //view.push("qrc:/qml/StartScreen.qml");
             }

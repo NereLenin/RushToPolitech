@@ -13,6 +13,11 @@ void MyTimer::setTime(QTime waitingTime)
     currentTime = waitingTime;
 }
 
+void MyTimer::setTime(int m, int s, int ms)
+{
+    currentTime.setHMS(0,m,s,ms);
+}
+
 QTime MyTimer::getCurrentTime() const
 {
     return currentTime;
@@ -28,7 +33,6 @@ void MyTimer::Start()
 
 void MyTimer::Stop()
 {
-
     oneSecTimer.stop();
 
     if(regime == TimerType::Timer)

@@ -16,6 +16,10 @@ Rectangle {
     property int procOfAllLearned: appEngine.procOfAllLearned
     property int procOfTodayLearned: appEngine.procOfTodayLearned
 
+    Component.onCompleted: {
+        myAppHeader.state = "MainScreen";
+    }
+
     Text {
         id: chanceToPassExamText
         text: "Вероятность сдачи экзамена : " + chanceToPassExam + "%"
