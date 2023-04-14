@@ -48,13 +48,12 @@ QList <Ticket*> TicketBase::getRandomTicketList(TicketStatus status, int amountO
 QList<Ticket *> TicketBase::getRandomTicketList(QList<TicketStatus> statuses, int amountOfTickets)
 {
 
-        int amountOfRepeatStatuses = statuses.size();
-
-        if(amountOfRepeatStatuses == 0)
-            return getRandomTicketList(TicketStatus::Any, amountOfTickets);
-
+        int amountOfRepeatStatuses = statuses.size();    
 
         QList <Ticket*> ticketsList;
+
+        if(amountOfRepeatStatuses == 0)
+            return ticketsList;
 
         QList <Ticket*> listOfCurrentStatus;
 

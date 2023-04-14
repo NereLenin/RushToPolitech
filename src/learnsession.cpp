@@ -17,6 +17,7 @@ void LearnSession::repeatHardSession()
 void LearnSession::repeatWithTimerSession()
 {
     timer.Stop();
+    timer.setTime(timeToFinishSessionInMinutes);
 
     QList<Ticket*> listToPush = base->getRandomTicketList(TicketStatus::Learned,ticketsInOneSession);
     pushListOfTickets(listToPush);
@@ -60,7 +61,7 @@ void LearnSession::ExamSession()
     currentLearnedTicketNumber = 1;
 
     timer.Stop();
-    timer.setTime(examTime,0);//устанавливаем сколько времени на сессию
+    timer.setTime(examTime);//устанавливаем сколько времени на сессию
 
     QList<Ticket*> listToPush = base->getRandomTicketList(TicketStatus::Any,ticketsInExamSession);
 

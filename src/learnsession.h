@@ -15,7 +15,7 @@ private:
     const int timeToFinishSessionInMinutes = 5;
 
     const int ticketsInExamSession = 40;
-    const int examTime = 1;
+    const int examTime = 15;
 
     int currentLearnedTicketNumber;
 
@@ -77,7 +77,7 @@ public slots:
     void onSaveStatisticInLearningSession(int index, TicketAnswerType correcness);
     void onStartLearningFailedTickets();
 
-    void onTimeChanged();//переименовать просто в time changed
+    void onTimeChanged();
     void onTimerTimeOut();
 
     void onFinishSession();
