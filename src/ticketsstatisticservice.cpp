@@ -30,7 +30,7 @@ void TicketsStatisticService::updateStatisticBase()
         loadStatisticBase();
 
     //если в базе статистики нет какого то нашего билета,создаем
-    if(this->ticketsBase != NULL)
+    if(this->ticketsBase != nullptr)
         for(int i=0; i< (*ticketsBase).size();i++)
             if(!isTicketInStatisticBase((*ticketsBase)[i]))
                 createTicketInBase((*ticketsBase)[i]);
@@ -49,20 +49,40 @@ TicketInfo *TicketsStatisticService::getTicketInfo(const Ticket *ticket)
     {
         qDebug() << "emptyStatisticBase";
         //или update или искл
-        return NULL;
+        return nullptr;
     }
-    if(ticket == NULL)
+    if(ticket == nullptr)
     {
         qDebug() << "getTicketInfo: empty inputTicket";
-        return NULL;
+        return nullptr;
     }
 
-    for(int i=0;i <ticketStatisticBase.size();i++)
-        if(ticket->getIndex() == ticketStatisticBase[i].getTicketIndex())
-            return &ticketStatisticBase[i];
+    int ticketIndex = ticket->getIndex();
 
-    return NULL;
+        //если попадает в диапазон
+        if((ticketIndex >=0) && (ticketIndex < ticketStatisticBase.size()))
+        {
+            //получаем информацию о тикете
+            TicketInfo *ticketInfo = &(ticketStatisticBase[ticket->getIndex()]);
 
+            //смотрим наш ли это билет
+            if(ticketInfo->getTicketIndex() == ticketIndex)
+                return ticketInfo;
+            else
+            {
+                qDebug() << "Не сходится файл статистики с базой билетов на индексе:" << ticket->getIndex();
+
+                qDebug() << "Ticket:";
+                ticket->debugPrint();
+
+                qDebug() << "ticketInfo:";
+                ticketInfo->debugPrint();
+
+                return nullptr;
+            }
+        }
+
+    return nullptr;
 }
 
 void TicketsStatisticService::setDayBonusToChanceToPassExam(int bonus)
@@ -83,15 +103,13 @@ void TicketsStatisticService::loadStatisticBase()
 
 void TicketsStatisticService::printTicketInfo(int ticketIndex)
 {
-    if(!isTicketInStatisticBase((*ticketsBase)[ticketIndex]))
-        createTicketInBase((*ticketsBase)[ticketIndex]);
 
     getTicketInfo((*ticketsBase)[ticketIndex])->debugPrint();
 }
 
 bool TicketsStatisticService::isTicketInStatisticBase(const Ticket *ticket)
 {
-    return getTicketInfo(ticket) != NULL;
+    return getTicketInfo(ticket) != nullptr;
 }
 
 void TicketsStatisticService::createTicketInBase(const Ticket *ticket)
@@ -99,7 +117,6 @@ void TicketsStatisticService::createTicketInBase(const Ticket *ticket)
     if(!isTicketInStatisticBase(ticket))
     {
         TicketInfo newTicket(ticket->getIndex());
-        //newTicket.ticketIndex = ticket->index;
         ticketStatisticBase.append(newTicket);
     }
 }
@@ -111,14 +128,15 @@ void TicketsStatisticService::saveStatisticInBase()
 
 QList<Ticket *> TicketsStatisticService::getListOfTickets(TicketStatus ticketStatus)//, int amountOfTickets)
 {
-    if(ticketsBase == NULL)
-    {
-        qDebug() << "emptyTicketBase";
-        return *(new QList<Ticket*>());
-        //исключение пустая база
-    }
 
     QList<Ticket*> ticketsWithStatus;
+
+    if(ticketsBase == nullptr)
+    {
+        qDebug() << "emptyTicketBase";
+        return ticketsWithStatus;
+        //исключение пустая база
+    }
 
     if(ticketStatus == TicketStatus::Any)
     {
@@ -128,9 +146,6 @@ QList<Ticket *> TicketsStatisticService::getListOfTickets(TicketStatus ticketSta
     {
         for(int i=0;i < ticketsBase->size();i++)
         {
-            if(!isTicketInStatisticBase((*ticketsBase)[i]))
-                createTicketInBase((*ticketsBase)[i]);
-
             if(getTicketInfo((*ticketsBase)[i])->getTicketStatus() == ticketStatus)
                 ticketsWithStatus.append((*ticketsBase)[i]);
         }
@@ -148,8 +163,8 @@ void TicketsStatisticService::saveAnswerInStatistic(int ticketIndex, TicketAnswe
 
 void TicketsStatisticService::saveAnswerInStatistic(Ticket *ticket, TicketAnswerType answer)
 {
-    if(ticket!=NULL)
-        if(getTicketInfo(ticket) != NULL)
+    if(ticket!=nullptr)
+        if(getTicketInfo(ticket) != nullptr)
             getTicketInfo(ticket)->saveAnswer(answer);
 }
 
@@ -160,6 +175,9 @@ int TicketsStatisticService::getChanceToPassExam()
 
     //это вероятность шо ты приглянешся преоподу и он такой - вот те поступление за половое преступление
     //со мной или если вдруг еще шото такое произойдет
+
+    if(ticketsBase == nullptr || ticketsBase->size() == 0 || ticketStatisticBase.size() == 0)
+        return 0;
 
     double amountOfAllTickets = ticketsBase->size();
 
@@ -184,6 +202,9 @@ int TicketsStatisticService::getChanceToPassExam()
 
 int TicketsStatisticService::getAllLearnedProc()
 {
+    if(ticketsBase == nullptr || ticketsBase->size() == 0 || ticketStatisticBase.size() == 0)
+        return 0;
+
     double amountOfAllTickets = ticketsBase->size();
 
     double amountOfLearnedTickets = getListOfTickets(TicketStatus::Learned).size();
@@ -192,6 +213,9 @@ int TicketsStatisticService::getAllLearnedProc()
 
 int TicketsStatisticService::getTodayLearnedProc()
 {
+    if(ticketsBase == nullptr || ticketsBase->size() == 0 || ticketStatisticBase.size() == 0)
+        return 0;
+
     QList<Ticket*> learnedList = getListOfTickets(TicketStatus::Learned);
 
     QDate today = QDate::currentDate();

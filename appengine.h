@@ -56,11 +56,14 @@ private:
     QMap<TypeLearning,QString> finishScreens;
 
     QMap<TypeLearning,QString> fillFinishScreens();
+    void initialize();
 public:
 
     explicit AppEngine(QQmlApplicationEngine *engine = nullptr,QObject *parent = nullptr);
 
     const QString getTextOfNullTicket() const;
+
+    void connectToEngine(QQmlApplicationEngine *newEngine = nullptr);
 
     void bindQMLSlotSignalConnections();
 

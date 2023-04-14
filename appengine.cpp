@@ -140,28 +140,42 @@ QMap<TypeLearning, QString> AppEngine::fillFinishScreens()
     return finishScreens;
 }
 
+
+
 const QString AppEngine::getTextOfNullTicket() const {
     return textOfNullTicket;
 }
 
+void AppEngine::initialize()
+{
+    engine = nullptr;
+    currentSession = nullptr;
+
+    finishScreens = fillFinishScreens();
+}
+
+void AppEngine::connectToEngine(QQmlApplicationEngine *newEngine)
+{
+    if(newEngine!=nullptr && this->engine == nullptr){
+    this->engine = newEngine;
+
+        this->engine->rootContext()->setContextProperty("appEngine",this);
+        this->engine->rootContext()->setContextProperty("listWrongTickets",wrongTicketsModel);
+
+        QObject::connect(this->engine, &QQmlApplicationEngine::objectCreated,
+                                 this, &AppEngine::onQmlEngineObjectCreated);
+     }
+}
 
 
 AppEngine::AppEngine(QQmlApplicationEngine *engine, QObject *parent)
     : QObject{parent}
 {
-    currentSession = nullptr;
-
-    this->engine = engine;
-
-    this->engine->rootContext()->setContextProperty("appEngine",this);
-    this->engine->rootContext()->setContextProperty("listWrongTickets",wrongTicketsModel);
-
-    QObject::connect(this->engine,&QQmlApplicationEngine::objectCreated,
-                     this        ,&AppEngine::onQmlEngineObjectCreated);
-
-
-    finishScreens = fillFinishScreens();
+    initialize();
+    connectToEngine(engine);
 }
+
+
 
 int AppEngine::getChanceToPassExam()
 {
@@ -270,9 +284,10 @@ QString AppEngine::getFinishScreenText(){
         Mood currentMood;
 
         double procPerOneAnswer = 100.0/ (double)(getCountOfRightAnswer() + getCountOfWrongAnswer());
-        int wrongAnswersInProc = (double)getCountOfWrongAnswer() * procPerOneAnswer;
+        double wrongAnswersInProc = (double)getCountOfWrongAnswer() * procPerOneAnswer;
 
-        if(wrongAnswersInProc > procWrongAnswerForBadMood)
+        if((wrongAnswersInProc >= procWrongAnswerForBadMood) || //если процент неправильных ответов больше(или равен) порогового
+           (getCountOfRightAnswer() == 0 && getCountOfWrongAnswer() == 0))//если ваще ниче не отвечал
             currentMood = Mood::Bad;
         else
             currentMood = Mood::Good;

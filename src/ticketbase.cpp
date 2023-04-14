@@ -109,28 +109,42 @@ int TicketBase::getTodayLearnedProc()
 
 int TicketBase::getAllTicketsCount()
 {
-    return statistic.getListOfTickets(TicketStatus::Any).size();
+    return ticketsBase.size();
 }
 
 int TicketBase::getLearnedTicketsCount()
 {
+    if(ticketsBase.size())
+        return 0;
+
     return statistic.getListOfTickets(TicketStatus::Learned).size();
 }
 
 int TicketBase::getHardTicketsCount()
 {
+    if(ticketsBase.size())
+        return 0;
+
     return statistic.getListOfTickets(TicketStatus::Hard).size();
 }
 
 int TicketBase::getForgottenTicketsCount()
 {
+    if(ticketsBase.size())
+        return 0;
+
     return statistic.getListOfTickets(TicketStatus::Forgotten).size();
 }
 
 void TicketBase::clearTicketBase()
 {
     for(int i=0;i<ticketsBase.size();i++)
+    {
         delete ticketsBase[i];
+        ticketsBase[i] = nullptr;
+    }
+    ticketsBase.clear();
+    statistic.updateStatisticBase();
 }
 
 TicketBase::~TicketBase()

@@ -52,6 +52,7 @@ void TicketsDataBaseReader::readTicketsFromJsonDB(QString pathToJsonDB, TicketBa
     //сначала проверить пустой ли файл, если есть че читать тогда чистим
     clearListOfTickets(baseInto.ticketsBase);
 
+
     //loadArrayToTicketsList
     QJsonObject jsonTicket;
     for(int i = 0; i < jsonTickets.size(); i++)

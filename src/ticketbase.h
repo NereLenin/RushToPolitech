@@ -15,9 +15,11 @@ private:
     QString pathToStatisticBase;
     QString pathToTicketsBase;
 
+
+
+public:   
     void clearTicketBase();
 
-public:
     TicketBase(QString pathToTicketBase=":/ticketBase/TestBase.json", QString pathToStatisticBase="./statisticBase.json");
 
     Ticket* getTicket(int index);

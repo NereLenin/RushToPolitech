@@ -59,6 +59,8 @@ public:
     int getTodayLearnedProc();
 
 
+
+
     int getRandomNumber(int min, int max);
 
     ~TicketsStatisticService();

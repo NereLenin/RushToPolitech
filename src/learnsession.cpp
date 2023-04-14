@@ -30,7 +30,7 @@ void LearnSession::repeatWithTimerSession()
 
 void LearnSession::repeatRandomSession()
 {
-    QList <Ticket*> randomTickets = base->getRandomTicketList({TicketStatus::Hard, TicketStatus::Forgotten, TicketStatus::Learned, TicketStatus::Unlearned},ticketsInOneSession);
+    QList <Ticket*> randomTickets = base->getRandomTicketList({TicketStatus::Hard, TicketStatus::Forgotten, TicketStatus::Learned},ticketsInOneSession);
     pushListOfTickets(randomTickets);
     qDebug() << "LearnSession::repeatRandomSession " << randomTickets.size();
     learnSessionStatisticChanged();
@@ -220,10 +220,10 @@ void LearnSession::onTimeChanged()
 
 void LearnSession::onTimerTimeOut()
 {
+    qDebug() << "timeOut";
 
-    timer.Stop();
-    sessionLasting.Stop();
-    qDebug() << "onTimeout";
+    onFinishSession();
+
     emit pushFinalScreen();
 }
 

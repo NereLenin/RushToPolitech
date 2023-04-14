@@ -21,7 +21,7 @@ QTime MyTimer::getCurrentTime() const
 void MyTimer::Start()
 {
     if(regime == TimerType::Stopwatch)
-        currentTime = QTime::fromString("00:00:00");
+        currentTime.setHMS(0,0,0,0);
 
     oneSecTimer.start();
 }
@@ -32,7 +32,7 @@ void MyTimer::Stop()
     oneSecTimer.stop();
 
     if(regime == TimerType::Timer)
-        currentTime = QTime::fromString("00:00:00");
+        currentTime.setHMS(0,0,0,0);
 
 }
 
@@ -45,21 +45,28 @@ void MyTimer::oneSecGone()
 {
     if(regime == TimerType::Timer)
     {
-    if(currentTime.hour()==0 && currentTime.minute()==0 && currentTime.second()==0)
+
+     bool timeIsNull = (currentTime.hour()==0 && currentTime.minute()==0 && currentTime.second()==0);
+
+    //если не проверять таймер на активность получается ситуация
+    //последнее событие секунды вылетает - оно еще не дошло, а мы в это время сессию кончили
+    //таймер остановили сделали ноль - срабатывает этот обработчик, видит нулевое время
+    //АГА СУКА ВРЕМЯ ВЫЩЛА
+    if(timeIsNull && oneSecTimer.isActive())
     {
         Stop();
-        if(oneSecTimer.isActive())
-            emit timeOut();
+        emit timeOut();
     }
     else
-    {
+    {//если работаем как таймер но время еще не ноль
         currentTime = currentTime.addSecs(-1);
-        emit timeUpdated();//currentTime);
+        emit timeUpdated();
     }
     }
-    else{
+    else if(oneSecTimer.isActive()){//если работаем как секундомер
+
       currentTime = currentTime.addSecs(+1);
-      emit timeUpdated();//currentTime);
+      emit timeUpdated();
     }
 
 }

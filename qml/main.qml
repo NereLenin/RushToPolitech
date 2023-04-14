@@ -66,7 +66,7 @@ ApplicationWindow {
                currentItem.objectName === "finishExamScreen")
                 countOfViewFinishScreen++;
 
-            if(countOfViewFinishScreen == 2)
+            if(countOfViewFinishScreen > 1)
             {
                 rootItem.finishLearningSession();
                 console.log("SessionFinish");

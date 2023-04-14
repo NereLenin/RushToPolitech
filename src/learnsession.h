@@ -15,7 +15,7 @@ private:
     const int timeToFinishSessionInMinutes = 5;
 
     const int ticketsInExamSession = 40;
-    const int examTime = 20;
+    const int examTime = 1;
 
     int currentLearnedTicketNumber;
 
