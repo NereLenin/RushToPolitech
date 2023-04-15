@@ -101,19 +101,21 @@ ApplicationWindow {
         width: parent.width * 0.4
         height: parent.height
 
+        property double heightOfItemDriver: (drawer.height/9)+3.2
+
         Column {
             anchors.fill: parent
 
             ItemDelegate {//на главную
                 width: parent.width
-                height: parent.height/14
+                height: drawer.heightOfItemDriver
 
                 ItemOfDrawer{
                     anchors.fill: parent
                     textOfItem: "На главную"
 
                     onClicked: {
-
+                        view.countOfViewFinishScreen = 0;
                         rootItem.endLearningSessions();             
                         view.popTo("StartScreen");
 
@@ -125,12 +127,13 @@ ApplicationWindow {
 
             ItemDelegate {//учить
                 width: parent.width
-                height: parent.height/14
+                height: drawer.heightOfItemDriver
                 ItemOfDrawer{
                     anchors.fill: parent
                     textOfItem: "Учить"
 
                     onClicked: {
+                        view.countOfViewFinishScreen = 0;
                         myAppHeader.state = "LearnScreen"
 
                         rootItem.endLearningSessions();
@@ -142,13 +145,14 @@ ApplicationWindow {
 
             ItemDelegate {//повторить
                 width: parent.width
-                height: parent.height/14
+                height: drawer.heightOfItemDriver
 
                 ItemOfDrawer{
                     anchors.fill: parent
                     textOfItem: "Повторить"
 
                     onClicked: {
+                        view.countOfViewFinishScreen = 0;
                         myAppHeader.state = "RepeatScreen"
 
                         rootItem.endLearningSessions();
@@ -160,12 +164,13 @@ ApplicationWindow {
 
             ItemDelegate {//экзамен
                 width: parent.width
-                height: parent.height/14
+                height: drawer.heightOfItemDriver
                 ItemOfDrawer{
                     anchors.fill: parent
                     textOfItem: "Экзамен"
 
                     onClicked: {
+                        view.countOfViewFinishScreen = 0;
                         myAppHeader.state = "ExamScreen";
 
                         rootItem.endLearningSessions();
@@ -177,12 +182,13 @@ ApplicationWindow {
 
             ItemDelegate {//теория
                 width: parent.width
-                height: parent.height/14
+                height: drawer.heightOfItemDriver
                 ItemOfDrawer{
                     anchors.fill: parent
                     textOfItem: "Теория"
 
                     onClicked: {
+                        view.countOfViewFinishScreen = 0;
                         rootItem.endLearningSessions();
 
                         view.push("qrc:/qml/LearnTheory.qml")
@@ -193,12 +199,13 @@ ApplicationWindow {
 
             ItemDelegate {//статистика
                 width: parent.width
-                height: parent.height/14
+                height: drawer.heightOfItemDriver
                 ItemOfDrawer{
                     anchors.fill: parent
                     textOfItem: "Статистика"
 
                     onClicked: {
+                        view.countOfViewFinishScreen = 0;
                         rootItem.endLearningSessions();
 
                         drawer.close()
@@ -208,12 +215,13 @@ ApplicationWindow {
 
             ItemDelegate {//настройки
                 width: parent.width
-                height: parent.height/14
+                height: drawer.heightOfItemDriver
                 ItemOfDrawer{
                     anchors.fill: parent
                     textOfItem: "Настройки"
 
                     onClicked: {
+                        view.countOfViewFinishScreen = 0;
                         rootItem.endLearningSessions();
 
                         drawer.close()
@@ -223,12 +231,13 @@ ApplicationWindow {
 
             ItemDelegate {//выход
                 width: parent.width
-                height: parent.height/14
+                height: drawer.heightOfItemDriver
                 ItemOfDrawer{
                     anchors.fill: parent
                     textOfItem: "Выход"
 
                     onClicked: {
+                        view.countOfViewFinishScreen = 0;
                         rootItem.endLearningSessions();
 
                         drawer.close()
