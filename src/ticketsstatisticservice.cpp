@@ -3,14 +3,7 @@
 
 TicketsStatisticService::TicketsStatisticService()
 {
-
-    randomGenerator = QRandomGenerator::global();
     dayBonusToChanceToPassExam = 0;
-}
-
-int TicketsStatisticService::getRandomNumber(int min, int max)
-{
-    return randomGenerator->bounded(min,max);
 }
 
 void TicketsStatisticService::setPathToStatisticBase(QString pathToStatisticBase)
@@ -93,7 +86,7 @@ void TicketsStatisticService::setDayBonusToChanceToPassExam(int bonus)
 
 void TicketsStatisticService::setRandomDayBonusToChanceToPassExam()
 {
-    this->dayBonusToChanceToPassExam = getRandomNumber(1,10);
+    this->dayBonusToChanceToPassExam = random::randomNumber(1,10);
 }
 
 void TicketsStatisticService::loadStatisticBase()
@@ -235,7 +228,6 @@ int TicketsStatisticService::getTodayLearnedProc()
 
 TicketsStatisticService::~TicketsStatisticService()
 {
-    randomGenerator = nullptr;
 }
 
 

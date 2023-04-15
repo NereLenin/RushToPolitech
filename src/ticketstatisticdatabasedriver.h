@@ -1,7 +1,7 @@
 #ifndef TICKETSTATISTICDATABASEDRIVER_H
 #define TICKETSTATISTICDATABASEDRIVER_H
-#include <src/tickets.h>
-#include <src/ticketinfo.h>
+#include "tickets.h"
+#include "ticketinfo.h"
 #include <QJsonDocument>
 #include <QFile>
 #include "src/ticketsstatisticservice.h"

@@ -1,7 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <appengine.h>
-#include <exclamations.h>
+#include "appengine.h"
 
 int main(int argc, char *argv[])
 {

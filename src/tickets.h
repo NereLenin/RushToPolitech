@@ -5,7 +5,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QDebug>
-#include <QRandomGenerator>
+#include "random.h"
 
 enum TicketType {selectableAnswerTicket, inputAnswerTicket};
 enum TicketAnswerType{Wrong,Correct};
@@ -79,14 +79,12 @@ private:
     int indexOfCorrectAnswer;
 
 
-
     void fillTicketFromJSON(QJsonObject ticket);
 
     void swapAnswers(int indexFirst, int indexSecond);
     void shiftAnswers(int shiftNumber);
     void moveNotVoidAnswersUp();
 public:
-
 
     SelectableAnswerTicket(int index = 0);
 

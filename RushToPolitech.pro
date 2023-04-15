@@ -6,6 +6,7 @@ SOURCES += \
         main.cpp \
         src/learnsession.cpp \
         src/mytimer.cpp \
+        src/random.cpp \
         src/ticketbase.cpp \
         src/ticketinfo.cpp \
         src/tickets.cpp \
@@ -59,6 +60,7 @@ HEADERS += \
     exclamations.h \
     src/learnsession.h \
     src/mytimer.h \
+    src/random.h \
     src/ticketbase.h \
     src/ticketinfo.h \
     src/tickets.h \

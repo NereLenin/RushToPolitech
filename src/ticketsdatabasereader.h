@@ -9,8 +9,8 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
-#include <src/ticketbase.h>
-#include <src/tickets.h>
+#include "ticketbase.h"
+#include "tickets.h"
 
 class TicketBase;
 

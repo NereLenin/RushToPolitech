@@ -1,7 +1,6 @@
 #ifndef TICKETSSTATISTICSERVICE_H
 #define TICKETSSTATISTICSERVICE_H
 #include <QList>
-#include <QRandomGenerator>
 #include "ticketstatisticdatabasedriver.h"
 
 class ITicketStatistic{
@@ -25,7 +24,6 @@ private:
     QList<TicketInfo> ticketStatisticBase;
 
     QList <Ticket*> *ticketsBase;
-    QRandomGenerator *randomGenerator;
 
     int dayBonusToChanceToPassExam;
 
@@ -57,11 +55,6 @@ public:
     int getChanceToPassExam();
     int getAllLearnedProc();
     int getTodayLearnedProc();
-
-
-
-
-    int getRandomNumber(int min, int max);
 
     ~TicketsStatisticService();
 

@@ -120,14 +120,12 @@ const QString SelectableAnswerTicket::getAnswerImageUrl(int index) const{
 
 void SelectableAnswerTicket::mixAnswers()
 {
-    //генерируем случайные числа
-    QRandomGenerator *randomGenerator = QRandomGenerator::global();
-    int shiftNumber = randomGenerator->bounded(0,countOfAnswers);
+    //генерируем случайные числа countOfAnswers
+    int shiftNumber = random::randomNumber(0,countOfAnswers);
 
-    int indexOfFirstVictim = randomGenerator->bounded(0,countOfAnswers);
-    int indexOfSecondVictim = randomGenerator->bounded(0,countOfAnswers);
+    int indexOfFirstVictim = random::randomNumber(0,countOfAnswers);
+    int indexOfSecondVictim = random::randomNumber(0,countOfAnswers);
 
-    randomGenerator = nullptr;
 
     //сдвигаем на случайное количество
     shiftAnswers(shiftNumber);

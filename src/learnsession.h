@@ -1,7 +1,7 @@
 ﻿#ifndef LEARNSESSION_H
 #define LEARNSESSION_H
-#include <src/ticketbase.h>
-#include <src/mytimer.h>
+#include "ticketbase.h"
+#include "mytimer.h"
 
 #include <QObject>
 

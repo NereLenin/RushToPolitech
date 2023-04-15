@@ -37,7 +37,7 @@ QList <Ticket*> TicketBase::getRandomTicketList(TicketStatus status, int amountO
         int randIndexOfTicket = 0;
         for(int i =0; i < amountOfTickets; i++)
         {
-            randIndexOfTicket = statistic.getRandomNumber(0,ticketIndexMax);
+            randIndexOfTicket = random::randomNumber(0,ticketIndexMax);
             randomTicketsList.append(allTickets[randIndexOfTicket]);
         }
     }
