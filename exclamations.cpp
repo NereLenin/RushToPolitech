@@ -86,7 +86,7 @@ void Exclamations::readExclamationsFromTheBase(QString pathToBase)
 
 int Exclamations::getRandomNumber(int min, int max)
 {
-    return randomGenerator->bounded(min,max);
+    return random::randomNumber(min,max);
 }
 
 Exclamations::Exclamations(QString pathToBase)

@@ -234,7 +234,7 @@ int AppEngine::getCountOfTicketsInSession(){
     return 0;
 }
 
-QString AppEngine::getTitle()
+const QString AppEngine::getTitle() const
 {
     return "Yulya is pure sex";
 }

@@ -67,9 +67,9 @@ ApplicationWindow {
             {
             if(currentItem.objectName === "finishLearningScreen" ||
                currentItem.objectName === "finishExamScreen")
-                countOfViewFinishScreen++;
+                view.countOfViewFinishScreen++;
 
-            if(countOfViewFinishScreen > 1)
+            if(view.countOfViewFinishScreen > 1)
             {
                 rootItem.finishLearningSession();
                 myAppHeader.state = "ResultScreen";
@@ -324,10 +324,6 @@ ApplicationWindow {
         //закидываем в стэк рандомную страничку
         function onPushStack(pageUrl : string){
             view.push(pageUrl);
-        }
-
-        function onClearStack(){
-            view.clear();
         }
     }
 }//end window

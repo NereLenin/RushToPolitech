@@ -124,6 +124,7 @@ Rectangle {
         }
         onClicked:
         {
+
             if(countWrongAnswer > 0)
                 view.push("FailedLearnScreen.qml");
         }

@@ -42,31 +42,39 @@ private:
     const QString textOfNullTicket = "Для данного режима билетов больше нет\n Ты чего все выучил шоле?\nНу ты могеш внатуре я в шоке...";
     const int procWrongAnswerForBadMood = 70;
 
-    TicketBase base;
-    Exclamations exclamation;
-
     QQmlApplicationEngine *engine;
-    LearnSession *currentSession;
 
-    void connectCurrentSessionWithEngine();
+    TicketBase base;
+    Exclamations exclamation;//база с восклицаниями для финишскрина
+
+    LearnSession *currentSession;//указатель на текущую сессию
+
+    QMap<TypeLearning,QString> finishScreens;//таблица для финишскринов/относительно сессии
+
+    void connectCurrentSessionWithEngine();//коннект/дисконект сессии с движком
     void disconnectCurrentSessionWithEngine();
 
-    void startLearningSession(TypeLearning regime);
+    void startLearningSession(TypeLearning regime);//создание учебной сессии
 
-    QMap<TypeLearning,QString> finishScreens;
+    QMap<TypeLearning,QString> fillFinishScreens();//заполнение
 
-    QMap<TypeLearning,QString> fillFinishScreens();
-    void initialize();
+    void initialize();//инициализация полей, функция для конструктора
+    void bindQMLSlotSignalConnections();//соединяем сигналы/слоты движка и QML
+
+    void emitPushSignalForTicket(Ticket *ticket);//парсим билет и шлем сигнал в QML, чтоб засунуть билет в стек
 public:
-
     explicit AppEngine(QQmlApplicationEngine *engine = nullptr,QObject *parent = nullptr);
-
-    const QString getTextOfNullTicket() const;
 
     void connectToEngine(QQmlApplicationEngine *newEngine = nullptr);
 
-    void bindQMLSlotSignalConnections();
+    QVariant wrongTicketsModel;//вот об этом хорошенько подумать, модель для листа неправильных билетов
+    void fillTicketModelFromSession();//ее заполнение/переподключение к движку
 
+    //Геттеры для QML
+    const QString getTextOfNullTicket() const;
+    const QString getTitle() const;
+
+    //геттеры статистики для QML
     int getChanceToPassExam();
     int getProcOfAllLearned();
     int getProcOfTodayLearned();
@@ -75,26 +83,18 @@ public:
     int getHardTicketsCount();
     int getForgottenTicketsCount();
 
+    //геттеры для хэдера QML, конкретно эти два - для экзамена
     int getCurrentTicketNumber();
     int getCountOfTicketsInSession();
 
-
-    QString getTitle();
-
-    QVariant wrongTicketsModel;
-
-    void fillTicketModelFromSession();
+    //геттеры для финиш скрина
+    QString getFinishScreenText();
 
     int getCountOfRightAnswer();
     int getCountOfWrongAnswer();
 
     QString getSessionLasting();
     QString getLearningSessionTimerTime();
-
-    QString getFinishScreenText();
-
-    void emitPushSignalForTicket(Ticket *ticket);
-
 signals:
     /* to QML */
     //pushes in stack
@@ -107,7 +107,6 @@ signals:
 
     void pushInputable(int index, QString correctAnswer, QString textOfQuestion, QString pathToImage);
     void pushStack(QString pageUrl);
-    void clearStack();
 
     //update properties for QML
     void sessionStatisticChanged();
@@ -116,9 +115,12 @@ signals:
     /* To LearningSession */
     void saveStatisticInLearningSession(int index, TicketAnswerType correctness);
     void startLearningFailedTickets();
-    void finishSession();
 
+    //посылаем в учебную сессию сигнал, что в QML дошли до последнего экрана
+    void finishSession();
 public slots:
+    /*from QMLEngine*/
+    void onQmlEngineObjectCreated();
 
     /* QML */
     //контроллеры сессий учебы
@@ -148,8 +150,6 @@ public slots:
     void onLearnSessionStatisticChanged();
     void onLearnSessionTimeChanged();
 
-    /*from QMLEngine*/
-    void onQmlEngineObjectCreated();
 };
 
 #endif // APPENGINE_H
