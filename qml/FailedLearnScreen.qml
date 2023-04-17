@@ -14,9 +14,9 @@ Rectangle {
 
     id: mainScreenRectangle
     objectName: "FailedLearnScreen"
-    //anchors.fill: parent
-    width: view.width
-    height: view.height
+
+    width: view.width; height: view.height; //same as anchors.fill: parent
+
     color: "#edecec"
 
     Keys.onPressed: (event)=> {

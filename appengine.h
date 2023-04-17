@@ -101,17 +101,8 @@ public:
     QString getLearningSessionTimerTime();
 signals:
     /* to QML */
-    //pushes in stack
-    void pushSelectable(int index, QString textQuestion, QString pathToImage,
-                                   QString variant1Text, QString variant1PathToImg,
-                                   QString variant2Text, QString variant2PathToImg,
-                                   QString variant3Text, QString variant3PathToImg,
-                                   QString variant4Text, QString variant4PathToImg,
-                                   int indexOfCorrectVariant);
-
-    void pushInputable(int index, QString correctAnswer, QString textOfQuestion, QString pathToImage);
+    void collectLearningTicket(Ticket *ticketItem);
     void pushStack(QString pageUrl);
-
     void showMessage(QString textOfMessage);
 
     //update properties for QML
@@ -124,6 +115,7 @@ signals:
 
     //посылаем в учебную сессию сигнал, что в QML дошли до последнего экрана
     void finishSession();
+
 public slots:
     /*from QMLEngine*/
     void onQmlEngineObjectCreated();

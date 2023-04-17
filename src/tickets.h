@@ -16,6 +16,8 @@ class Ticket: public QObject
 
     Q_PROPERTY(int ticketIndex READ getIndex CONSTANT)
     Q_PROPERTY(QString questionText READ getQuestionText CONSTANT)
+    Q_PROPERTY(QString type READ getStringType CONSTANT)
+    Q_PROPERTY(QString pathToImage READ getImageUrl CONSTANT)
 protected:
     int index;
     TicketType type;
@@ -31,6 +33,9 @@ public:
     static Ticket* createTicket(QJsonObject ticket, int index =0);
 
     static TicketType qStringToTicketType(QString status);
+    static QString ticketTypeToString(TicketType type);
+
+    QString getStringType();
 
     int getIndex() const;
     TicketType getType() const;
@@ -69,8 +74,11 @@ class SelectableAnswerTicket : public Ticket
     Q_OBJECT
 
     Q_PROPERTY(int ticketIndex READ getIndex CONSTANT)
-    Q_PROPERTY(QString questionText READ getQuestionText CONSTANT)
+    Q_PROPERTY(QString textOfQuestion READ getQuestionText CONSTANT)
+    Q_PROPERTY(QString type READ getStringType CONSTANT)
+    Q_PROPERTY(QString pathToImage READ getImageUrl CONSTANT)
 
+    Q_PROPERTY(int indexOfCorrectVariant READ getIndexOfCorrectAnswer CONSTANT)
 public: const static int countOfAnswers = 4;
 
 private:
@@ -86,6 +94,10 @@ private:
     void moveNotVoidAnswersUp();
 public:
 
+     int getCountOfAnswers() const {
+        return countOfAnswers;
+    }
+
     SelectableAnswerTicket(int index = 0);
 
     int getIndex(){ return index; }
@@ -93,11 +105,6 @@ public:
 
     int getIndexOfCorrectAnswer();//убрать?
 
-    const QString getAnswer(int index) const;
-
-    const QString getAnswerImageUrl(int index) const;
-
-    void mixAnswers();
 
     virtual TicketAnswerType isCorrectAnswer(double answer);
     virtual TicketAnswerType isCorrectAnswer(QString answer);
@@ -113,7 +120,13 @@ public:
 
         qDebug() << " indexOfCorrAnswer:" << indexOfCorrectAnswer;
     }
+
     ~SelectableAnswerTicket(){}
+
+public slots://сделать INVOKABLE?
+    const QString getAnswer(int index) const;
+    const QString getAnswerImageUrl(int index) const;
+    void mixAnswers();
 };
 
 
@@ -122,8 +135,11 @@ class InputAnswerTicket : public Ticket
     Q_OBJECT
 
     Q_PROPERTY(int ticketIndex READ getIndex CONSTANT)
-    Q_PROPERTY(QString questionText READ getQuestionText CONSTANT)
+    Q_PROPERTY(QString textOfQuestion READ getQuestionText CONSTANT)
+    Q_PROPERTY(QString type READ getStringType CONSTANT)
+    Q_PROPERTY(QString pathToImage READ getImageUrl CONSTANT)
 
+    Q_PROPERTY(QString correctAnswer READ getCorrectAnswer CONSTANT)
 private:
    QString correctAnswer;
 
@@ -134,10 +150,7 @@ public:
    virtual TicketAnswerType isCorrectAnswer(double answer);
    virtual TicketAnswerType isCorrectAnswer(QString answer);
 
-   int getIndex(){ return index; }
-   QString getQuestionText(){ return questionText;}
-
-   QString getCorrectAnswer(); //убрать?
+   QString getCorrectAnswer();
    //----------debugFunc
    void debugPrint() const {
        Ticket::debugPrint();

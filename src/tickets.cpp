@@ -57,7 +57,20 @@ TicketType Ticket::qStringToTicketType(QString status)
     else if(status == "selectableAnswerTicket")
         return TicketType::selectableAnswerTicket;
 
-   return TicketType::selectableAnswerTicket;
+    return TicketType::selectableAnswerTicket;
+}
+
+QString Ticket::ticketTypeToString(TicketType type)
+{
+    switch(type){
+    case inputAnswerTicket: return "inputAnswerTicket"; break;
+    case selectableAnswerTicket: return "selectableAnswerTicket"; break;
+    default: "dontknowntickettype";break;
+    }
+}
+
+QString Ticket::getStringType(){
+    return ticketTypeToString(this->type);
 }
 
 int Ticket::getIndex() const

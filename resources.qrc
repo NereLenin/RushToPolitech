@@ -147,5 +147,6 @@
         <file>ticketBase/questionImage/280.png</file>
         <file>ticketBase/questionImage/339.png</file>
         <file>qml/MessagePanel.qml</file>
+        <file>qml/Pager.qml</file>
     </qresource>
 </RCC>

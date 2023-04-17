@@ -13,22 +13,10 @@ Item {
     property string pathToRightIconButton: "qrc:/icons/studyIcon.png"
     property string headerTime: ""
 
-    property string currentState: ""
-    property string lastState: ""
 
     signal burgerButtonClicked()
     signal rightButtonClicked()
 
-    onStateChanged: {
-        rootHeaderItem.lastState = rootHeaderItem.currentState;
-        rootHeaderItem.currentState = rootHeaderItem.state;
-    }
-
-
-    function setLastState()
-    {
-        rootHeaderItem.state = rootHeaderItem.lastState
-    }
 
     Rectangle {
         id: backgroundRectangle

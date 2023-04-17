@@ -12,9 +12,6 @@ Rectangle {
 
     color: "#edecec"
 
-    Component.onCompleted: {
-        console.log( mainScreenRectangle.objectName);
-    }
 
     property int ticketIndex: 0
     property int indexOfCorrectVariant: 2

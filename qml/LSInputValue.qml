@@ -30,9 +30,6 @@ Rectangle {
     MouseArea{
         anchors.fill: parent
 
-
-
-
         Item {
             id: submitButtonItem
 

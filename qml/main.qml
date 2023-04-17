@@ -10,17 +10,12 @@ ApplicationWindow {
     visible: true
     title: appEngine.title//qsTr("Hello World")
 
-    Component.onCompleted:
-    {
-        //view.push("qrc:/qml/FinishExamFailed.qml");
-    }
-
 
     header: MyHeader{
         id: myAppHeader
 
-        //жестко соединяем текущее состояние с именем экрана который сейчас отображается
-        state: view.currentItem.objectName
+        //жестко привязываем текущее состояние с именем экрана который сейчас отображается
+        state: view.currentItem.objectName //Pager.currentItem
 
         x:0
         y:0
@@ -66,7 +61,6 @@ ApplicationWindow {
         id: view
         objectName: "mainStack"
 
-        //anchors.top: myAppHeader.bottom
         anchors.top: myMessagePanel.bottom
         anchors.left: parent.left
         anchors.right: parent.right
@@ -326,37 +320,41 @@ ApplicationWindow {
 
         //слоты для заполнения стэка по сигналам с бэка
         //закидываем в стэк страничку с выбором варианта
-        function onPushSelectable( index : int,
-                                    textOfQuestion, pathToImage,
-                                    variant1Text, variant1PathToImg,
-                                    variant2Text, variant2PathToImg,
-                                    variant3Text, variant3PathToImg,
-                                    variant4Text, variant4PathToImg : string,
-                                    indexOfCorrectVariant : int )
-        {
-            view.push(["LSChooseVariant.qml",{"ticketIndex": index,
-                          "textOfQuestion": textOfQuestion,
-                          "pathToImage": pathToImage,
-                          "variant1Text": variant1Text,
-                          "variant1PathToImg": variant1PathToImg,
-                          "variant2Text": variant2Text,
-                          "variant2PathToImg": variant2PathToImg,
-                          "variant3Text": variant3Text,
-                          "variant3PathToImg": variant3PathToImg,
-                          "variant4Text": variant4Text,
-                          "variant4PathToImg": variant4PathToImg,
-                          "indexOfCorrectVariant": indexOfCorrectVariant
-                      }]);
+
+        //перенестив пагинатор
+        function onCollectLearningTicket(ticketItem){
+
+            if(ticketItem.type === "selectableAnswerTicket")
+            {
+                ticketItem.mixAnswers();
+                view.push(["LSChooseVariant.qml",{"ticketIndex": ticketItem.ticketIndex,
+                                                  "textOfQuestion": ticketItem.textOfQuestion,
+                                                  "pathToImage": ticketItem.pathToImage,
+                                                  "variant1Text": ticketItem.getAnswer(0),
+                                                  "variant1PathToImg": ticketItem.getAnswerImageUrl(0),
+                                                  "variant2Text": ticketItem.getAnswer(1),
+                                                  "variant2PathToImg": ticketItem.getAnswerImageUrl(1),
+                                                  "variant3Text": ticketItem.getAnswer(2),
+                                                  "variant3PathToImg": ticketItem.getAnswerImageUrl(2),
+                                                  "variant4Text": ticketItem.getAnswer(3),
+                                                  "variant4PathToImg": ticketItem.getAnswerImageUrl(3),
+                                                  "indexOfCorrectVariant": ticketItem.indexOfCorrectVariant
+                                      }]);
+            }else
+            if(ticketItem.type === "inputAnswerTicket")
+            {
+                view.push(["LSInputValue.qml",{   "ticketIndex": ticketItem.ticketIndex,
+                              "textOfQuestion": ticketItem.textOfQuestion,
+                              "pathToImage": ticketItem.pathToImage,
+                              "correctAnswer": ticketItem.correctAnswer}]);
+            }
+            else{
+                console.log("Неизвестный билет немогу запушить");
+                myMessagePanel.textOfMessage = "Неизвестный билет немогу запушить\n" + ticketItem.ticketIndex;
+                myMessagePanel.open();
+            }
         }
 
-        //закидываем в стэк страничку с вводом
-        function onPushInputable(index : int, correctAnswer, textOfQuestion, pathToImage: string)
-        {
-            view.push(["LSInputValue.qml",{   "ticketIndex": index,
-                          "textOfQuestion": textOfQuestion,
-                          "pathToImage": pathToImage,
-                          "correctAnswer": correctAnswer}]);
-        }
 
         //закидываем в стэк рандомную страничку
         function onPushStack(pageUrl : string){
@@ -368,5 +366,15 @@ ApplicationWindow {
             myMessagePanel.open();            
         }
 
+    }
+
+    //внутри QML
+    function onReturnToRegimeMainPage(){
+        console.log("return to main page");
+        //вызов пагинатора
+    }
+
+    function onNavigateTo(screenName: string){
+       //вызов пагинатора
     }
 }//end window

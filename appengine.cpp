@@ -322,35 +322,6 @@ QString AppEngine::getFinishScreenText(){
         return "";
 }
 
-void AppEngine::emitPushSignalForTicket(Ticket *ticket)
-{
-
-    switch(ticket->getType())
-    {
-    case TicketType::selectableAnswerTicket:
-    {
-        SelectableAnswerTicket *currentTicket = dynamic_cast<SelectableAnswerTicket*>(ticket);
-        currentTicket->mixAnswers();
-
-        emit pushSelectable(currentTicket->getIndex(), currentTicket->getQuestionText(),currentTicket->getImageUrl(),
-                            currentTicket->getAnswer(0),currentTicket->getAnswerImageUrl(0),
-                            currentTicket->getAnswer(1),currentTicket->getAnswerImageUrl(1),
-                            currentTicket->getAnswer(2),currentTicket->getAnswerImageUrl(2),
-                                  currentTicket->getAnswer(3),currentTicket->getAnswerImageUrl(3),
-                                  currentTicket->getIndexOfCorrectAnswer());
-        }
-        break;
-    case TicketType::inputAnswerTicket:
-    {
-        InputAnswerTicket *currentTicket = dynamic_cast<InputAnswerTicket*>(ticket);
-        emit pushInputable(currentTicket->getIndex(),currentTicket->getCorrectAnswer(),currentTicket->getQuestionText(), currentTicket->getImageUrl());
-    }
-    break;
-
-    }
-
-}
-
 void AppEngine::learnController()
 {
     startLearningSession(TypeLearning::DefaultLearning);
@@ -411,8 +382,7 @@ void AppEngine::onLearnSessionFillStack(QList<Ticket *> ticketsToPush)
 
         for(int i=0;i<ticketsToPush.size();i++)
         {
-            emitPushSignalForTicket(ticketsToPush[i]);
-            //delay(500);
+            collectLearningTicket(ticketsToPush[i]);
         }
 
 }

@@ -43,6 +43,7 @@ DISTFILES += \
     qml/LearnTheoryLastScreen.qml \
     qml/MyHeader.qml \
     qml/MyProgressBar.ui.qml \
+    qml/Pager.qml \
     qml/RepeatScreen.qml \
     qml/SquareButton.ui.qml \
     qml/StartScreen.qml \
