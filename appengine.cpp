@@ -13,20 +13,31 @@ void delay(int millisecondsWait)
 
 void AppEngine::bindQMLSlotSignalConnections()
 {
-    if(engine==nullptr)
+    if(qmlEngine==nullptr)
     {
         qDebug() << "don't have any engine";
         return;
     }
 
-    QObject *rootObject = engine->rootObjects()[0];
+    if(qmlEngine->rootObjects().empty())
+    {
+        qDebug() << "don't have any main page in engine";
+        return;
+    }
+
+    if(qmlEngine->rootObjects()[0]->objectName() != "appMainScreen")
+    {
+        qDebug() << "Can't bind with main screen, it's not app Main Screen";
+        return;
+    }
+
+    QObject *rootObject = qmlEngine->rootObjects()[0];
 
     if(rootObject==nullptr)
     {
         qDebug() << "try slot/signal connection with null rootObject";
         return;
     }
-
 
     //соединяем сигнал выбора ответа на форме с слотом зеркалом в движке
     QObject::connect(rootObject,SIGNAL(saveAnswerInStatistic(int,bool)),
@@ -63,7 +74,6 @@ void AppEngine::bindQMLSlotSignalConnections()
     //убежал из сессии
     QObject::connect(rootObject,SIGNAL(endLearningSessions()),
                      this,SLOT(onEndLearningSessions()));
-
 }
 
 void AppEngine::connectCurrentSessionWithEngine()
@@ -100,10 +110,6 @@ void AppEngine::connectCurrentSessionWithEngine()
     QObject::connect(currentSession,SIGNAL(pushFinalScreen()),
                      this,          SLOT(onLearnSessionPushFinalPage()));
 
-    //QObject::connect(currentSession,SIGNAL(learnSessionTimeOut()),
-    //                 this,          SLOT(onLearnSessionTimerTimeOut()));
-
-
 }
 
 void AppEngine::disconnectCurrentSessionWithEngine()
@@ -122,7 +128,7 @@ void AppEngine::startLearningSession(TypeLearning regime)
     if(currentSession != nullptr)
         onEndLearningSessions();
 
-    currentSession = LearnSession::createSession(&base,regime);
+    currentSession = LearnSession::createSession(&tickets,regime);
     connectCurrentSessionWithEngine();
     currentSession->StartSession();//фу блять с большой буквы почему
 }
@@ -134,7 +140,9 @@ QMap<TypeLearning, QString> AppEngine::fillFinishScreens()
     finishScreens[TypeLearning::RepeatHard] =
     finishScreens[TypeLearning::RepeatWithTimer] =
     finishScreens[TypeLearning::RepeatRandom] =
-    finishScreens[TypeLearning::RepeatForgotten] = "FinishLearnScreen.qml";
+    finishScreens[TypeLearning::RepeatForgotten] =
+    finishScreens[TypeLearning::LearnFailedFromRepeat] =
+    finishScreens[TypeLearning::LearnFailedFromLearnOrExam]= "FinishLearnScreen.qml";
 
     finishScreens[TypeLearning::Exam] = "FinishExamScreen.qml";
     return finishScreens;
@@ -148,74 +156,67 @@ const QString AppEngine::getTextOfNullTicket() const {
 
 void AppEngine::initialize()
 {
-    engine = nullptr;
+    qmlEngine = nullptr;
     currentSession = nullptr;
 
     finishScreens = fillFinishScreens();
-
-
 }
 
 void AppEngine::connectToEngine(QQmlApplicationEngine *newEngine)
 {
-    if(newEngine!=nullptr && this->engine == nullptr){
-        //base.updateStatisticInBase();
+    if(newEngine!=nullptr && this->qmlEngine == nullptr){
+        this->qmlEngine = newEngine;
 
-        this->engine = newEngine;
+        this->qmlEngine->rootContext()->setContextProperty("appEngine",this);
+        this->qmlEngine->rootContext()->setContextProperty("listWrongTickets",wrongTicketsModel);
 
-        this->engine->rootContext()->setContextProperty("appEngine",this);
-        this->engine->rootContext()->setContextProperty("listWrongTickets",wrongTicketsModel);
-
-        QObject::connect(this->engine, &QQmlApplicationEngine::objectCreated,
-                                 this, &AppEngine::onQmlEngineObjectCreated);
-        //обновляем информацию
-        //emit sessionStatisticChanged();
+        QObject::connect(this->qmlEngine, &QQmlApplicationEngine::objectCreated,
+                           this, &AppEngine::onQmlEngineObjectCreated);
      }
 }
 
 
-AppEngine::AppEngine(QQmlApplicationEngine *engine, QObject *parent)
+AppEngine::AppEngine(QObject* parent, QQmlApplicationEngine *qmlEngine)
     : QObject{parent}
 {
     initialize();
-    connectToEngine(engine);
+    connectToEngine(qmlEngine);
 }
-
 
 
 int AppEngine::getChanceToPassExam()
 {
-    return base.getChanceToPassExam();
+    return tickets.getChanceToPassExam();
 }
 
 int AppEngine::getProcOfAllLearned()
 {
-    return base.getAllLearnedProc();
+    return tickets.getAllLearnedProc();
 }
 
 int AppEngine::getProcOfTodayLearned()
 {
-    return base.getTodayLearnedProc();
+    return tickets.getTodayLearnedProc();
 }
 
 int AppEngine::getAllTicketsCount()
 {
-    return base.getAllTicketsCount();
+    return tickets.getAllTicketsCount();
 }
 
 int AppEngine::getLearnedTicketsCount()
 {
-    return base.getLearnedTicketsCount();
+    return tickets.getLearnedTicketsCount();
 }
 
 int AppEngine::getHardTicketsCount()
 {
-    return base.getHardTicketsCount();
+    return tickets.getHardTicketsCount();
 }
 
 int AppEngine::getForgottenTicketsCount()
 {
-    return base.getForgottenTicketsCount();
+    return tickets.getForgottenTicketsCount();
 }
 
 int AppEngine::getCurrentTicketNumber(){
@@ -237,6 +238,23 @@ int AppEngine::getCountOfTicketsInSession(){
 const QString AppEngine::getTitle() const
 {
     return "Yulya is pure sex";
+}
+
+QString AppEngine::getTypeOfCurrentSession(){
+    if(currentSession!=nullptr)
+    {
+        switch(currentSession->getCurrentRegime())
+        {
+        case TypeLearning::Exam: return "Exam"; break;
+        case TypeLearning::DefaultLearning: return "DefaultLearning"; break;
+        case TypeLearning::RepeatWithTimer: return "RepeatWithTimer"; break;
+        case TypeLearning::LearnFailedFromRepeat: return "LearnFailedFromRepeat"; break;
+        case TypeLearning::LearnFailedFromLearnOrExam: return "LearnFailed"; break;
+        default:  return "RepeatDefault"; break;
+        }
+    }
+
+    return "Session don't started";
 }
 
 void AppEngine::fillTicketModelFromSession()
@@ -298,7 +316,7 @@ QString AppEngine::getFinishScreenText(){
         else
             currentMood = Mood::Good;
 
-        return exclamation.getOne(currentMood,currentSession->getCurrentRegime());
+        return exclamations.getOne(currentMood,currentSession->getCurrentRegime());
 
     }else
         return "";
@@ -380,7 +398,9 @@ void AppEngine::onLearnSessionFillStack(QList<Ticket *> ticketsToPush)
         if(ticketsToPush.size() == 0)
         {
            qDebug() << "Пушим нулевой билет";
-           emit pushSelectable(0,textOfNullTicket,"qrc:/icons/logo.png","Спасибо......\n я понял брат.....","","Всм нет я за\n тебя 0 руб заплатил....\nДАЙ","","","","","",1);
+
+           emit showMessage("Чтобы учить этот режим нужны билеты, а доступных таких нет. Выбери другой режим.");
+
            emit finishSession();
            return;
         }
@@ -427,7 +447,7 @@ void AppEngine::onLearnSessionStatisticChanged()
     emit sessionStatisticChanged();
 
     fillTicketModelFromSession();
-    this->engine->rootContext()->setContextProperty("listWrongTickets",this->wrongTicketsModel);
+    qmlEngine->rootContext()->setContextProperty("listWrongTickets",this->wrongTicketsModel);
 }
 
 void AppEngine::onLearnSessionTimeChanged()

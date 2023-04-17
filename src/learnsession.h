@@ -5,7 +5,7 @@
 
 #include <QObject>
 
-enum TypeLearning{DefaultLearning, RepeatHard,RepeatWithTimer,RepeatRandom,RepeatForgotten,Exam};
+enum TypeLearning{DefaultLearning, RepeatHard,RepeatWithTimer,RepeatRandom,RepeatForgotten,Exam, LearnFailedFromRepeat, LearnFailedFromLearnOrExam};
 
 class LearnSession : public QObject
 {
@@ -48,7 +48,6 @@ private:
 
     explicit LearnSession(QObject *parent = nullptr);
 public:
-
     static LearnSession* createSession(TicketBase *ticketBase, TypeLearning regime);
 
     void StartSession();

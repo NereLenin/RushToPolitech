@@ -16,10 +16,6 @@ Rectangle {
     property int procOfAllLearned: appEngine.procOfAllLearned
     property int procOfTodayLearned: appEngine.procOfTodayLearned
 
-    Component.onCompleted: {
-        myAppHeader.state = "MainScreen";
-    }
-
     Text {
         id: chanceToPassExamText
         text: "Вероятность сдачи экзамена : " + chanceToPassExam + "%"
@@ -156,7 +152,7 @@ Rectangle {
         onClicked:
         {
             //начинаем сессию обучения
-            myAppHeader.state = "LearnScreen"
+            //myAppHeader.state = "LearnScreen"
             rootItem.startLearningSession();
         }
     }
@@ -228,7 +224,7 @@ Rectangle {
 
         onClicked:
         {
-            myAppHeader.state = "ExamScreen"
+            //myAppHeader.state = "ExamScreen"
             rootItem.startExamSession();
         }
     }
@@ -311,7 +307,7 @@ Rectangle {
 
         onClicked: {
 
-            myAppHeader.state = "RepeatScreen"
+
             view.push("qrc:/qml/RepeatScreen.qml")
         }
     }

@@ -9,10 +9,6 @@ Rectangle {
     height: view.height
     objectName: "RepeatScreen"
 
-    Component.onCompleted: {
-        myAppHeader.state = "RepeatScreen";
-    }
-
     color: "#edecec"
 
     property int ticketsCount: appEngine.allTicketsCount
@@ -242,7 +238,7 @@ Rectangle {
         }
 
         onClicked: {
-            myAppHeader.state = "RepeatSession";
+            //myAppHeader.state = "RepeatSession";
             rootItem.startRepeatHardSession();
         }
     }
@@ -293,7 +289,7 @@ Rectangle {
         }
 
         onClicked: {
-            myAppHeader.state = "RepeatSession";
+            //myAppHeader.state = "RepeatSession";
             rootItem.startRepeatRandomSession();
         }
     }
@@ -341,7 +337,7 @@ Rectangle {
             styleColor: "#383b39"
         }
         onClicked: {
-            myAppHeader.state = "RepeatWithTimerSession";
+            //myAppHeader.state = "RepeatWithTimerSession";
             rootItem.startRepeatWithTimerSession();
         }
     }
@@ -390,7 +386,6 @@ Rectangle {
         }
 
         onClicked: {
-            myAppHeader.state = "RepeatSession";
             rootItem.startRepeatForgottenSession();
         }
     }

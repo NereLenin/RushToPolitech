@@ -200,9 +200,10 @@ Rectangle {
 
             onClicked:
             {
+                view.popToRegimeMainScreen();
                 //view.push("qrc:/qml/StartScreen.qml");
-                myAppHeader.state = "mainScreen";
-                view.popTo("StartScreen");
+                //myAppHeader.state = "mainScreen";
+                //view.popTo("StartScreen");
                 //view.pop(StartScreen)
             }
         }

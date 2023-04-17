@@ -41,6 +41,16 @@ void LearnSession::repeatForgottenSession()
 
 void LearnSession::learnFailedTicketsSession()
 {
+    //для того чтобы указать что у нас больше не идет текущая сессия, а идет
+    //отработка косячных билетов, меняем текущий режим
+    if(currentRegime == Exam || currentRegime == DefaultLearning)
+    {
+        currentRegime = LearnFailedFromLearnOrExam;
+    }else{
+        currentRegime = LearnFailedFromRepeat;
+    }
+
+
     qDebug() << "LearnSession::LearnFailed";
     pushListOfTickets(listOfWrongTickets);
 
@@ -139,6 +149,9 @@ void LearnSession::StartSession()
     case RepeatRandom: repeatRandomSession(); break;
     case RepeatForgotten: repeatForgottenSession(); break;
     case Exam: ExamSession(); break;
+    default:
+        qDebug() << "Can't do this session from controller";
+        break;
     }
 }
 

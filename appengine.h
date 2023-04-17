@@ -17,6 +17,7 @@ class AppEngine : public QObject
     Q_PROPERTY(QString title READ getTitle CONSTANT)
     Q_PROPERTY(QString textOfNullTicket READ getTextOfNullTicket CONSTANT)
     Q_PROPERTY(QString finishScreenText READ getFinishScreenText NOTIFY finishSession)
+    Q_PROPERTY(QString typeOfCurrentSession READ getTypeOfCurrentSession NOTIFY sessionStatisticChanged)
 
     // statistic
     Q_PROPERTY(int chanceToPassExam   READ getChanceToPassExam   NOTIFY sessionStatisticChanged)
@@ -42,14 +43,17 @@ private:
     const QString textOfNullTicket = "Для данного режима билетов больше нет\n Ты чего все выучил шоле?\nНу ты могеш внатуре я в шоке...";
     const int procWrongAnswerForBadMood = 70;
 
-    QQmlApplicationEngine *engine;
+    QQmlApplicationEngine *qmlEngine;
 
-    TicketBase base;
-    Exclamations exclamation;//база с восклицаниями для финишскрина
+    TicketBase tickets;
+    Exclamations exclamations;//база с восклицаниями для финишскрина
 
     LearnSession *currentSession;//указатель на текущую сессию
 
     QMap<TypeLearning,QString> finishScreens;//таблица для финишскринов/относительно сессии
+
+    void initialize();//инициализация полей, функция для конструктора
+    void bindQMLSlotSignalConnections();//соединяем сигналы/слоты движка и QML
 
     void connectCurrentSessionWithEngine();//коннект/дисконект сессии с движком
     void disconnectCurrentSessionWithEngine();
@@ -58,12 +62,9 @@ private:
 
     QMap<TypeLearning,QString> fillFinishScreens();//заполнение
 
-    void initialize();//инициализация полей, функция для конструктора
-    void bindQMLSlotSignalConnections();//соединяем сигналы/слоты движка и QML
-
     void emitPushSignalForTicket(Ticket *ticket);//парсим билет и шлем сигнал в QML, чтоб засунуть билет в стек
 public:
-    explicit AppEngine(QQmlApplicationEngine *engine = nullptr,QObject *parent = nullptr);
+    explicit AppEngine(QObject *parent = nullptr, QQmlApplicationEngine *qmlEngine = nullptr);
 
     void connectToEngine(QQmlApplicationEngine *newEngine = nullptr);
 
@@ -73,6 +74,9 @@ public:
     //Геттеры для QML
     const QString getTextOfNullTicket() const;
     const QString getTitle() const;
+
+    QString getTypeOfCurrentSession();
+
 
     //геттеры статистики для QML
     int getChanceToPassExam();
@@ -107,6 +111,8 @@ signals:
 
     void pushInputable(int index, QString correctAnswer, QString textOfQuestion, QString pathToImage);
     void pushStack(QString pageUrl);
+
+    void showMessage(QString textOfMessage);
 
     //update properties for QML
     void sessionStatisticChanged();
@@ -149,7 +155,6 @@ public slots:
 
     void onLearnSessionStatisticChanged();
     void onLearnSessionTimeChanged();
-
 };
 
 #endif // APPENGINE_H

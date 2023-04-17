@@ -13,16 +13,11 @@ import QtQuick.Controls.Material
 Rectangle {
 
     id: mainScreenRectangle
-
+    objectName: "FailedLearnScreen"
     //anchors.fill: parent
     width: view.width
     height: view.height
     color: "#edecec"
-
-    Component.onCompleted:
-    {
-        myAppHeader.state = "WrongTicketsScreen";
-    }
 
     Keys.onPressed: (event)=> {
             if (event.key === Qt.Key_Enter ||
@@ -57,8 +52,8 @@ Rectangle {
 
             onClicked:
             {
-                myAppHeader.state = "MainScreen";
-                view.popTo("StartScreen");
+                view.popToRegimeMainScreen();
+                //view.popTo("StartScreen");
             }
         }
 
@@ -119,7 +114,7 @@ Rectangle {
 
             onClicked:
             {
-                myAppHeader.state = "WrongTicketsLearnSession";
+                //myAppHeader.state = "WrongTicketsLearnSession";
                 rootItem.startLearnFailedTicketsSession();
             }
         }

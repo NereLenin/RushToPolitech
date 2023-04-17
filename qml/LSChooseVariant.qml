@@ -6,11 +6,15 @@ import QtQuick.Controls.Material
 
 Rectangle {
     id: mainScreenRectangle
-
+    objectName: "CV" + appEngine.typeOfCurrentSession
     width: view.width
     height: view.height
 
     color: "#edecec"
+
+    Component.onCompleted: {
+        console.log( mainScreenRectangle.objectName);
+    }
 
     property int ticketIndex: 0
     property int indexOfCorrectVariant: 2

@@ -5,7 +5,7 @@ import QtQuick.Controls.Material
 
 Rectangle {
     id: mainScreenRectangle
-
+    objectName: "IV" + appEngine.typeOfCurrentSession
     //anchors.fill: parent
     width: view.width
     height: view.height

@@ -146,5 +146,6 @@
         <file>ticketBase/questionImage/279.png</file>
         <file>ticketBase/questionImage/280.png</file>
         <file>ticketBase/questionImage/339.png</file>
+        <file>qml/MessagePanel.qml</file>
     </qresource>
 </RCC>
