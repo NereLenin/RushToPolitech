@@ -10,6 +10,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
 
+import TypeLearning 0.1
 Rectangle {
     id: mainScreenRectangle
     objectName: "finishExamScreen"
@@ -150,7 +151,7 @@ Rectangle {
             font.bold: true
 
             onClicked: {
-              rootItem.startExamSession();
+              rootItem.startSession(LearnType.Exam);
             }
         }
 
