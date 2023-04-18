@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
 
+import TypeLearning 0.1
+
 Rectangle {
     id: mainRectangle
 
@@ -164,7 +166,7 @@ Rectangle {
         anchors.left: parent.horizontalCenter
         anchors.right: parent.right
         anchors.top: allTicketsText.bottom
-        anchors.bottom: examChanceText.top //поменять на наш компонент
+        anchors.bottom: examChanceText.top
 
         anchors.margins: 5
 
@@ -238,8 +240,7 @@ Rectangle {
         }
 
         onClicked: {
-            //myAppHeader.state = "RepeatSession";
-            rootItem.startRepeatHardSession();
+            rootItem.startSession(LearnType.RepeatHard);
         }
     }
 
@@ -289,8 +290,7 @@ Rectangle {
         }
 
         onClicked: {
-            //myAppHeader.state = "RepeatSession";
-            rootItem.startRepeatRandomSession();
+            rootItem.startSession(LearnType.RepeatRandom);
         }
     }
 
@@ -337,8 +337,7 @@ Rectangle {
             styleColor: "#383b39"
         }
         onClicked: {
-            //myAppHeader.state = "RepeatWithTimerSession";
-            rootItem.startRepeatWithTimerSession();
+            rootItem.startSession(LearnType.RepeatWithTimer);
         }
     }
 
@@ -351,7 +350,6 @@ Rectangle {
         width: repeatRandomTen.width
         height: repeatRandomTen.height
 
-        //text: qsTr("")
         font.pointSize: 16
         flat: false
         highlighted: false
@@ -386,7 +384,7 @@ Rectangle {
         }
 
         onClicked: {
-            rootItem.startRepeatForgottenSession();
+            rootItem.startSession(LearnType.RepeatForgotten);
         }
     }
 }

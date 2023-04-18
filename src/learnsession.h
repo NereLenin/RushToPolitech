@@ -4,12 +4,18 @@
 #include "mytimer.h"
 
 #include <QObject>
-
-enum TypeLearning{DefaultLearning, RepeatHard,RepeatWithTimer,RepeatRandom,RepeatForgotten,Exam, LearnFailedFromRepeat, LearnFailedFromLearnOrExam};
+#include <QQmlEngine>
 
 class LearnSession : public QObject
 {
     Q_OBJECT
+public:
+    enum TypeLearning{DefaultLearning, RepeatHard,RepeatWithTimer,RepeatRandom,RepeatForgotten,Exam, LearnFailedFromRepeat, LearnFailedFromLearnOrExam};
+    Q_ENUMS(TypeLearning)
+
+    static void initializeTypeLearningForQml(){
+        qmlRegisterType<LearnSession>("TypeLearning",0,1,"LearnType");
+    }
 private:
     const int ticketsInOneSession = 10;
     const int timeToFinishSessionInMinutes = 5;
@@ -48,6 +54,7 @@ private:
 
     explicit LearnSession(QObject *parent = nullptr);
 public:
+
     static LearnSession* createSession(TicketBase *ticketBase, TypeLearning regime);
 
     void StartSession();

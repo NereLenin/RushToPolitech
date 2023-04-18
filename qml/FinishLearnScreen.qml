@@ -173,7 +173,7 @@ Rectangle {
         onClicked:
         {
             if(countWrongAnswer > 0)
-                view.push("FailedLearnScreen.qml");
+                rootItem.navigateTo("FailedLearnScreen");
         }
     }
 
@@ -200,11 +200,7 @@ Rectangle {
 
             onClicked:
             {
-                view.popToRegimeMainScreen();
-                //view.push("qrc:/qml/StartScreen.qml");
-                //myAppHeader.state = "mainScreen";
-                //view.popTo("StartScreen");
-                //view.pop(StartScreen)
+                rootItem.returnToRegimeMainPage();
             }
         }
 

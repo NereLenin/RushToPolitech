@@ -30,7 +30,7 @@ private:
 public:
     Exclamations(QString pathToBase = ":/ticketBase/ExclamationsBase.json");
 
-    QString getOne(Mood mood = Mood::Good, TypeLearning forSession = TypeLearning::DefaultLearning);
+    QString getOne(Mood mood = Mood::Good, LearnSession::TypeLearning forSession = LearnSession::DefaultLearning);
 
     void debugPrint();
 

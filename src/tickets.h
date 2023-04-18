@@ -79,6 +79,7 @@ class SelectableAnswerTicket : public Ticket
     Q_PROPERTY(QString pathToImage READ getImageUrl CONSTANT)
 
     Q_PROPERTY(int indexOfCorrectVariant READ getIndexOfCorrectAnswer CONSTANT)
+
 public: const static int countOfAnswers = 4;
 
 private:
@@ -94,14 +95,12 @@ private:
     void moveNotVoidAnswersUp();
 public:
 
-     int getCountOfAnswers() const {
-        return countOfAnswers;
-    }
+     int getCountOfAnswers() const;
 
     SelectableAnswerTicket(int index = 0);
 
-    int getIndex(){ return index; }
-    QString getQuestionText(){ return questionText;}
+    int getIndex();
+    QString getQuestionText();
 
     int getIndexOfCorrectAnswer();//убрать?
 

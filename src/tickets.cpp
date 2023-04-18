@@ -112,6 +112,10 @@ SelectableAnswerTicket::SelectableAnswerTicket(int index) : Ticket(nullptr,index
     this->type = TicketType::selectableAnswerTicket;
 }
 
+int SelectableAnswerTicket::getIndex(){ return index; }
+
+QString SelectableAnswerTicket::getQuestionText(){ return questionText;}
+
 int SelectableAnswerTicket::getIndexOfCorrectAnswer()
 {
     return indexOfCorrectAnswer;
@@ -271,6 +275,10 @@ void SelectableAnswerTicket::moveNotVoidAnswersUp()
         }
     }
 
+}
+
+int SelectableAnswerTicket::getCountOfAnswers() const {
+    return countOfAnswers;
 }
 
 

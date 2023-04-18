@@ -52,8 +52,7 @@ Rectangle {
 
             onClicked:
             {
-                view.popToRegimeMainScreen();
-                //view.popTo("StartScreen");
+                rootItem.returnToRegimeMainPage();
             }
         }
 
@@ -114,7 +113,6 @@ Rectangle {
 
             onClicked:
             {
-                //myAppHeader.state = "WrongTicketsLearnSession";
                 rootItem.startLearnFailedTicketsSession();
             }
         }

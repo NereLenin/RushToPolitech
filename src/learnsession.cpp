@@ -155,9 +155,9 @@ void LearnSession::StartSession()
     }
 }
 
-TypeLearning LearnSession::getCurrentRegime() const
+LearnSession::TypeLearning LearnSession::getCurrentRegime() const
 {
-    return currentRegime;
+    return LearnSession::currentRegime;
 }
 
 int LearnSession::getCountRight() const

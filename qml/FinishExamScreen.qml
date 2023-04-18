@@ -125,7 +125,7 @@ Rectangle {
         onClicked:
         {
             if(countWrongAnswer > 0)
-                view.push("FailedLearnScreen.qml");
+                rootItem.navigateTo("FailedLearnScreen");
         }
     }
 
@@ -150,7 +150,6 @@ Rectangle {
             font.bold: true
 
             onClicked: {
-              //myAppHeader.state = "ExamScreen";
               rootItem.startExamSession();
             }
         }
@@ -211,9 +210,7 @@ Rectangle {
 
             onClicked:
             {
-                view.popToRegimeMainScreen();
-                //view.popTo("StartScreen");
-                //view.push("qrc:/qml/StartScreen.qml");
+                rootItem.returnToRegimeMainPage();
             }
         }
 

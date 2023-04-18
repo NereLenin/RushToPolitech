@@ -2,8 +2,8 @@
 #define APPENGINE_H
 
 #include <QObject>
-#include <src/learnsession.h>
-#include <exclamations.h>
+#include "src/learnsession.h"
+#include "exclamations.h"
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <src/mytimer.h>
@@ -15,7 +15,6 @@ class AppEngine : public QObject
 
     /*  for QML */
     Q_PROPERTY(QString title READ getTitle CONSTANT)
-    Q_PROPERTY(QString textOfNullTicket READ getTextOfNullTicket CONSTANT)
     Q_PROPERTY(QString finishScreenText READ getFinishScreenText NOTIFY finishSession)
     Q_PROPERTY(QString typeOfCurrentSession READ getTypeOfCurrentSession NOTIFY sessionStatisticChanged)
 
@@ -40,7 +39,6 @@ class AppEngine : public QObject
     Q_PROPERTY(QString timerTime        READ getLearningSessionTimerTime NOTIFY sessionTimeChanging)
 
 private:
-    const QString textOfNullTicket = "Для данного режима билетов больше нет\n Ты чего все выучил шоле?\nНу ты могеш внатуре я в шоке...";
     const int procWrongAnswerForBadMood = 70;
 
     QQmlApplicationEngine *qmlEngine;
@@ -50,17 +48,13 @@ private:
 
     LearnSession *currentSession;//указатель на текущую сессию
 
-    QMap<TypeLearning,QString> finishScreens;//таблица для финишскринов/относительно сессии
-
     void initialize();//инициализация полей, функция для конструктора
     void bindQMLSlotSignalConnections();//соединяем сигналы/слоты движка и QML
 
     void connectCurrentSessionWithEngine();//коннект/дисконект сессии с движком
     void disconnectCurrentSessionWithEngine();
 
-    void startLearningSession(TypeLearning regime);//создание учебной сессии
-
-    QMap<TypeLearning,QString> fillFinishScreens();//заполнение
+    void startLearningSession(LearnSession::TypeLearning regime);//создание учебной сессии
 
     void emitPushSignalForTicket(Ticket *ticket);//парсим билет и шлем сигнал в QML, чтоб засунуть билет в стек
 public:
@@ -72,7 +66,6 @@ public:
     void fillTicketModelFromSession();//ее заполнение/переподключение к движку
 
     //Геттеры для QML
-    const QString getTextOfNullTicket() const;
     const QString getTitle() const;
 
     QString getTypeOfCurrentSession();
@@ -102,7 +95,8 @@ public:
 signals:
     /* to QML */
     void collectLearningTicket(Ticket *ticketItem);
-    void pushStack(QString pageUrl);
+    void pushFinalPage();
+
     void showMessage(QString textOfMessage);
 
     //update properties for QML
@@ -121,13 +115,8 @@ public slots:
     void onQmlEngineObjectCreated();
 
     /* QML */
-    //контроллеры сессий учебы
-    void learnController();//отвечает на signal QML startLearningSession
-    void repeatHardController();
-    void repeatWithTimerController();
-    void repeatRandomController();
-    void repeatForgottenController();
-    void ExamController();
+    //контроллер сессий учебы
+    void onStartSession(int typeOfLearnSession);
 
     //окончание учебной сессии (сьебался в процессе или ушел с экрана с результатами)
     void onEndLearningSessions();
@@ -147,6 +136,8 @@ public slots:
 
     void onLearnSessionStatisticChanged();
     void onLearnSessionTimeChanged();
+
+
 };
 
 #endif // APPENGINE_H

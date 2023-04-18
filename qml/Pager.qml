@@ -2,35 +2,103 @@ import QtQuick
 import QtQuick.Controls
 
 Item {
-    id: rootItem
+    id: rootPagerItem
     width: 10
     height: 30
 
     property string currentItem: view.currentItem.objectName
 
     signal finishLearningSession();
+    signal endLearningSession();
+
+    //возвращаемся к странице с которой начали обучение или экзамен или повтор
+    function popToRegimeMainScreen(){
+        if(appEngine.typeOfCurrentSession === "RepeatWithTimer" ||//если это кто то из повторов
+           appEngine.typeOfCurrentSession === "RepeatDefault" ||
+           appEngine.typeOfCurrentSession === "LearnFailedFromRepeat")
+        {
+            view.popTo("RepeatScreen");//возвращаемся на экран повтора
+        }
+        else{
+            view.popTo("StartScreen");//если это экзамен или просто учеба - возвращаемся на старотовый экран
+        }
+
+        }
 
     function navigateTo(screenName : string){
+
+        view.countOfViewFinishScreen = 0;
         switch(screenName){
-            case "FailedLearnScreen": view.push("FailedLearnScreen.qml"); break;
-            case "finishExamScreen": view.push("finishExamScreen.qml"); break;
-            case "finishExamScreen": view.push("finishExamScreen.qml"); break;
+            case "FailedLearnScreen":
+                view.push("FailedLearnScreen.qml");
+            break;
+            case "RepeatScreen":
+                endLearningSessions();
+                if(view.depth > 1)
+                    view.popTo("RepeatScreen")
+                else
+                    view.push("RepeatScreen.qml");
+            break;
+            case "StartScreen":
+                endLearningSessions();
+                view.popTo("StartScreen")
+            break;
         default: break;
         }
+
     }
 
+    //по режиму определяем экран конца обучения
+    function pushFinalPage()
+    {
+        if(appEngine.typeOfCurrentSession === "Exam")
+        {
+          view.push("FinishExamScreen.qml");//for exam
+        }
+        else//for else screen
+        {
+          view.push("FinishLearnScreen.qml");
+        }
+
+    }
+
+    function collectTicketInStack(ticketItem){
+        if(ticketItem.type === "selectableAnswerTicket")
+        {
+            ticketItem.mixAnswers();
+            view.push(["LSChooseVariant.qml",{"ticketIndex": ticketItem.ticketIndex,
+                                              "textOfQuestion": ticketItem.textOfQuestion,
+                                              "pathToImage": ticketItem.pathToImage,
+                                              "variant1Text": ticketItem.getAnswer(0),
+                                              "variant1PathToImg": ticketItem.getAnswerImageUrl(0),
+                                              "variant2Text": ticketItem.getAnswer(1),
+                                              "variant2PathToImg": ticketItem.getAnswerImageUrl(1),
+                                              "variant3Text": ticketItem.getAnswer(2),
+                                              "variant3PathToImg": ticketItem.getAnswerImageUrl(2),
+                                              "variant4Text": ticketItem.getAnswer(3),
+                                              "variant4PathToImg": ticketItem.getAnswerImageUrl(3),
+                                              "indexOfCorrectVariant": ticketItem.indexOfCorrectVariant
+                                  }]);
+        }else
+        if(ticketItem.type === "inputAnswerTicket")
+        {
+            view.push(["LSInputValue.qml",{   "ticketIndex": ticketItem.ticketIndex,
+                          "textOfQuestion": ticketItem.textOfQuestion,
+                          "pathToImage": ticketItem.pathToImage,
+                          "correctAnswer": ticketItem.correctAnswer}]);
+        }
+        else{
+            console.log("Неизвестный билет немогу запушить");
+            myMessagePanel.textOfMessage = "Неизвестный билет немогу запушить\n" + ticketItem.ticketIndex;
+            myMessagePanel.open();
+        }
+    }
 
     StackView {
         id: view
         objectName: "mainStack"
 
-        width:rootItem.width
-        height: rootItem.height
-
-        //anchors.top: myMessagePanel.bottom
-        //anchors.left: parent.left
-        //anchors.right: parent.right
-        //anchors.bottom: parent.bottom
+        anchors.fill: parent
         initialItem: "qrc:/qml/StartScreen.qml"
 
         //вот это вот мерзость пизда просто, но
@@ -50,10 +118,10 @@ Item {
 
             if(view.countOfViewFinishScreen > 1)
             {
-                finishLearningSession();
+                rootPagerItem.finishLearningSession();
 
                 console.log("SessionFinish");
-                countOfViewFinishScreen = 0;
+                view.countOfViewFinishScreen = 0;
             }
             }
 
@@ -74,21 +142,8 @@ Item {
             isFinishSessionFuncActive = true;
         }
 
-        //возвращаемся к странице с которой начали обучение или экзамен или повтор
-        function popToRegimeMainScreen(){
-            if(appEngine.typeOfCurrentSession === "RepeatWithTimer" ||//если это кто то из повторов
-               appEngine.typeOfCurrentSession === "RepeatDefault" ||
-               appEngine.typeOfCurrentSession === "LearnFailedFromRepeat")
-            {
-                view.popTo("RepeatScreen");//возвращаемся на экран повтора
-            }
-            else{
-                view.popTo("StartScreen");//если это экзамен или просто учеба - возвращаемся на старотовый экран
-            }
-
-        }
-
 
 
     }
+
 }

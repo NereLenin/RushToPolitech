@@ -95,9 +95,9 @@ Exclamations::Exclamations(QString pathToBase)
     readExclamationsFromTheBase(pathToBase);
 }
 
-QString Exclamations::getOne(Mood mood, TypeLearning forSession)
+QString Exclamations::getOne(Mood mood, LearnSession::TypeLearning forSession)
 {
-    if(forSession == TypeLearning::Exam)
+    if(forSession == LearnSession::Exam)
     {
         if(mood == Mood::Good)
         {

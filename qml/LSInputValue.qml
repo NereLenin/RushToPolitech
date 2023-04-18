@@ -127,7 +127,6 @@ Rectangle {
         id: fullTextOfQuestion
         text: textOfQuestion
 
-        //height: (parent.height / 2) / 1.5
         anchors.top: imageWithBorder.bottom
         anchors.left: parent.left
         anchors.right: parent.right

@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
 
-
+import TypeLearning 0.1
 Rectangle {
     id: mainScreenRectangle
     objectName: "StartScreen"
@@ -152,8 +152,7 @@ Rectangle {
         onClicked:
         {
             //начинаем сессию обучения
-            //myAppHeader.state = "LearnScreen"
-            rootItem.startLearningSession();
+            rootItem.startSession(LearnType.DefaultLearning);
         }
     }
 
@@ -224,8 +223,7 @@ Rectangle {
 
         onClicked:
         {
-            //myAppHeader.state = "ExamScreen"
-            rootItem.startExamSession();
+            rootItem.startSession(LearnType.Exam);
         }
     }
 
@@ -288,8 +286,6 @@ Rectangle {
             anchors.topMargin: 30
             anchors.bottomMargin: 30
 
-            //anchors.bottom: myProgressBar.top //поменять на наш компонент
-            //anchors.margins: 5
             source: "qrc:/icons/repeat.png"
             mirror: true
             fillMode: Image.PreserveAspectFit
@@ -306,9 +302,7 @@ Rectangle {
         }
 
         onClicked: {
-
-
-            view.push("qrc:/qml/RepeatScreen.qml")
+            rootItem.navigateTo("RepeatScreen");
         }
     }
 

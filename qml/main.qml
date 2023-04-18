@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 
+import TypeLearning 0.1
+
 ApplicationWindow {
     id: rootItem
     width: 420
@@ -8,14 +10,23 @@ ApplicationWindow {
     objectName: "appMainScreen"
 
     visible: true
-    title: appEngine.title//qsTr("Hello World")
+    title: appEngine.title
 
+
+    function returnToRegimeMainPage(){
+        appPager.popToRegimeMainScreen();
+    }
+
+
+    function navigateTo(screenName: string){
+       appPager.navigateTo(screenName);
+    }
 
     header: MyHeader{
         id: myAppHeader
 
         //жестко привязываем текущее состояние с именем экрана который сейчас отображается
-        state: view.currentItem.objectName //Pager.currentItem
+        state: appPager.currentItem
 
         x:0
         y:0
@@ -56,72 +67,12 @@ ApplicationWindow {
         textOfMessage: "Этот текст бомба пуха правда подруха? Подуха, плюха, в штанах сухо, хуй мне в ухо"
     }
 
-    //отдельный элемент пагинатор?
-    StackView {
-        id: view
-        objectName: "mainStack"
-
+    Pager{//элемент отображения страниц, навигации
+        id: appPager
         anchors.top: myMessagePanel.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        initialItem: "qrc:/qml/StartScreen.qml"
-
-        //вот это вот мерзость пизда просто, но
-        //у нас первый раз стек видит финиш скрин когда мы его пушим в общей пачке
-        //второй когда он пушен таймером или до него дошли из пачки
-        //получается каждый раз когда мы его видим ВТОРОЙ раз у нас окончание учебной сессии
-        property int countOfViewFinishScreen: 0
-        property bool isFinishSessionFuncActive: true
-        onCurrentItemChanged:
-        {
-            //отслеживание finishScreen
-            if(isFinishSessionFuncActive)
-            {
-            if(currentItem.objectName === "finishLearningScreen" ||
-               currentItem.objectName === "finishExamScreen")
-                view.countOfViewFinishScreen++;
-
-            if(view.countOfViewFinishScreen > 1)
-            {
-                rootItem.finishLearningSession();
-
-                console.log("SessionFinish");
-                countOfViewFinishScreen = 0;
-            }
-            }
-
-          }
-
-        //выгребаем все из стека до нужной страницы или до самой первой
-        function popTo(objectNamePopTo : string)
-        {
-            //сбрасываем счетчик и отключаем отслеживание конца сессии пока
-            //возвращаемся на маин скрин чтоб лишнего не насчитать
-            countOfViewFinishScreen = 0;
-            isFinishSessionFuncActive = false;
-
-            while(view.currentItem.objectName !== objectNamePopTo && view.currentItem.objectName !== "StartScreen")
-                view.pop();
-
-            //потом включаем обратно
-            isFinishSessionFuncActive = true;
-        }
-
-        //возвращаемся к странице с которой начали обучение или экзамен или повтор
-        function popToRegimeMainScreen(){
-            if(appEngine.typeOfCurrentSession === "RepeatWithTimer" ||//если это кто то из повторов
-               appEngine.typeOfCurrentSession === "RepeatDefault" ||
-               appEngine.typeOfCurrentSession === "LearnFailedFromRepeat")
-            {
-                view.popTo("RepeatScreen");//возвращаемся на экран повтора
-            }
-            else{
-                view.popTo("StartScreen");//если это экзамен или просто учеба - возвращаемся на старотовый экран
-            }
-
-            }
-
     }
 
     Drawer {
@@ -144,13 +95,7 @@ ApplicationWindow {
                     textOfItem: "На главную"
 
                     onClicked: {
-                        //вместо всего этого
-                        //Paginator.toStartScreen()
-                        view.countOfViewFinishScreen = 0;
-                        rootItem.endLearningSessions();             
-                        view.popTo("StartScreen");
-
-                        //myAppHeader.state = "MainScreen"
+                        rootItem.navigateTo("StartScreen")
                         drawer.close()
                     }
                 }
@@ -164,11 +109,7 @@ ApplicationWindow {
                     textOfItem: "Учить"
 
                     onClicked: {
-                        view.countOfViewFinishScreen = 0;
-                        //myAppHeader.state = "LearnScreen"
-
-                        rootItem.endLearningSessions();
-                        rootItem.startLearningSession();
+                        rootItem.startSession(LearnType.DefaultLearning);
                         drawer.close()
                     }
                 }
@@ -183,11 +124,8 @@ ApplicationWindow {
                     textOfItem: "Повторить"
 
                     onClicked: {
-                        view.countOfViewFinishScreen = 0;
-                        //myAppHeader.state = "RepeatScreen"
+                        rootItem.navigateTo("RepeatScreen");
 
-                        rootItem.endLearningSessions();
-                        view.push("qrc:/qml/RepeatScreen.qml")
                         drawer.close()
                     }
                 }
@@ -201,11 +139,8 @@ ApplicationWindow {
                     textOfItem: "Экзамен"
 
                     onClicked: {
-                        view.countOfViewFinishScreen = 0;
-                        //myAppHeader.state = "ExamScreen";
+                        rootItem.startSession(LearnType.Exam);
 
-                        rootItem.endLearningSessions();
-                        rootItem.startExamSession();
                         drawer.close()
                     }
                 }
@@ -219,10 +154,6 @@ ApplicationWindow {
                     textOfItem: "Теория"
 
                     onClicked: {
-                        view.countOfViewFinishScreen = 0;
-                        rootItem.endLearningSessions();
-
-                        view.push("qrc:/qml/LearnTheory.qml")
                         drawer.close()
                     }
                 }
@@ -236,9 +167,6 @@ ApplicationWindow {
                     textOfItem: "Статистика"
 
                     onClicked: {
-                        view.countOfViewFinishScreen = 0;
-                        rootItem.endLearningSessions();
-
                         drawer.close()
                     }
                 }
@@ -252,7 +180,6 @@ ApplicationWindow {
                     textOfItem: "Настройки"
 
                     onClicked: {
-                        view.countOfViewFinishScreen = 0;
                         rootItem.endLearningSessions();
 
                         drawer.close()
@@ -268,7 +195,6 @@ ApplicationWindow {
                     textOfItem: "Выход"
 
                     onClicked: {
-                        view.countOfViewFinishScreen = 0;
                         rootItem.endLearningSessions();
 
                         drawer.close()
@@ -284,26 +210,11 @@ ApplicationWindow {
 
     // --------сигналы--------
 
+    //начать учебную сессию
+    signal startSession(type : int);
+
     //сигнал испускаемый при ответе, для сохранения данных в базе
     signal saveAnswerInStatistic(index: int, isCorrect : bool);
-
-    //сигнал для начала сессии "учить"
-    signal startLearningSession();
-
-    //сигнал для начала сессии "повтор сложных"
-    signal startRepeatHardSession();
-
-    //сигнал для начала сессии "повтор на время"
-    signal startRepeatWithTimerSession();
-
-    //сигнал для начала сессии "повтор случайных"
-    signal startRepeatRandomSession();
-
-    //сигнал для начала сессии "повтор забытых"
-    signal startRepeatForgottenSession();
-
-    //сигнал для начала сессии "сдача экзамена"
-    signal startExamSession();
 
     //сигнал для завершения (и отчистки) всех текущих учебных сессий.
     signal endLearningSessions();
@@ -315,66 +226,44 @@ ApplicationWindow {
     signal startLearnFailedTicketsSession();
 
     // --------слоты--------
-    Connections {
+    Connections { //для appEngine
         target: appEngine//класс бэка
 
         //слоты для заполнения стэка по сигналам с бэка
-        //закидываем в стэк страничку с выбором варианта
 
-        //перенестив пагинатор
+        //сохраняем в пагинатор тикет
         function onCollectLearningTicket(ticketItem){
-
-            if(ticketItem.type === "selectableAnswerTicket")
-            {
-                ticketItem.mixAnswers();
-                view.push(["LSChooseVariant.qml",{"ticketIndex": ticketItem.ticketIndex,
-                                                  "textOfQuestion": ticketItem.textOfQuestion,
-                                                  "pathToImage": ticketItem.pathToImage,
-                                                  "variant1Text": ticketItem.getAnswer(0),
-                                                  "variant1PathToImg": ticketItem.getAnswerImageUrl(0),
-                                                  "variant2Text": ticketItem.getAnswer(1),
-                                                  "variant2PathToImg": ticketItem.getAnswerImageUrl(1),
-                                                  "variant3Text": ticketItem.getAnswer(2),
-                                                  "variant3PathToImg": ticketItem.getAnswerImageUrl(2),
-                                                  "variant4Text": ticketItem.getAnswer(3),
-                                                  "variant4PathToImg": ticketItem.getAnswerImageUrl(3),
-                                                  "indexOfCorrectVariant": ticketItem.indexOfCorrectVariant
-                                      }]);
-            }else
-            if(ticketItem.type === "inputAnswerTicket")
-            {
-                view.push(["LSInputValue.qml",{   "ticketIndex": ticketItem.ticketIndex,
-                              "textOfQuestion": ticketItem.textOfQuestion,
-                              "pathToImage": ticketItem.pathToImage,
-                              "correctAnswer": ticketItem.correctAnswer}]);
-            }
-            else{
-                console.log("Неизвестный билет немогу запушить");
-                myMessagePanel.textOfMessage = "Неизвестный билет немогу запушить\n" + ticketItem.ticketIndex;
-                myMessagePanel.open();
-            }
+            appPager.collectTicketInStack(ticketItem);
         }
 
-
-        //закидываем в стэк рандомную страничку
-        function onPushStack(pageUrl : string){
-            view.push(pageUrl);
-        }
-
+        //отображаем сообщение в панели сообщений
         function onShowMessage(textOfMessage : string){
             myMessagePanel.textOfMessage = textOfMessage;
             myMessagePanel.open();            
         }
 
+        //сохраняем в пагинатор экран окончания для данного режима
+        function onPushFinalPage(){
+            appPager.pushFinalPage()
+        }
+
     }
 
-    //внутри QML
-    function onReturnToRegimeMainPage(){
-        console.log("return to main page");
-        //вызов пагинатора
+    Connections { //для пагинатора
+        target: appPager
+
+        //если пагинатор кинул сигнал последнего экрана
+        //в учебной сессии перенаправляем в бэк
+        function onFinishLearningSession(){
+            rootItem.finishLearningSession();
+        }
+
+        //если пагинатор кинул сигнал прерывания учеб сессии
+        //перенаправляем в бэк
+        function onEndLearningSession(){
+            rootItem.endLearningSession();
+        }
     }
 
-    function onNavigateTo(screenName: string){
-       //вызов пагинатора
-    }
+
 }//end window

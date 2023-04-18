@@ -36,16 +36,8 @@ Rectangle {
     property string colorOfRight: "#7A9DBF"
     property string colorOfWrong: "#FCB4B1"
 
-
-    property string textOfNullTicket: appEngine.textOfNullTicket
-
     function sendAnswerToStatistic(){
-        if(textOfQuestion !== textOfNullTicket)
-        {
             rootItem.saveAnswerInStatistic(ticketIndex, (indexOfCorrectVariant === indexOfChoosedVariant));
-        }
-
-
     }
 
     Keys.onPressed: (event)=> {
