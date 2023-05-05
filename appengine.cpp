@@ -21,7 +21,7 @@ void AppEngine::bindQMLSlotSignalConnections()
 
     if(qmlEngine->rootObjects().empty())
     {
-        qDebug() << "don't have any main page in engine";
+        qDebug() << "Error in main QML page or don't have any";
         return;
     }
 
@@ -114,12 +114,16 @@ void AppEngine::startLearningSession(LearnSession::TypeLearning regime)
     currentSession = LearnSession::createSession(&tickets,regime);
     connectCurrentSessionWithEngine();
     currentSession->StartSession();//фу блять с большой буквы почему
+
+
 }
 
 void AppEngine::initialize()
 {
     qmlEngine = nullptr;
     currentSession = nullptr;
+
+
     LearnSession::initializeTypeLearningForQml();
 }
 
@@ -286,36 +290,6 @@ QString AppEngine::getFinishScreenText(){
         return "";
 }
 
-//void AppEngine::learnController()
-//{
-//    startLearningSession(LearnSession::DefaultLearning);
-//}
-
-//void AppEngine::repeatHardController()
-//{
-//    startLearningSession(LearnSession::RepeatHard);
-//}
-
-//void AppEngine::repeatWithTimerController()
-//{
-//    startLearningSession(LearnSession::RepeatWithTimer);
-//}
-
-//void AppEngine::repeatRandomController()
-//{
-//   startLearningSession(LearnSession::RepeatRandom);
-//}
-
-//void AppEngine::repeatForgottenController()
-//{
-//    startLearningSession(LearnSession::RepeatForgotten);
-//}
-
-//void AppEngine::ExamController()
-//{
-//    startLearningSession(LearnSession::Exam);
-//}
-
 void AppEngine::onSaveAnswerInStatistic(int index, bool isCorrect)
 {
     qDebug() << "AppEngine::onSaveAnswerInStatistic";
@@ -377,7 +351,7 @@ void AppEngine::onLearnSessionStatisticChanged()
     emit sessionStatisticChanged();
 
     fillTicketModelFromSession();
-    qmlEngine->rootContext()->setContextProperty("listWrongTickets",this->wrongTicketsModel);
+    qmlEngine->rootContext()->setContextProperty("listWrongTickets",wrongTicketsModel);
 }
 
 void AppEngine::onLearnSessionTimeChanged()

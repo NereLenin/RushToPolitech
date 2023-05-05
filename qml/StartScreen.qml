@@ -46,7 +46,8 @@ Rectangle {
         verticalAlignment: Text.AlignVCenter
     }
 
-    Image {
+    //AnimatedImage {
+    Image{
         id: personImage
 
         anchors.left: parent.left
@@ -54,9 +55,13 @@ Rectangle {
         anchors.top: chanceToPassExamText.bottom
         anchors.bottom: myProgressBar.top
 
+        //playing: true
+
         anchors.margins: 5
 
+        //source: "qrc:/icons/animated.gif"
         source: "qrc:/icons/person.png"
+
         mirror: true
 
         fillMode: Image.PreserveAspectFit

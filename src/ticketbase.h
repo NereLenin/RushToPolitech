@@ -22,7 +22,7 @@ public:
 
     TicketBase(QString pathToTicketBase=":/ticketBase/TestBase.json", QString pathToStatisticBase="./statisticBase.json");
 
-    Ticket* getTicket(int index);
+    Ticket* getTicket(int index); //ебат
 
     QList<Ticket*> getRandomTicketList(TicketStatus status, int amountOfTickets=10);
     QList<Ticket*> getRandomTicketList(QList <TicketStatus> statuses, int amountOfTickets=10);

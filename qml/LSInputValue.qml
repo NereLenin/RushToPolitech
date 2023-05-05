@@ -54,7 +54,8 @@ Rectangle {
                     if(mainScreenRectangle.state === "RightAnswer" || mainScreenRectangle.state === "WrongAnswer")
                     {
                         console.log("Переключаем на следующий (кнопка)");
-                        view.pop(StackView.PushTransition);
+                        //view.pop(StackView.PushTransition);
+                        rootItem.toNextTicket()
                     }
                     else{
                         console.log("Нажатие при активном вопросе(кнопка)");
@@ -233,7 +234,8 @@ Rectangle {
         onClicked:
         {
             console.log("Переключаем на следующий (текстовое поле)");
-            view.pop(StackView.PushTransition);
+            //view.pop(StackView.PushTransition);
+            rootItem.toNextTicket()
         }
 
         }
@@ -246,7 +248,8 @@ Rectangle {
         if(mainScreenRectangle.state === "RightAnswer" || mainScreenRectangle.state === "WrongAnswer")
         {
             console.log("Переключаем на следующий(осн экран)");
-            view.pop(StackView.PushTransition);
+            //view.pop(StackView.PushTransition);
+            rootItem.toNextTicket()
         }
         else{
             console.log("Нажатие при активном вопросе(осн экран)");

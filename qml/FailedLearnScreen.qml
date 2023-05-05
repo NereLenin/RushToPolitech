@@ -11,7 +11,6 @@ import QtQuick.Controls
 import QtQuick.Controls.Material
 
 Rectangle {
-
     id: mainScreenRectangle
     objectName: "FailedLearnScreen"
 

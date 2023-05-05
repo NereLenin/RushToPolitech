@@ -18,21 +18,36 @@ Rectangle {
     height: view.height
     color: "#edecec"
 
+    property int startHighlightPoint: 0
+    property int endHighlightPoint: 0
+
     property string theoryText: "Обширный лекционный материал по этой теме невероятное количество тексто проверяем количество символов которые нужно здесь уместить чтобы было читаемо скока вот тут щас да хуй его знает но мы все пишим и пишим пишим и пишим и все и пиздец жизнь это что за шутка такая кто я чем я занят венец природы усажен в офисное кресло и подвергнут пыткам а все ради чего что это за симулякр жизни стали ли мы счастливей променяв пещеру из камня на пещеру из стекла и бетона мама помоги я так больше могу и еще смогу и так пока не сдохну"
 
-    property bool haveImage: true
+    property string highlightedText: theoryText.substring(0,startHighlightPoint) + "<u><i>" + theoryText.substring(startHighlightPoint,endHighlightPoint) + "</u></i>" + theoryText.substring(endHighlightPoint,theoryText.length)
+
+    property string outputText: endHighlightPoint > startHighlightPoint && endHighlightPoint < theoryText.length ? highlightedText : theoryText
+
+
+
+    property string imageURL: "" // "qrc:/icons/questpic.jpg"
+    property bool haveImage: imageURL !== ""
+
     property bool isImageUp: true
 
 
     Item {
         id: imageWithBorder
-        height: parent.height / 4
+        visible: haveImage
+
+        height: haveImage? (parent.height / 4) : 1
 
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: isImageUp ? parent.top : none
         anchors.bottom: !isImageUp ? separatorLine.top : none
         anchors.margins: 20
+
+
 
         Rectangle {
             id: imageBorder
@@ -46,7 +61,7 @@ Rectangle {
 
             anchors.fill: imageBorder
             opacity: 1
-            source: "qrc:/icons/questpic.jpg"
+            source: imageURL
             mirror: true
             fillMode: Image.PreserveAspectFit
         }
@@ -54,8 +69,7 @@ Rectangle {
 
     Text {
         id: textOfTheory
-        text: theoryText
-
+        text: outputText
         anchors.top: isImageUp ? imageWithBorder.bottom : parent.top
         anchors.bottom: isImageUp ? separatorLine.top : imageWithBorder.top
 

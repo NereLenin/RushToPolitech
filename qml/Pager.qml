@@ -11,6 +11,15 @@ Item {
     signal finishLearningSession();
     signal endLearningSession();
 
+    function debugPush(page : string){
+        view.push(page);
+    }
+
+
+    function goToNextScreenInLearningSession(){
+        view.pop(StackView.PushTransition);
+    }
+
     //возвращаемся к странице с которой начали обучение или экзамен или повтор
     function popToRegimeMainScreen(){
         if(appEngine.typeOfCurrentSession === "RepeatWithTimer" ||//если это кто то из повторов

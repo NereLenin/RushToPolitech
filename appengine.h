@@ -2,12 +2,17 @@
 #define APPENGINE_H
 
 #include <QObject>
-#include "src/learnsession.h"
-#include "exclamations.h"
+
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include <src/mytimer.h>
 #include <QThread>
+
+#include "src/mytimer.h"
+
+#include "src/learnsession.h"
+#include "exclamations.h"
+#include "src/theory/theorybase.h"
+
 
 class AppEngine : public QObject
 {
@@ -44,6 +49,7 @@ private:
     QQmlApplicationEngine *qmlEngine;
 
     TicketBase tickets;
+    TheoryBase theory;
     Exclamations exclamations;//база с восклицаниями для финишскрина
 
     LearnSession *currentSession;//указатель на текущую сессию
@@ -63,6 +69,7 @@ public:
     void connectToEngine(QQmlApplicationEngine *newEngine = nullptr);
 
     QVariant wrongTicketsModel;//вот об этом хорошенько подумать, модель для листа неправильных билетов
+
     void fillTicketModelFromSession();//ее заполнение/переподключение к движку
 
     //Геттеры для QML
@@ -110,7 +117,7 @@ signals:
     //посылаем в учебную сессию сигнал, что в QML дошли до последнего экрана
     void finishSession();
 
-public slots:
+private slots:
     /*from QMLEngine*/
     void onQmlEngineObjectCreated();
 
@@ -136,7 +143,6 @@ public slots:
 
     void onLearnSessionStatisticChanged();
     void onLearnSessionTimeChanged();
-
 
 };
 

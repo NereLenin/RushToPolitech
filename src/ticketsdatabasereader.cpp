@@ -65,7 +65,7 @@ void TicketsDataBaseReader::readTicketsFromJsonDB(QString pathToJsonDB, TicketBa
             return;
         }
 
-        Ticket *currentTicket = Ticket::createTicket(jsonTicket,i);
+        Ticket *currentTicket = Ticket::createTicket(jsonTicket);
 
         baseInto.ticketsBase.append(currentTicket);
     }

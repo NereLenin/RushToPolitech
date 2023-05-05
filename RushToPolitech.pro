@@ -7,6 +7,12 @@ SOURCES += \
         src/learnsession.cpp \
         src/mytimer.cpp \
         src/random.cpp \
+        src/theory/subject.cpp \
+        src/theory/theorybase.cpp \
+        src/theory/theorybasereader.cpp \
+        src/theory/theoryimginfo.cpp \
+        src/theory/theoryticketinfo.cpp \
+        src/theory/topic.cpp \
         src/ticketbase.cpp \
         src/ticketinfo.cpp \
         src/tickets.cpp \
@@ -62,6 +68,12 @@ HEADERS += \
     src/learnsession.h \
     src/mytimer.h \
     src/random.h \
+    src/theory/subject.h \
+    src/theory/theorybase.h \
+    src/theory/theorybasereader.h \
+    src/theory/theoryimginfo.h \
+    src/theory/theoryticketinfo.h \
+    src/theory/topic.h \
     src/ticketbase.h \
     src/ticketinfo.h \
     src/tickets.h \

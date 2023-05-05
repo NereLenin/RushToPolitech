@@ -12,6 +12,10 @@ ApplicationWindow {
     visible: true
     title: appEngine.title
 
+    Component.onCompleted: {
+        appPager.debugPush("LearnTheory.qml");
+    }
+
 
     function returnToRegimeMainPage(){
         appPager.popToRegimeMainScreen();
@@ -20,6 +24,10 @@ ApplicationWindow {
 
     function navigateTo(screenName: string){
        appPager.navigateTo(screenName);
+    }
+
+    function toNextTicket(){
+       appPager.goToNextScreenInLearningSession();
     }
 
     header: MyHeader{

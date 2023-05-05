@@ -218,7 +218,8 @@ Rectangle {
                 else
                 {
                     console.log("Переключаем на следующий");
-                    view.pop(StackView.PushTransition);
+                    //view.pop(StackView.PushTransition);
+                    rootItem.toNextTicket();
                 }
 
             }
@@ -313,7 +314,8 @@ Rectangle {
                 else
                 {
                     console.log("Переключаем на следующий");
-                    view.pop(StackView.PushTransition);
+                    //view.pop(StackView.PushTransition);
+                    rootItem.toNextTicket()
                 }
             }
         }
@@ -406,7 +408,8 @@ Rectangle {
                 else
                 {
                     console.log("Переключаем на следующий");
-                    view.pop(StackView.PushTransition);
+                    //view.pop(StackView.PushTransition);
+                    rootItem.toNextTicket()
                 }
             }
         }
@@ -498,7 +501,8 @@ Rectangle {
                 else
                 {
                     console.log("Переключаем на следующий");
-                    view.pop(StackView.PushTransition);
+                    //view.pop(StackView.PushTransition);
+                    rootItem.toNextTicket()
                 }
             }
         }
@@ -509,7 +513,8 @@ Rectangle {
             {
 
                 console.log("Переключаем на следующий");
-                view.pop(StackView.PushTransition);
+                //view.pop(StackView.PushTransition);
+                rootItem.toNextTicket()
 
             }
             else{

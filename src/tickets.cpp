@@ -101,6 +101,7 @@ void Ticket::fillTicketFromJSON(QJsonObject ticket)
         qDebug() << "empty JSON ticket";
         return;
     }
+    index = ticket.value("index").toInt();
     questionText = ticket.value("text").toString();
     imageUrl = ticket.value("imageURL").toString();
 }
