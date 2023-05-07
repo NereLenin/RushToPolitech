@@ -53,6 +53,7 @@ DISTFILES += \
     qml/RepeatScreen.qml \
     qml/SquareButton.ui.qml \
     qml/StartScreen.qml \
+    qml/Subjects.qml \
     qml/Ticket.ui.qml \
     qml/TicketsOfTopic.ui.qml \
     qml/Topic.ui.qml \

@@ -109,8 +109,9 @@ void TicketsStatisticService::createTicketInBase(const Ticket *ticket)
 {
     if(!isTicketInStatisticBase(ticket))
     {
+
         TicketInfo newTicket(ticket->getIndex());
-        ticketStatisticBase.append(newTicket);
+        ticketStatisticBase.append(newTicket);//*(new TicketInfo(ticket->getIndex())));
     }
 }
 
@@ -228,6 +229,7 @@ int TicketsStatisticService::getTodayLearnedProc()
 
 TicketsStatisticService::~TicketsStatisticService()
 {
+    qDebug() << "Деструктор для статистик сервиса";
 }
 
 

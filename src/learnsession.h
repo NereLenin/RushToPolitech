@@ -72,6 +72,10 @@ public:
     QTime getSessionLasting() const;
     QTime getTimerTime() const;
 
+    ~LearnSession(){
+        qDebug() << "LS destructor";
+    }
+
 signals:
     void pushListOfTickets(QList <Ticket*> listOfTickets);
     void pushFinalScreen();

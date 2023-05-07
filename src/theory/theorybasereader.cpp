@@ -129,6 +129,7 @@ void TheoryBaseReader::readTheoryFromJsonDB(QList<Subject> &subjects, QString pa
         Subject newSubject;
         newSubject.index = jsonSubject.value("subjectIndex").toInt();
         newSubject.name = jsonSubject.value("name").toString();
+        newSubject.iconUrl = jsonSubject.value("iconUrl").toString();
 
         QJsonArray jsonSubjectTopics = jsonSubject.value("topics").toArray();
         QJsonObject jsonTopic;

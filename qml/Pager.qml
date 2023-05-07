@@ -52,6 +52,12 @@ Item {
                 endLearningSessions();
                 view.popTo("StartScreen")
             break;
+            case "subjectsScreen":
+                view.push("Subjects.qml")
+            break;
+            case "topicsScreen":
+                view.push("Topics.qml")
+            break;
         default: break;
         }
 

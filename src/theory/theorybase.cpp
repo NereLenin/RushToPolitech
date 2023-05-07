@@ -1,34 +1,85 @@
 #include "theorybase.h"
 
+QMap<int, Topic *> TheoryBase::readTopicsForTickets(){
+    QMap <int,Topic*> newtopicsForTickets;
+    int ticketIndexForThisTopic = 0;
+
+    Subject* currentSubj;
+    Topic* currentTopic;
+
+
+    for(int currentSubjIndex=0; currentSubjIndex < getSubjects().size(); currentSubjIndex++)//по всем предметам
+    {
+        currentSubj = getSubject(currentSubjIndex);
+        if(currentSubj == nullptr)
+        {
+            qDebug() << "readTopicsForTickets : Попытка получить несуществующий предмет с индексом" << currentSubjIndex;
+            return newtopicsForTickets;
+        }
+
+        for(int currentTopicIndex = 0; currentTopicIndex < currentSubj->getTopics().size(); currentTopicIndex++)//по всем темам
+        {
+            currentTopic = getTopic(currentSubjIndex,currentTopicIndex);
+
+            if(currentTopic == nullptr)
+            {
+                qDebug() << "readTopicsForTickets : Попытка получить несуществую тему с индексом subj:" << currentSubjIndex << "topic: " << currentTopicIndex;
+                return newtopicsForTickets;
+            }
+
+            for(int currentAnswerTicketInfoIndex = 0; currentAnswerTicketInfoIndex < currentTopic->getTicketAnswers().size(); currentAnswerTicketInfoIndex++)//по всем ответам на вопросы в них
+            {
+                //получаем номер билета на ответ на который содержится в этой теме
+                ticketIndexForThisTopic = currentTopic->getTicketAnswers()[currentAnswerTicketInfoIndex].getTicketIndex();
+
+                //записываем по номеру билета ссылку на тему
+                newtopicsForTickets[ticketIndexForThisTopic] = &(subjects[currentSubjIndex].topics[currentTopicIndex]);
+            }
+        }
+    }
+
+    return newtopicsForTickets;
+}
+
 TheoryBase::TheoryBase(QString pathToJsonDB){
     TheoryBaseReader::readTheoryFromJsonDB(subjects, pathToJsonDB);
+    topicsForTickets = readTopicsForTickets();
 }
 void TheoryBase::clear()
 {
     subjects.clear();
 }
 
-Subject TheoryBase::getSubject(int index)
+const QList<Subject> &TheoryBase::getSubjects()
 {
-
-    if(index >= 0 && index < subjects.size())
-    {
-        return subjects[index];
-    }
-
-    Subject nullSbj;
-    return nullSbj;
+    return subjects;
 }
 
-Topic TheoryBase::getTopic(int subjectIndex, int topicIndex)
+Subject *TheoryBase::getSubject(int index)
 {
-    Subject neededSubject = getSubject(subjectIndex);
-
-    if(topicIndex >= 0 && topicIndex < neededSubject.topics.size())
+    if(index >= 0 && index < subjects.size())
     {
-        return neededSubject.topics[topicIndex];
+        return &subjects[index];
+    }
+    return nullptr;
+}
+
+Topic *TheoryBase::getTopic(int subjectIndex, int topicIndex)
+{
+
+    if(topicIndex >= 0 && topicIndex < getSubject(subjectIndex)->getTopics().size())
+    {
+        return &(getSubject(subjectIndex)->topics[topicIndex]);
     }
 
-    Topic nullTopic;
-    return nullTopic;
+    return nullptr;
+}
+Topic *TheoryBase::getTopicForTicket(int ticketIndex)
+{
+    if(!topicsForTickets.contains(ticketIndex))
+    {
+      qDebug() << "Не найдена тема для билета с номером " << ticketIndex;
+      return nullptr;
+    }
+    return topicsForTickets[ticketIndex];
 }

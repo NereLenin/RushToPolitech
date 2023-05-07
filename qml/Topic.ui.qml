@@ -8,6 +8,9 @@ Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on
 */
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import QtQuick.Controls.Material
+
+//learningSubject
 
 Item {
     id: rootItem
@@ -18,6 +21,16 @@ Item {
 
     height: 150
     width: 500
+
+    Button {
+        id: itemButton
+        anchors.fill: parent
+        anchors.leftMargin: 3
+        anchors.rightMargin: 3
+        flat: true
+
+        onClicked: rootItem.clicked()
+    }
 
     Text {
         id: text2

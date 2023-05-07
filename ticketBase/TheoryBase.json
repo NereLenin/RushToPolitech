@@ -5,6 +5,7 @@
      {
        "subjectIndex": 1,
        "name": "1. Программирование",
+       "iconUrl": "qrc:/icons/automatic.png",
        "topics":[
              {
               "topicIndex": 1,
@@ -27,6 +28,7 @@
         {
           "subjectIndex": 2,
           "name": "2. Автоматизация",
+          "iconUrl": "qrc:/icons/automatic.png",
           "topics":[
                 {
                  "topicIndex": 1,

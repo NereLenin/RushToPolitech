@@ -12,13 +12,13 @@ import QtQuick.Controls.Material
 
 Rectangle {
     id: mainScreenRectangle
-
+    objectName: "subjectsScreen"
     //anchors.fill: parent
     width: view.width
     height: view.height
     color: "#edecec"
 
-    property bool showLearnTicketButton: true
+    property bool showLearnTicketButton: false
 
     ListView {
         id: listView
@@ -31,12 +31,14 @@ Rectangle {
         delegate: Topic {
 
             subtopic: showLearnTicketButton
-            nameTopic: topicIndex + ". " + topicName
-            //pathTopicIcon: myPathTopicIcon
+            nameTopic: subjName
+            pathTopicIcon: iconUrl
 
             anchors.left: parent.left
             anchors.right: parent.right
             height: listView.height / 7
+
+
         }
         currentIndex: 1
 

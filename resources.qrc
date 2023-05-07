@@ -150,5 +150,6 @@
         <file>qml/Pager.qml</file>
         <file>icons/animated.gif</file>
         <file>ticketBase/TheoryBase.json</file>
+        <file>qml/Subjects.qml</file>
     </qresource>
 </RCC>

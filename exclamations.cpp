@@ -17,6 +17,7 @@ void Exclamations::printList(QList<QString> list)
 
 Exclamations::~Exclamations()
 {
+    qDebug() << "exclamation";
     if(randomGenerator != nullptr)
     {
         //delete randomGenerator;

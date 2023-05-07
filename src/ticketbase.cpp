@@ -158,6 +158,8 @@ void TicketBase::clearTicketBase()
 TicketBase::~TicketBase()
 {
    clearTicketBase();
+
+   qDebug() << "Деструктор для тикетбэйза";
 }
 
 

@@ -13,14 +13,13 @@ ApplicationWindow {
     title: appEngine.title
 
     Component.onCompleted: {
-        appPager.debugPush("LearnTheory.qml");
+        //appPager.debugPush("Topics.qml");
     }
 
 
     function returnToRegimeMainPage(){
         appPager.popToRegimeMainScreen();
     }
-
 
     function navigateTo(screenName: string){
        appPager.navigateTo(screenName);
@@ -233,6 +232,11 @@ ApplicationWindow {
     //сигнал для работы с тикетами которые неправильно ответили в ходе сесиии
     signal startLearnFailedTicketsSession();
 
+    //сигнал для подготовки данных под страницу отображения предметов
+    signal showSubjects();
+
+    signal showTopics(subjectIndex : int);
+
     // --------слоты--------
     Connections { //для appEngine
         target: appEngine//класс бэка
@@ -243,6 +247,8 @@ ApplicationWindow {
         function onCollectLearningTicket(ticketItem){
             appPager.collectTicketInStack(ticketItem);
         }
+
+
 
         //отображаем сообщение в панели сообщений
         function onShowMessage(textOfMessage : string){
@@ -255,6 +261,9 @@ ApplicationWindow {
             appPager.pushFinalPage()
         }
 
+        function onTopicsDataIsReady(){
+            appPager.navigateTo("topicsScreen")
+        }
     }
 
     Connections { //для пагинатора

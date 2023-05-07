@@ -75,7 +75,7 @@ QJsonDocument TicketStatisticDataBaseDriver::loadStatisticJsonDocFromFile(QStrin
                 //исключение не парсится файл с базой
                 qDebug() << "Ошибка чтения БД";
                 qDebug() << error.errorString();
-                return *(new QJsonDocument());;
+
             }
     return statisticJsonDocument;
 }

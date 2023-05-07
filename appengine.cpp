@@ -59,6 +59,14 @@ void AppEngine::bindQMLSlotSignalConnections()
     QObject::connect(rootObject,SIGNAL(endLearningSessions()),
                      this,SLOT(onEndLearningSessions()));
 
+    //просит показать предметы
+    QObject::connect(rootObject,SIGNAL(showSubjects()),
+                     this,SLOT(onShowSubjects()));
+
+    //просит показать темы предмета
+    QObject::connect(rootObject,SIGNAL(showTopics(int)),
+                     this,SLOT(onShowTopics(int)));
+
 
 }
 
@@ -149,6 +157,8 @@ AppEngine::AppEngine(QObject* parent, QQmlApplicationEngine *qmlEngine)
 {
     initialize();
     connectToEngine(qmlEngine);
+
+    //qDebug() << theory.getTopicForTicket(1834).fullText;
 }
 
 
@@ -236,6 +246,37 @@ void AppEngine::fillTicketModelFromSession()
             modelList.append((currentSession->getListOfWrongTicket())[i]);
     }
     wrongTicketsModel.setValue(modelList);
+}
+
+void AppEngine::fillSubjModelFromTheory()
+{
+    learningSubjectsModel.clear();
+    QList <QObject*> modelList;
+
+    for(int i=0;i < theory.getSubjects().size();i++)
+         modelList.append(theory.getSubject(i) );
+
+    learningSubjectsModel.setValue(modelList);
+}
+
+void AppEngine::fillSubjModelFromTheoryTopics(int subjIndex)
+{
+    learningSubjectsModel.clear();
+    QList <QObject*> modelList;
+
+    Subject *currentSubject = theory.getSubject(subjIndex);
+    if(currentSubject == nullptr)
+    {
+        qDebug() << "fillSubjModelFromTheoryTopics : нет такого предмета ind" << subjIndex;
+    }
+
+    for(int i=0;i < currentSubject->topics.size();i++)
+    {
+        modelList.append(theory.getTopic(subjIndex,i));
+    }
+
+
+    learningSubjectsModel.setValue(modelList);
 }
 
 int AppEngine::getCountOfRightAnswer()
@@ -367,4 +408,18 @@ void AppEngine::onQmlEngineObjectCreated()
 void AppEngine::onStartSession(int typeOfLearnSession)
 {
     startLearningSession((LearnSession::TypeLearning)typeOfLearnSession);
+}
+
+void AppEngine::onShowSubjects()
+{
+    fillSubjModelFromTheory();
+    qmlEngine->rootContext()->setContextProperty("learningSubjectsModel",learningSubjectsModel);
+    emit subjectsDataIsReady();
+}
+
+void AppEngine::onShowTopics(int subjectIndex)
+{
+    fillSubjModelFromTheoryTopics(subjectIndex);
+    qmlEngine->rootContext()->setContextProperty("learningSubjectsModel",learningSubjectsModel);
+    emit topicsDataIsReady();
 }

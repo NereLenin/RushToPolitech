@@ -69,14 +69,17 @@ public:
     void connectToEngine(QQmlApplicationEngine *newEngine = nullptr);
 
     QVariant wrongTicketsModel;//вот об этом хорошенько подумать, модель для листа неправильных билетов
+    QVariant learningSubjectsModel;//для списка предметов и тем
 
+    //чтука ниже в private надо
     void fillTicketModelFromSession();//ее заполнение/переподключение к движку
+    void fillSubjModelFromTheory();
+    void fillSubjModelFromTheoryTopics(int subjIndex);
 
     //Геттеры для QML
     const QString getTitle() const;
 
     QString getTypeOfCurrentSession();
-
 
     //геттеры статистики для QML
     int getChanceToPassExam();
@@ -99,6 +102,10 @@ public:
 
     QString getSessionLasting();
     QString getLearningSessionTimerTime();
+
+    ~AppEngine(){
+        qDebug() << "Деструктор для app Engine";
+    }
 signals:
     /* to QML */
     void collectLearningTicket(Ticket *ticketItem);
@@ -109,6 +116,10 @@ signals:
     //update properties for QML
     void sessionStatisticChanged();
     void sessionTimeChanging();
+
+    //for theory
+    void subjectsDataIsReady();
+    void topicsDataIsReady();
 
     /* To LearningSession */
     void saveStatisticInLearningSession(int index, TicketAnswerType correctness);
@@ -124,6 +135,12 @@ private slots:
     /* QML */
     //контроллер сессий учебы
     void onStartSession(int typeOfLearnSession);
+
+    //подготавливаем данные для показа предметов
+    void onShowSubjects();
+
+    //подготавливаем данные для показа тем
+    void onShowTopics(int subjectIndex);
 
     //окончание учебной сессии (сьебался в процессе или ушел с экрана с результатами)
     void onEndLearningSessions();

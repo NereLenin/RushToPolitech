@@ -373,5 +373,9 @@ Rectangle {
             mirror: true
             fillMode: Image.PreserveAspectFit
         }
+
+        onClicked: {
+            rootItem.showSubjects();
+        }
     }
 }
