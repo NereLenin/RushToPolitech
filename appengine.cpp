@@ -67,6 +67,10 @@ void AppEngine::bindQMLSlotSignalConnections()
     QObject::connect(rootObject,SIGNAL(showTopics(int)),
                      this,SLOT(onShowTopics(int)));
 
+    //просит показать билеты темы
+    QObject::connect(rootObject,SIGNAL(showTopicsTickets(int,int)),
+                     this,SLOT(onShowTopicsTickets(int,int)));
+
 
 }
 
@@ -259,15 +263,16 @@ void AppEngine::fillSubjModelFromTheory()
     learningSubjectsModel.setValue(modelList);
 }
 
-void AppEngine::fillSubjModelFromTheoryTopics(int subjIndex)
+void AppEngine::fillTopicsModelFromTheory(int subjIndex)
 {
-    learningSubjectsModel.clear();
+
+    learningTopicsModel.clear();
     QList <QObject*> modelList;
 
     Subject *currentSubject = theory.getSubject(subjIndex);
     if(currentSubject == nullptr)
     {
-        qDebug() << "fillSubjModelFromTheoryTopics : нет такого предмета ind" << subjIndex;
+        qDebug() << "fillTopicsModelFromTheory : нет такого предмета ind" << subjIndex;
     }
 
     for(int i=0;i < currentSubject->topics.size();i++)
@@ -275,9 +280,34 @@ void AppEngine::fillSubjModelFromTheoryTopics(int subjIndex)
         modelList.append(theory.getTopic(subjIndex,i));
     }
 
-
-    learningSubjectsModel.setValue(modelList);
+    learningTopicsModel.setValue(modelList);
 }
+
+void AppEngine::fillTopicsTicketModel(int subjIndex, int topicIndex)
+{
+    topicsTicketModel.clear();
+    QList <QObject*> modelList;
+
+    Topic *currentTopic = theory.getTopic(subjIndex,topicIndex);
+    if(currentTopic == nullptr)
+    {
+        qDebug() << "fillTopicsTicketModel : нет такой темы subj" << subjIndex << "topic" << topicIndex;
+    }
+
+    int sizeOfAnswersInTicket = currentTopic->getTicketAnswers().size();
+
+    for(int i=0;i < sizeOfAnswersInTicket;i++)
+    {
+        int indexOfTicket = currentTopic->getTicketAnswers()[i].ticketIndex;
+        Ticket *currentTicket = tickets.getTicket(indexOfTicket);
+        if(currentTicket == nullptr) continue;
+
+        modelList.append(currentTicket);
+    }
+
+    topicsTicketModel.setValue(modelList);
+}
+
 
 int AppEngine::getCountOfRightAnswer()
 {
@@ -419,7 +449,14 @@ void AppEngine::onShowSubjects()
 
 void AppEngine::onShowTopics(int subjectIndex)
 {
-    fillSubjModelFromTheoryTopics(subjectIndex);
-    qmlEngine->rootContext()->setContextProperty("learningSubjectsModel",learningSubjectsModel);
+    fillTopicsModelFromTheory(subjectIndex-1);
+    qmlEngine->rootContext()->setContextProperty("learningTopicsModel",learningTopicsModel);
     emit topicsDataIsReady();
+}
+
+void AppEngine::onShowTopicsTickets(int subjectIndex, int topicIndex)
+{
+    fillTopicsTicketModel(subjectIndex-1,topicIndex-1);
+    qmlEngine->rootContext()->setContextProperty("topicsTicketModel",topicsTicketModel);
+    emit topicsTicketsDataIsReady();
 }

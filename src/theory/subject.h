@@ -9,9 +9,9 @@ class Subject : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(int index READ getIndex CONSTANT)
+    Q_PROPERTY(int subjectIndex READ getIndex CONSTANT)
     Q_PROPERTY(QString subjName READ getName CONSTANT)
-    Q_PROPERTY(QString iconUrl READ getIconUrl CONSTANT)
+    Q_PROPERTY(QString subjIconUrl READ getIconUrl CONSTANT)
 private:
 public:
     explicit Subject(QObject *parent = nullptr);

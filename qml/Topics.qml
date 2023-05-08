@@ -12,7 +12,7 @@ import QtQuick.Controls.Material
 
 Rectangle {
     id: mainScreenRectangle
-
+    objectName: "topicsScreen"
     //anchors.fill: parent
     width: view.width
     height: view.height
@@ -27,7 +27,7 @@ Rectangle {
         anchors.margins: 15
         anchors.bottomMargin: 20
 
-        model: learningSubjectsModel
+        model: learningTopicsModel
         delegate: Topic {
 
             subtopic: showLearnTicketButton
@@ -37,6 +37,17 @@ Rectangle {
             anchors.left: parent.left
             anchors.right: parent.right
             height: listView.height / 7
+
+            onClicked: {
+                //просмотр содержания
+               }
+
+            onInnerButtonClicked: {
+                //вопросы по теме
+                console.log(subjIndex, topicIndex);
+                rootItem.showTopicsTickets(subjIndex, topicIndex);
+            }
+
         }
         currentIndex: 1
 

@@ -137,6 +137,7 @@ void TheoryBaseReader::readTheoryFromJsonDB(QList<Subject> &subjects, QString pa
         for(int i=0;i<jsonSubjectTopics.size();i++){//шелестим по темам предмета
            jsonTopic = jsonSubjectTopics[i].toObject();
            Topic newTopic;
+           newTopic.subjectIndex = newSubject.getIndex();
            newTopic.index = jsonTopic.value("topicIndex").toInt();
            newTopic.name = jsonTopic.value("name").toString();
            newTopic.fullText = jsonTopic.value("text").toString();

@@ -14,6 +14,7 @@ Rectangle {
     id: mainScreenRectangle
     objectName: "subjectsScreen"
     //anchors.fill: parent
+
     width: view.width
     height: view.height
     color: "#edecec"
@@ -31,13 +32,17 @@ Rectangle {
         delegate: Topic {
 
             subtopic: showLearnTicketButton
-            nameTopic: subjName
-            pathTopicIcon: iconUrl
+            nameTopic: subjectIndex + "."+ subjName
+            pathTopicIcon: subjIconUrl
 
             anchors.left: parent.left
             anchors.right: parent.right
             height: listView.height / 7
 
+            onClicked: {
+                console.log(subjectIndex);
+                rootItem.showTopics(subjectIndex);
+            }
 
         }
         currentIndex: 1

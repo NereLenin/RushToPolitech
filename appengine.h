@@ -69,12 +69,17 @@ public:
     void connectToEngine(QQmlApplicationEngine *newEngine = nullptr);
 
     QVariant wrongTicketsModel;//вот об этом хорошенько подумать, модель для листа неправильных билетов
-    QVariant learningSubjectsModel;//для списка предметов и тем
+
+    QVariant learningSubjectsModel;//для списка предметов
+    QVariant learningTopicsModel;//для списка предметов
+    QVariant topicsTicketModel;//для списка предметов
+
 
     //чтука ниже в private надо
     void fillTicketModelFromSession();//ее заполнение/переподключение к движку
     void fillSubjModelFromTheory();
-    void fillSubjModelFromTheoryTopics(int subjIndex);
+    void fillTopicsModelFromTheory(int subjIndex);
+    void fillTopicsTicketModel(int subjIndex,int topicIndex);
 
     //Геттеры для QML
     const QString getTitle() const;
@@ -120,6 +125,7 @@ signals:
     //for theory
     void subjectsDataIsReady();
     void topicsDataIsReady();
+    void topicsTicketsDataIsReady();
 
     /* To LearningSession */
     void saveStatisticInLearningSession(int index, TicketAnswerType correctness);
@@ -141,6 +147,8 @@ private slots:
 
     //подготавливаем данные для показа тем
     void onShowTopics(int subjectIndex);
+
+    void onShowTopicsTickets(int subjectIndex, int topicIndex);
 
     //окончание учебной сессии (сьебался в процессе или ушел с экрана с результатами)
     void onEndLearningSessions();

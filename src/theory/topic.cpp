@@ -20,13 +20,21 @@ Topic &Topic::operator =(const Topic &topic)
 {
    this->setParent(topic.parent());
 
+    //operator = ?
+    this->subjectIndex = topic.subjectIndex;
     this->index = topic.index;
+
     this->name = topic.name;
     this->fullText = topic.fullText;
     this->images = topic.images;
     this->ticketAnswers = topic.ticketAnswers;
 
     return *this;
+}
+
+int Topic::getSubjectIndex() const
+{
+    return subjectIndex;
 }
 
 int Topic::getIndex(){
@@ -39,11 +47,13 @@ QString Topic::getName(){
 
 Topic::Topic(QObject *parent) : QObject{parent}
 {
+    subjectIndex = 0;
     index = 0;
 }
 
 Topic::Topic(const Topic &topic): QObject{topic.parent()}
 {
+    this->subjectIndex = topic.subjectIndex;
     this->index = topic.index;
     this->name = topic.name;
     this->fullText = topic.fullText;

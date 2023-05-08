@@ -54,8 +54,11 @@ DISTFILES += \
     qml/SquareButton.ui.qml \
     qml/StartScreen.qml \
     qml/Subjects.qml \
+    qml/Ticket.qml \
     qml/Ticket.ui.qml \
+    qml/TicketsOfTopic.qml \
     qml/TicketsOfTopic.ui.qml \
+    qml/Topic.qml \
     qml/Topic.ui.qml \
     qml/Topics.qml \
     qml/main.qml

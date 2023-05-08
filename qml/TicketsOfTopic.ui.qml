@@ -5,9 +5,9 @@ import QtQuick.Controls.Material
 Rectangle {
     id: mainScreenRectangle
 
-    width: 420
-    height: 736
-    anchors.fill: parent
+    width: view.width
+    height: view.height
+
     color: "#edecec"
 
     Item {

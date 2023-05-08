@@ -29,7 +29,18 @@ Item {
             view.popTo("RepeatScreen");//возвращаемся на экран повтора
         }
         else{
-            view.popTo("StartScreen");//если это экзамен или просто учеба - возвращаемся на старотовый экран
+            switch(view.currentItem.objectName){
+            case "topicsScreen"://если возвращаемся с скрина просмотра тем
+                view.popTo("subjectsScreen");
+            break;
+            case "topicsTicketScreen"://если возвращаемся со скрина просмотра списка билетов в теме
+                view.popTo("topicsScreen");
+            break;
+            default:
+                view.popTo("StartScreen");//если это экзамен или просто учеба - возвращаемся на старотовый экран
+            break;
+            }
+
         }
 
         }
@@ -58,6 +69,10 @@ Item {
             case "topicsScreen":
                 view.push("Topics.qml")
             break;
+            case "topicsTicketScreen":
+                view.push("TicketsOfTopic.qml")
+            break;
+
         default: break;
         }
 

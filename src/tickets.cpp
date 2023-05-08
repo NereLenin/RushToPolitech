@@ -65,7 +65,7 @@ QString Ticket::ticketTypeToString(TicketType type)
     switch(type){
     case inputAnswerTicket: return "inputAnswerTicket"; break;
     case selectableAnswerTicket: return "selectableAnswerTicket"; break;
-    default: "dontknowntickettype";break;
+    default: return "dontknowntickettype";break;
     }
 }
 

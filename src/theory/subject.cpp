@@ -1,7 +1,7 @@
 #include "subject.h"
 
 
-const QString &Subject::getName() const
+const QString& Subject::getName() const
 {
     return name;
 }
@@ -16,7 +16,7 @@ const QList<Topic> &Subject::getTopics() const
     return topics;
 }
 
-const QString &Subject::getIconUrl() const
+const QString& Subject::getIconUrl() const
 {
     return iconUrl;
 }

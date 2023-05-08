@@ -35,7 +35,6 @@
         <file>qml/SquareButton.ui.qml</file>
         <file>qml/Ticket.ui.qml</file>
         <file>qml/TicketsOfTopic.ui.qml</file>
-        <file>qml/Topic.ui.qml</file>
         <file>qml/Topics.qml</file>
         <file>ticketBase/questionImage/questpic.jpg</file>
         <file>ticketBase/TestBase.json</file>
@@ -151,5 +150,8 @@
         <file>icons/animated.gif</file>
         <file>ticketBase/TheoryBase.json</file>
         <file>qml/Subjects.qml</file>
+        <file>qml/Topic.qml</file>
+        <file>qml/TicketsOfTopic.qml</file>
+        <file>qml/Ticket.qml</file>
     </qresource>
 </RCC>

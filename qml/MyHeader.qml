@@ -225,6 +225,37 @@ Item {
                 //headerTime: ""
             }
         },
+        State {
+            name: "subjectsScreen"
+            PropertyChanges {
+                target: rootHeaderItem
+                showRightButton: false
+                headerText: "Предметы"
+                headerTime:""
+                //headerTime: ""
+            }
+        },
+        State {
+            name: "topicsScreen"
+            PropertyChanges {
+                target: rootHeaderItem
+                showRightButton: true
+                headerText: "Темы"
+                headerTime:""
+                //headerTime: ""
+            }
+        },
+        State {
+            name: "topicsTicketScreen"
+            PropertyChanges {
+                target: rootHeaderItem
+                showRightButton: true
+                headerText: "Вопросы темы"
+                headerTime:""
+                //headerTime: ""
+            }
+        },
+
 
         //----------экраны с результатами
 

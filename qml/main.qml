@@ -13,9 +13,8 @@ ApplicationWindow {
     title: appEngine.title
 
     Component.onCompleted: {
-        //appPager.debugPush("Topics.qml");
+        appPager.debugPush("LearnTheory.qml");
     }
-
 
     function returnToRegimeMainPage(){
         appPager.popToRegimeMainScreen();
@@ -62,6 +61,20 @@ ApplicationWindow {
 
         }
 
+        onRightButtonClicked: {
+
+        switch(state)
+        {
+        case "topicsScreen":
+            appPager.popToRegimeMainScreen();
+        break;
+
+        case "topicsTicketScreen":
+            appPager.popToRegimeMainScreen();
+        break;
+        }
+
+        }
 
     }
 
@@ -237,6 +250,9 @@ ApplicationWindow {
 
     signal showTopics(subjectIndex : int);
 
+    signal showTopicsTickets(subjectIndex : int, TopicIndex : int);
+
+
     // --------слоты--------
     Connections { //для appEngine
         target: appEngine//класс бэка
@@ -247,7 +263,6 @@ ApplicationWindow {
         function onCollectLearningTicket(ticketItem){
             appPager.collectTicketInStack(ticketItem);
         }
-
 
 
         //отображаем сообщение в панели сообщений
@@ -261,8 +276,15 @@ ApplicationWindow {
             appPager.pushFinalPage()
         }
 
+        function onSubjectsDataIsReady(){
+            appPager.navigateTo("subjectsScreen")
+        }
+
         function onTopicsDataIsReady(){
             appPager.navigateTo("topicsScreen")
+        }
+        function onTopicsTicketsDataIsReady(){
+            appPager.navigateTo("topicsTicketScreen")
         }
     }
 

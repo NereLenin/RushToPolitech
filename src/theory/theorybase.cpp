@@ -59,7 +59,7 @@ Subject *TheoryBase::getSubject(int index)
 {
     if(index >= 0 && index < subjects.size())
     {
-        return &subjects[index];
+        return &subjects[index];//в листе с 0, в базе с 1
     }
     return nullptr;
 }
@@ -69,7 +69,7 @@ Topic *TheoryBase::getTopic(int subjectIndex, int topicIndex)
 
     if(topicIndex >= 0 && topicIndex < getSubject(subjectIndex)->getTopics().size())
     {
-        return &(getSubject(subjectIndex)->topics[topicIndex]);
+        return &(getSubject(subjectIndex)->topics[topicIndex]);//в листе с 0, в базе с 1
     }
 
     return nullptr;
