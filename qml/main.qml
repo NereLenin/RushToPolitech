@@ -245,6 +245,9 @@ ApplicationWindow {
     //сигнал для работы с тикетами которые неправильно ответили в ходе сесиии
     signal startLearnFailedTicketsSession();
 
+    //отображение только одоного билета без запись в статистику
+    signal showSingleTicket(ticketIndex : int);
+
     //сигнал для подготовки данных под страницу отображения предметов
     signal showSubjects();
 

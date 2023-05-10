@@ -33,8 +33,6 @@
         <file>qml/MyProgressBar.ui.qml</file>
         <file>qml/RepeatScreen.qml</file>
         <file>qml/SquareButton.ui.qml</file>
-        <file>qml/Ticket.ui.qml</file>
-        <file>qml/TicketsOfTopic.ui.qml</file>
         <file>qml/Topics.qml</file>
         <file>ticketBase/questionImage/questpic.jpg</file>
         <file>ticketBase/TestBase.json</file>

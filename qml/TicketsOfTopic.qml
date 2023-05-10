@@ -84,6 +84,10 @@ Rectangle {
             canBeLearned: false
             ticketNumber: ticketIndex +1
             shortText: questionText
+
+            onClicked: {
+                rootItem.showSingleTicket(ticketIndex);
+            }
         }
         currentIndex: 1
 

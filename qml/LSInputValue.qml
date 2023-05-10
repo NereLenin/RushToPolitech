@@ -71,7 +71,8 @@ Rectangle {
                             mainScreenRectangle.state = "WrongAnswer"
                             textOfQuestion += "\nНеверно!"
                         }
-                        rootItem.saveAnswerInStatistic(ticketIndex, (myLowCaseAnswer === rightLowCaseAnswer));
+                        if(appEngine.typeOfCurrentSession !== "ShowSingleTicket")
+                            rootItem.saveAnswerInStatistic(ticketIndex, (myLowCaseAnswer === rightLowCaseAnswer));
                     }
 
 

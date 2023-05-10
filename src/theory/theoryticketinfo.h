@@ -10,7 +10,9 @@ private:
 
     int indexOfStartAnswerInText;
     int indexOfEndAnswerInText;
-
+    TheoryTicketAnswerInfo(){
+        ticketIndex = indexOfStartAnswerInText = indexOfEndAnswerInText = 0;
+    }
     TheoryTicketAnswerInfo(int ticketIndex, int startOfAnswerAt, int endOfAnswerAt);
     TheoryTicketAnswerInfo(QString openTag, int startOfAnswerAt, int endOfAnswerAt);
 

@@ -172,6 +172,12 @@ Rectangle {
             canBeLearned: true
             ticketNumber: ticketIndex
             shortText: questionText
+
+            onClicked: {
+                rootItem.showSingleTicket(ticketIndex);
+            }
+            //onClicked
+            //showSingleTicket(ticketIndex : int);
         }
         currentIndex: 1
     }

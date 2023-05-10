@@ -350,6 +350,16 @@ Item {
 
             }
         },
+        State {
+            name: "CVShowSingleTicket"//экран выбора вариантов для экзамена
+            PropertyChanges {
+                target: rootHeaderItem
+                showRightButton: false
+                headerText: "Вопрос"
+                headerTime: ""
+
+            }
+        },
 
         //----хэдеры экранов ввода значения-----
         State {
@@ -416,7 +426,18 @@ Item {
                 headerTime: appEngine.timerTime
 
             }
+        },
+        State {
+            name: "IVShowSingleTicket"//хэдер для экрана ввода значения для отображения одного билета
+            PropertyChanges {
+                target: rootHeaderItem
+
+                showRightButton: false
+                headerText: "Вопрос"
+                headerTime:""
+            }
         }
+
 
     ]
 

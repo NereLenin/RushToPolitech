@@ -48,10 +48,14 @@ QList<TheoryTicketAnswerInfo> TheoryBaseReader::parseTicketsAnswerInText(QString
     QString ticketIndex;
     QRegularExpression notNumbers("[^\\d]+");
 
+        matchOpenTag = answerOpenTagRegular.match(text);//ищем дальше
+
         while(matchOpenTag.hasMatch())
         {
           ticketIndex = ((matchOpenTag.captured(0)).remove(notNumbers) );
+
           tickets.append(ticketIndex.toInt());
+
           openIndex.append(matchOpenTag.capturedStart(0));
 
           text = text.remove(matchOpenTag.capturedStart(0),matchOpenTag.capturedLength(0));//удаляем тэг из текста
@@ -63,7 +67,18 @@ QList<TheoryTicketAnswerInfo> TheoryBaseReader::parseTicketsAnswerInText(QString
         while(matchCloseTag.hasMatch())
         {
           closeIndex.append(matchCloseTag.capturedStart(0));
+
           text = text.remove(matchCloseTag.capturedStart(0),matchCloseTag.capturedLength(0));//удаляем тэг из текста
+
+          //если впереди от найденного закрывающегося тэга есть помеченный begin, нужно отнимать у него длинну тэга, а то заползет вперед
+          for(int i = 0; i < openIndex.size();i++)
+          {
+            if(openIndex[i] > matchCloseTag.capturedStart(0))
+            {
+               openIndex[i] = openIndex[i] - matchCloseTag.capturedLength(0);
+            }
+          }
+
           matchCloseTag = answerCloseTagRegular.match(text);//ищем дальше
         }
 

@@ -37,6 +37,7 @@ Rectangle {
     property string colorOfWrong: "#FCB4B1"
 
     function sendAnswerToStatistic(){
+        if(appEngine.typeOfCurrentSession !== "ShowSingleTicket")
             rootItem.saveAnswerInStatistic(ticketIndex, (indexOfCorrectVariant === indexOfChoosedVariant));
     }
 

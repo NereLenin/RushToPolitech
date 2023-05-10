@@ -71,6 +71,10 @@ void AppEngine::bindQMLSlotSignalConnections()
     QObject::connect(rootObject,SIGNAL(showTopicsTickets(int,int)),
                      this,SLOT(onShowTopicsTickets(int,int)));
 
+    //просит показать билеты темы
+    QObject::connect(rootObject,SIGNAL(showSingleTicket(int)),
+                     this,SLOT(onShowSingleTicket(int)));
+
 
 }
 
@@ -234,9 +238,11 @@ QString AppEngine::getTypeOfCurrentSession(){
         case LearnSession::LearnFailedFromLearnOrExam: return "LearnFailed"; break;
         default:  return "RepeatDefault"; break;
         }
+    }else{
+        return "ShowSingleTicket";
     }
 
-    return "Session don't started";
+    //return "Session don't started";
 }
 
 void AppEngine::fillTicketModelFromSession()
@@ -438,6 +444,12 @@ void AppEngine::onQmlEngineObjectCreated()
 void AppEngine::onStartSession(int typeOfLearnSession)
 {
     startLearningSession((LearnSession::TypeLearning)typeOfLearnSession);
+}
+
+void AppEngine::onShowSingleTicket(int ticketIndex)
+{
+    Ticket* showTicket = tickets.getTicket(ticketIndex);
+    if(showTicket != nullptr) collectLearningTicket(showTicket);
 }
 
 void AppEngine::onShowSubjects()
