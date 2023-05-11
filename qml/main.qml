@@ -69,23 +69,29 @@ ApplicationWindow {
 
         case "topicsScreen":
             appPager.popToRegimeMainScreen();
-        break;
+        return;
 
         case "topicsTicketScreen":
             appPager.popToRegimeMainScreen();
-        break;
+        return;
         case "theoryScreen":
-
             console.log("theory")
             appPager.popToRegimeMainScreen();
-        break;
+        return;
+         default:
+         {
+             if(state.includes("CV") || state.includes("IV"))
+             {
+                 console.log(state)
+                 console.log("pushTheory")
+                 rootItem.showTopicForTicket(appPager.currentTicketIndex)
+             }
+         }
+         break;
 
         }
 
-        if(state.includes("CV") || state.includes("IV"))
-        {
-            rootItem.showTopicForTicket(appPager.currentTicketIndex)
-        }
+
         }
 
     }

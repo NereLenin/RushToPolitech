@@ -75,7 +75,7 @@ Item {
                 endLearningSessions();
                 if(view.depth > 1)
                     view.popTo("RepeatScreen")
-                else
+                if(view.currentItem.objectName !== "RepeatScreen")
                     view.push("RepeatScreen.qml");
             break;
             case "StartScreen":
