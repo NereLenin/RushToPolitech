@@ -16,6 +16,8 @@ Item {
 
     signal clicked()
 
+    signal theoryButtonClicked()
+
     Button {
         id: itemButton
         anchors.fill: parent
@@ -98,6 +100,10 @@ Item {
             source: "qrc:/icons/theory.png"
 
             fillMode: Image.PreserveAspectFit
+        }
+
+        onClicked: {
+            rootItem.theoryButtonClicked();
         }
     }
 

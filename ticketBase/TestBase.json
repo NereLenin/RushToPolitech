@@ -4,7 +4,7 @@
   "tickets": [
     {
       "type": "selectableAnswerTicket",
-      "index": 0,
+      "index": 1,
       "text": "Пример вопроса с текстом вот такой вопрос?",
       "imageURL": "qrc:/ticketBase/questionImage/questpic.jpg",
       "answers": [
@@ -24,7 +24,7 @@
     },
     {
       "type": "selectableAnswerTicket",
-      "index": 1,
+      "index": 2,
       "text": "Пример вопроса с текстом вот такой вопрос?",
       "imageURL": "",
 
@@ -46,7 +46,7 @@
     },
     {
       "type": "selectableAnswerTicket",
-      "index": 2,
+      "index": 3,
       "text": "ВОпрос 2",
       "imageURL": "qrc:/ticketBase/questionImage/questpic.jpg",
 
@@ -67,7 +67,7 @@
     },
     {
       "type": "inputAnswerTicket",
-      "index": 3,
+      "index": 4,
       "text": "Введите длинну члэна",
       "imageURL": "qrc:/ticketBase/questionImage/questpic.jpg",
       "correctAnswer": "0,3"

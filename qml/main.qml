@@ -65,6 +65,8 @@ ApplicationWindow {
 
         switch(state)
         {
+
+
         case "topicsScreen":
             appPager.popToRegimeMainScreen();
         break;
@@ -72,8 +74,18 @@ ApplicationWindow {
         case "topicsTicketScreen":
             appPager.popToRegimeMainScreen();
         break;
+        case "theoryScreen":
+
+            console.log("theory")
+            appPager.popToRegimeMainScreen();
+        break;
+
         }
 
+        if(state.includes("CV") || state.includes("IV"))
+        {
+            rootItem.showTopicForTicket(appPager.currentTicketIndex)
+        }
         }
 
     }
@@ -255,6 +267,15 @@ ApplicationWindow {
 
     signal showTopicsTickets(subjectIndex : int, TopicIndex : int);
 
+    //просмотр теории
+    signal showTopic(subjectIndex : int, topicIndex : int);
+
+    //просмотр теории для билета
+    signal showTopicForTicket(ticketIndex  : int);
+
+    signal topicNextPage();
+    signal topicPreviousPage();
+
 
     // --------слоты--------
     Connections { //для appEngine
@@ -289,6 +310,18 @@ ApplicationWindow {
         function onTopicsTicketsDataIsReady(){
             appPager.navigateTo("topicsTicketScreen")
         }
+
+        function onTopicDataIsReady(){
+            appPager.navigateTo("theoryScreen")
+        }
+
+        function onTicketTopicDataIsReady(){
+            appPager.navigateTo("theoryScreen")
+        }
+        //theoryScreen
+
+
+
     }
 
     Connections { //для пагинатора

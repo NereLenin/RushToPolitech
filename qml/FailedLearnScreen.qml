@@ -176,6 +176,12 @@ Rectangle {
             onClicked: {
                 rootItem.showSingleTicket(ticketIndex);
             }
+
+            onTheoryButtonClicked: {
+               rootItem.showTopicForTicket(ticketIndex);
+            }
+
+
             //onClicked
             //showSingleTicket(ticketIndex : int);
         }

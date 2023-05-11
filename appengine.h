@@ -45,7 +45,19 @@ class AppEngine : public QObject
     Q_PROPERTY(QString sessionLasting   READ getSessionLasting           NOTIFY finishSession)
     Q_PROPERTY(QString timerTime        READ getLearningSessionTimerTime NOTIFY sessionTimeChanging)
 
-    Q_PROPERTY(QString currentTheoryText  READ getLearningSessionTimerTime CONSTANT)
+    //Q_PROPERTY(QString currentTheoryText  READ getLearningSessionTimerTime CONSTANT)
+
+    //topic text controller
+    Q_PROPERTY(QString topicControllerName  READ getTopicTextControllerName NOTIFY topicControllerPageChanged)
+
+    Q_PROPERTY(QString topicControllerMainText  READ getTopicTextControllerText NOTIFY topicControllerPageChanged)
+    Q_PROPERTY(QString topicControllerImageUrl  READ getTopicTextControllerImageUrl NOTIFY topicControllerPageChanged)
+
+    Q_PROPERTY(int topicControllerHighlightStart  READ getTopicTextControllerCurrentHighlightStart NOTIFY topicControllerPageChanged)
+    Q_PROPERTY(int topicControllerHighlighEnd  READ getTopicTextControllerCurrentHighlighEnd NOTIFY topicControllerPageChanged)
+
+    Q_PROPERTY(int topicControllerCurrentPage  READ getTopicTextControllerCurrentPage NOTIFY topicControllerPageChanged)
+    Q_PROPERTY(int topicControllerCountOfPages  READ getTopicTextControllerCountOfPages NOTIFY topicControllerPageChanged)
 
 private:
     const int procWrongAnswerForBadMood = 70;
@@ -111,6 +123,34 @@ public:
     QString getSessionLasting();
     QString getLearningSessionTimerTime();
 
+    //геттеры для топик контроллера
+    QString getTopicTextControllerText(){
+        return theory.topicController.getMainText();
+    }
+
+    QString getTopicTextControllerImageUrl(){
+        return theory.topicController.getImageUrl();
+    }
+
+    int getTopicTextControllerCurrentHighlightStart(){
+        return theory.topicController.getCurrentHighlightStart();
+    }
+
+    int getTopicTextControllerCurrentHighlighEnd(){
+        return theory.topicController.getCurrentHighlighEnd();
+    }
+
+    int getTopicTextControllerCurrentPage(){
+        return theory.topicController.getCurrentPage();
+    }
+
+    int getTopicTextControllerCountOfPages(){
+        return theory.topicController.countOfPages();
+    }
+    QString getTopicTextControllerName(){
+        return theory.topicController.getName();
+    }
+
     ~AppEngine(){
         qDebug() << "Деструктор для app Engine";
     }
@@ -130,13 +170,17 @@ signals:
     void topicsDataIsReady();
     void topicsTicketsDataIsReady();
 
+    void topicDataIsReady();
+    void ticketTopicDataIsReady();
+
+    void topicControllerPageChanged();
+
     /* To LearningSession */
     void saveStatisticInLearningSession(int index, TicketAnswerType correctness);
     void startLearningFailedTickets();
 
     //посылаем в учебную сессию сигнал, что в QML дошли до последнего экрана
     void finishSession();
-
 private slots:
     /*from QMLEngine*/
     void onQmlEngineObjectCreated();
@@ -146,14 +190,53 @@ private slots:
     void onStartSession(int typeOfLearnSession);
     void onShowSingleTicket(int ticketIndex);
 
+    /* theory */
     //подготавливаем данные для показа предметов
     void onShowSubjects();
 
     //подготавливаем данные для показа тем
     void onShowTopics(int subjectIndex);
-
+    //показываем вопросы темы
     void onShowTopicsTickets(int subjectIndex, int topicIndex);
 
+    void onShowTopic(int subjectIndex, int topicIndex){
+
+        Topic *currentTopic = theory.getTopic(subjectIndex-1,topicIndex-1);
+
+        if(currentTopic != nullptr)
+        {
+            theory.topicController.setTopic(*currentTopic,20);
+            emit topicDataIsReady();
+        }
+    }
+
+    void onShowTopicForTicket(int ticketIndex){
+        Ticket *neededTicket = tickets.getTicket(ticketIndex);
+
+        if(neededTicket != nullptr)
+        {
+            Topic *topicForTicket = theory.getTopicForTicket(ticketIndex);
+            if(topicForTicket != nullptr)
+            {
+                theory.topicController.setTopic(*topicForTicket,20);
+                theory.topicController.showAnswerTicket(neededTicket->getIndex());
+                emit ticketTopicDataIsReady();
+            }
+
+        }
+    }
+
+    void onTopicNextPage(){
+        theory.topicController.nextPage();
+    }
+
+    void onTopicPreviousPage(){
+        theory.topicController.previousPage();
+    }
+
+    void onPageChanged();
+
+    /*Learning*/
     //окончание учебной сессии (сьебался в процессе или ушел с экрана с результатами)
     void onEndLearningSessions();
 
@@ -172,146 +255,6 @@ private slots:
 
     void onLearnSessionStatisticChanged();
     void onLearnSessionTimeChanged();
-
-};
-
-class TheoryTopicTextController{
-private:
-
-public:
-    TheoryTopicTextController(Topic &topic){
-        currentHighlightStart = 0;
-        currentHighlighEnd = 0;
-
-        currentPage = 0;
-        countOfPages = 0;
-
-        int textPerPage = 20;//на каждой странице 20 символов
-        mainText = topic.getFullText();
-
-
-        //split string in list with word parts
-        int startIndex = 0;
-        int indexOfTextPart = 0;
-
-        qDebug() << "----------------------------------------";
-
-
-        while(startIndex < mainText.length())
-        {
-            //режем строку и суем ее в лист
-            int subStrSize = textPerPage;
-
-            if(startIndex+subStrSize >= mainText.length())
-                subStrSize = mainText.length()-startIndex;
-
-
-            int wordWrapSubSize = subStrSize;
-            //расширяем строку до конца слова
-            for(;startIndex+wordWrapSubSize < mainText.length() && (mainText[startIndex+wordWrapSubSize] != '\n' && mainText[startIndex+wordWrapSubSize] != ' '); wordWrapSubSize++)
-            {
-            }
-
-            //записываем
-            textes.append(mainText.mid(startIndex,wordWrapSubSize));
-
-            int endIndex = startIndex+wordWrapSubSize;
-
-            //заполняем изображения для нее
-
-            for(int i=0;i<topic.getImages().size();i++){
-                if(topic.getImages()[i].positionInText >= startIndex &&
-                   topic.getImages()[i].positionInText <= endIndex)
-                {
-                    imegesInTextParts[indexOfTextPart] = topic.getImages()[i].imageUrl;
-                }
-            }
-
-            //заполняем ответы с корректировкой индексов
-
-            for(int i=0;i<topic.getTicketAnswers().size();i++){
-                  //если в отрывке и начало и конец
-                if((topic.getTicketAnswers()[i].getIndexOfStartAnswerInText() >= startIndex &&
-                    topic.getTicketAnswers()[i].getIndexOfStartAnswerInText() <= endIndex) &&
-                   (topic.getTicketAnswers()[i].getIndexOfEndAnswerInText() >= startIndex &&
-                    topic.getTicketAnswers()[i].getIndexOfEndAnswerInText() <= endIndex))
-                {
-                    int indexOfStartAnswerInTextPart = topic.getTicketAnswers()[i].getIndexOfStartAnswerInText() - startIndex;
-                    int indexOfEndAnswerInText = topic.getTicketAnswers()[i].getIndexOfEndAnswerInText() - startIndex;
-
-                    TheoryTicketAnswerInfo currentAnswerInTextPart(topic.getTicketAnswers()[i].getTicketIndex(),indexOfStartAnswerInTextPart, indexOfEndAnswerInText);
-                    AnswersInTextParts[indexOfTextPart] = currentAnswerInTextPart;
-                }else if(topic.getTicketAnswers()[i].getIndexOfStartAnswerInText() <= startIndex &&
-                         topic.getTicketAnswers()[i].getIndexOfEndAnswerInText() >= endIndex){//если только кусок целиком
-                    int indexOfStartAnswerInTextPart = 0;
-                    int indexOfEndAnswerInText = endIndex - startIndex;//подчеркиваем до конца куска текста
-
-                    TheoryTicketAnswerInfo currentAnswerInTextPart(topic.getTicketAnswers()[i].getTicketIndex(),indexOfStartAnswerInTextPart, indexOfEndAnswerInText);
-                    AnswersInTextParts[indexOfTextPart] = currentAnswerInTextPart;
-
-                }//если в куске начало, а конец в каком то следующем
-                else if((topic.getTicketAnswers()[i].getIndexOfStartAnswerInText() >= startIndex &&
-                         topic.getTicketAnswers()[i].getIndexOfStartAnswerInText() <= endIndex))
-                {
-                    qDebug() << topic.getTicketAnswers()[i].getIndexOfStartAnswerInText() << "-" << startIndex;
-                    int indexOfStartAnswerInTextPart = topic.getTicketAnswers()[i].getIndexOfStartAnswerInText() - startIndex;
-                    int indexOfEndAnswerInText = endIndex - startIndex;//подчеркиваем до конца куска текста
-
-                    TheoryTicketAnswerInfo currentAnswerInTextPart(topic.getTicketAnswers()[i].getTicketIndex(),indexOfStartAnswerInTextPart, indexOfEndAnswerInText);
-                    AnswersInTextParts[indexOfTextPart] = currentAnswerInTextPart;
-                }else if((topic.getTicketAnswers()[i].getIndexOfEndAnswerInText() >= startIndex &&//если в куске только конец
-                    topic.getTicketAnswers()[i].getIndexOfEndAnswerInText() <= endIndex))
-                {
-                    int indexOfStartAnswerInTextPart = 0;//подчеркиваем от самого начала
-                    int indexOfEndAnswerInText = topic.getTicketAnswers()[i].getIndexOfEndAnswerInText() - startIndex;
-
-                    TheoryTicketAnswerInfo currentAnswerInTextPart(topic.getTicketAnswers()[i].getTicketIndex(),indexOfStartAnswerInTextPart, indexOfEndAnswerInText);
-                    AnswersInTextParts[indexOfTextPart] = currentAnswerInTextPart;
-                }
-            }
-
-            startIndex = endIndex;
-            indexOfTextPart++;
-        }
-
-        for(int i = 0; i< textes.size();i++)
-        {
-            if(imegesInTextParts.contains(i))
-            {
-                qDebug() << "img" << imegesInTextParts[i];
-            }
-            if(AnswersInTextParts.contains(i))
-            {
-                qDebug() << "answers:" << AnswersInTextParts[i].getTicketIndex() << "b:" << AnswersInTextParts[i].getIndexOfStartAnswerInText() << "e:" << AnswersInTextParts[i].getIndexOfEndAnswerInText();
-            }
-
-            qDebug() << textes[i];
-        }
-
-        qDebug() << "size per page:" << textPerPage << "\n" << textes;
-    }
-
-    QString mainText;
-    int currentHighlightStart;
-    int currentHighlighEnd;
-
-    QString imageUrl;
-
-    int currentPage;
-    int countOfPages;
-
-    QList <QString> textes;
-    QMap <int,QString> imegesInTextParts;
-    QMap <int, TheoryTicketAnswerInfo> AnswersInTextParts;
-
-
-    void nextPage(){
-
-    }
-
-    void previousPage(){
-
-    }
 
 };
 

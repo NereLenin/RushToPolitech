@@ -256,6 +256,17 @@ Item {
             }
         },
 
+        State {
+            name: "theoryScreen"
+            PropertyChanges {
+                target: rootHeaderItem
+                showRightButton: true
+                headerText: appEngine.topicControllerName + " (" + appEngine.topicControllerCurrentPage + "/" + appEngine.topicControllerCountOfPages + ")";
+                headerTime:""
+                //headerTime: ""
+            }
+        },
+
 
         //----------экраны с результатами
 

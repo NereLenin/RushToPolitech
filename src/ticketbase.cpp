@@ -17,9 +17,9 @@ TicketBase::TicketBase(QString pathToTicketBase, QString pathToStatisticBase)
 
 Ticket *TicketBase::getTicket(int index)
 {
-    if(index >=0 && index < ticketsBase.size())
+    if(index > 0 && index <= ticketsBase.size())
     {
-        return ticketsBase[index];
+        return ticketsBase[index-1];
     }
 
     qDebug() << "Try to get incorrect index from ticketBase getTicket(" << index << ")";

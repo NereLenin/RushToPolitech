@@ -39,6 +39,7 @@ Rectangle {
             height: listView.height / 7
 
             onClicked: {
+                rootItem.showTopic(subjIndex, topicIndex);
                 //просмотр содержания
                }
 

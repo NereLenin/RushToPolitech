@@ -13,55 +13,70 @@ import QtQuick.Controls.Material
 Rectangle {
     id: mainScreenRectangle
 
+    objectName: "theoryScreen"
     //anchors.fill: parent
     width: view.width
     height: view.height
     color: "#edecec"
 
-    property int startHighlightPoint: 10
-    property int endHighlightPoint: 40
+    property int startHighlightPoint: appEngine.topicControllerHighlightStart
+    property int endHighlightPoint: appEngine.topicControllerHighlighEnd
 
-    property string theoryText: "Обширный лекционный материал по этой теме невероятное количество тексто проверяем количество символов которые нужно здесь уместить чтобы было читаемо скока вот тут щас да хуй его знает но мы все пишим и пишим пишим и пишим и все и пиздец жизнь это что за шутка такая кто я чем я занят венец природы усажен в офисное кресло и подвергнут пыткам а все ради чего что это за симулякр жизни стали ли мы счастливей променяв пещеру из камня на пещеру из стекла и бетона мама помоги я так больше могу и еще смогу и так пока не сдохну  но мы все пишим и пишим пишим и пишим и все и пиздец жизнь это что за шутка такая кто я чем я занят венец природы усажен в офисное кресло и подвергнут пыткам а все ради чего что это за симулякр жизни стали ли мы счастливей променяв пещеру из камня на пещеру из стекла и бетона мама помоги я так больше могу и еще смогу и так пока не сдохну"
+    property string theoryText: appEngine.topicControllerMainText
 
     property string highlightedText: theoryText.substring(0,startHighlightPoint) + "<u><i>" + theoryText.substring(startHighlightPoint,endHighlightPoint) + "</u></i>" + theoryText.substring(endHighlightPoint,theoryText.length)
 
-    property string outputText: endHighlightPoint > startHighlightPoint && endHighlightPoint < theoryText.length ? highlightedText : theoryText
+    property string outputText: (endHighlightPoint > startHighlightPoint) && (endHighlightPoint <= theoryText.length) ? highlightedText : theoryText
 
 
-    property string imageURL: "" // "qrc:/icons/questpic.jpg"
+    property string imageURL: appEngine.topicControllerImageUrl // "qrc:/icons/questpic.jpg"
     property bool haveImage: imageURL !== ""
 
-    property bool isImageUp: true
+    property bool isImageUp: ((appEngine.topicControllerCurrentPage % 2) !== 0 )
+
+
+//    property int startHighlightPoint: 10
+//    property int endHighlightPoint: 40
+
+//    property string theoryText: "Обширный лекционный материал по этой теме невероятное количество тексто проверяем количество символов которые нужно здесь уместить чтобы было читаемо скока вот тут щас да хуй его знает но мы все пишим и пишим пишим и пишим и все и пиздец жизнь это что за шутка такая кто я чем я занят венец природы усажен в офисное кресло и подвергнут пыткам а все ради чего что это за симулякр жизни стали ли мы счастливей променяв пещеру из камня на пещеру из стекла и бетона мама помоги я так больше могу и еще смогу и так пока не сдохну  но мы все пишим и пишим пишим и пишим и все и пиздец жизнь это что за шутка такая кто я чем я занят венец природы усажен в офисное кресло и подвергнут пыткам а все ради чего что это за симулякр жизни стали ли мы счастливей променяв пещеру из камня на пещеру из стекла и бетона мама помоги я так больше могу и еще смогу и так пока не сдохну"
+
+//    property string highlightedText: theoryText.substring(0,startHighlightPoint) + "<u><i>" + theoryText.substring(startHighlightPoint,endHighlightPoint) + "</u></i>" + theoryText.substring(endHighlightPoint,theoryText.length)
+
+//    property string outputText: endHighlightPoint > startHighlightPoint && endHighlightPoint < theoryText.length ? highlightedText : theoryText
+
+
+//    property string imageURL: "" // "qrc:/icons/questpic.jpg"
+//    property bool haveImage: imageURL !== ""
+
+//    property bool isImageUp: true
 
 
     Item {
-        id: imageWithBorder
-        visible: haveImage
+        id: upImageWithBorder
+        visible: haveImage && isImageUp
 
-        height: haveImage? (parent.height / 4) : 1
+        height: (haveImage && isImageUp)? (parent.height / 4) : 1
 
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.top: isImageUp ? parent.top : none
-        anchors.bottom: !isImageUp ? separatorLine.top : none
+        anchors.top: parent.top//isImageUp ? parent.top : none
+//        anchors.bottom: !isImageUp ? separatorLine.top : none
         anchors.margins: 20
 
-
-
         Rectangle {
-            id: imageBorder
+            id: upImageBorder
             anchors.fill: parent
             border.color: "#7A9DBF"
             opacity: 0.6
         }
 
         Image {
-            id: image
+            id: upImage
 
-            anchors.fill: imageBorder
+            anchors.fill: upImageBorder
             opacity: 1
             source: imageURL
-            mirror: true
+            mirror: false
             fillMode: Image.PreserveAspectFit
         }
     }
@@ -69,8 +84,8 @@ Rectangle {
     Text {
         id: textOfTheory
         text: outputText
-        anchors.top: isImageUp ? imageWithBorder.bottom : parent.top
-        anchors.bottom: isImageUp ? separatorLine.top : imageWithBorder.top
+        anchors.top: upImageWithBorder.bottom//isImageUp ? imageWithBorder.bottom : parent.top
+        anchors.bottom: downImageWithBorder.top//isImageUp ? separatorLine.top : imageWithBorder.top
 
         anchors.left: parent.left
         anchors.right: parent.right
@@ -92,6 +107,38 @@ Rectangle {
         style: Text.Outline
         styleColor: "#383b39"
         color: "#383b39"
+    }
+
+    Item {
+        id: downImageWithBorder
+        visible: haveImage && !isImageUp
+
+        height: (haveImage && !isImageUp)? (parent.height / 4) : 1
+
+        anchors.left: parent.left
+        anchors.right: parent.right
+        //anchors.top: textOfTheory.bottom//isImageUp ? parent.top : none
+        anchors.bottom: separatorLine.top //!isImageUp ? separatorLine.top : none
+        anchors.margins: 20
+
+
+
+        Rectangle {
+            id: downImageBorder
+            anchors.fill: parent
+            border.color: "#7A9DBF"
+            opacity: 0.6
+        }
+
+        Image {
+            id: downImage
+
+            anchors.fill: downImageBorder
+            opacity: 1
+            source: imageURL
+            mirror: false
+            fillMode: Image.PreserveAspectFit
+        }
     }
 
     Rectangle {
@@ -127,6 +174,10 @@ Rectangle {
             font.pointSize: 14
             font.styleName: "Полужирный"
             font.bold: true
+
+            onClicked: {
+                rootItem.topicPreviousPage();
+            }
         }
 
         Rectangle {
@@ -182,6 +233,10 @@ Rectangle {
             font.pointSize: 14
             font.styleName: "Полужирный"
             font.bold: true
+
+            onClicked: {
+                rootItem.topicNextPage();
+            }
         }
 
         Rectangle {

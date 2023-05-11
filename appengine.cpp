@@ -76,6 +76,18 @@ void AppEngine::bindQMLSlotSignalConnections()
                      this,SLOT(onShowSingleTicket(int)));
 
 
+    QObject::connect(rootObject,SIGNAL(showTopic(int,int)),
+                     this,SLOT(onShowTopic(int,int)));
+
+    QObject::connect(rootObject,SIGNAL(showTopicForTicket(int)),
+                     this,SLOT(onShowTopicForTicket(int)));
+
+    QObject::connect(rootObject,SIGNAL(topicNextPage()),
+                     this,SLOT(onTopicNextPage()) );
+
+    QObject::connect(rootObject,SIGNAL(topicPreviousPage()),
+                     this,SLOT(onTopicPreviousPage()));
+
 }
 
 void AppEngine::connectCurrentSessionWithEngine()
@@ -139,6 +151,8 @@ void AppEngine::initialize()
     qmlEngine = nullptr;
     currentSession = nullptr;
 
+    //к topic контроллеру
+    QObject::connect(&(theory.topicController), &TheoryTopicTextController::pageChanged, this, &AppEngine::onPageChanged);
 
     LearnSession::initializeTypeLearningForQml();
 }
@@ -396,7 +410,6 @@ void AppEngine::onLearnSessionFillStack(QList<Ticket *> ticketsToPush)
         {
             collectLearningTicket(ticketsToPush[i]);
         }
-
 }
 
 void AppEngine::onLearnSessionPushFinalPage()
@@ -472,3 +485,9 @@ void AppEngine::onShowTopicsTickets(int subjectIndex, int topicIndex)
     qmlEngine->rootContext()->setContextProperty("topicsTicketModel",topicsTicketModel);
     emit topicsTicketsDataIsReady();
 }
+
+void AppEngine::onPageChanged(){
+    emit topicControllerPageChanged();
+}
+
+

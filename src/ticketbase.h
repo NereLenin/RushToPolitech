@@ -3,7 +3,6 @@
 #include "ticketsdatabasereader.h"
 #include "ticketsstatisticservice.h"
 
-
 class TicketBase : public ITicketStatistic
 {
 private:
@@ -14,8 +13,6 @@ private:
 
     QString pathToStatisticBase;
     QString pathToTicketsBase;
-
-
 
 public:   
     void clearTicketBase();

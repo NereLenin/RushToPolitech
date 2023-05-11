@@ -83,3 +83,8 @@ Topic *TheoryBase::getTopicForTicket(int ticketIndex)
     }
     return topicsForTickets[ticketIndex];
 }
+
+TheoryTopicTextController &TheoryBase::getTopicController(Topic &topic, int sizeOfOnePage){
+    topicController.setTopic(topic,sizeOfOnePage);
+    return topicController;
+}

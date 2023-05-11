@@ -12,6 +12,7 @@ SOURCES += \
         src/theory/theorybasereader.cpp \
         src/theory/theoryimginfo.cpp \
         src/theory/theoryticketinfo.cpp \
+        src/theory/theorytopictextcontroller.cpp \
         src/theory/topic.cpp \
         src/ticketbase.cpp \
         src/ticketinfo.cpp \
@@ -77,6 +78,7 @@ HEADERS += \
     src/theory/theorybasereader.h \
     src/theory/theoryimginfo.h \
     src/theory/theoryticketinfo.h \
+    src/theory/theorytopictextcontroller.h \
     src/theory/topic.h \
     src/ticketbase.h \
     src/ticketinfo.h \

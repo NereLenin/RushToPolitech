@@ -8,6 +8,7 @@ Item {
 
     property string currentItem: view.currentItem.objectName
 
+    property int currentTicketIndex: 0
     signal finishLearningSession();
     signal endLearningSession();
 
@@ -22,28 +23,46 @@ Item {
 
     //возвращаемся к странице с которой начали обучение или экзамен или повтор
     function popToRegimeMainScreen(){
-        if(appEngine.typeOfCurrentSession === "RepeatWithTimer" ||//если это кто то из повторов
-           appEngine.typeOfCurrentSession === "RepeatDefault" ||
-           appEngine.typeOfCurrentSession === "LearnFailedFromRepeat")
+
+        switch(view.currentItem.objectName){
+        case "topicsScreen"://если возвращаемся с скрина просмотра тем
         {
-            view.popTo("RepeatScreen");//возвращаемся на экран повтора
+            console.log("pop subjectsScreen");
+            view.popTo("subjectsScreen");
+            return;
         }
-        else{
-            switch(view.currentItem.objectName){
-            case "topicsScreen"://если возвращаемся с скрина просмотра тем
-                view.popTo("subjectsScreen");
-            break;
-            case "topicsTicketScreen"://если возвращаемся со скрина просмотра списка билетов в теме
-                view.popTo("topicsScreen");
-            break;
-            default:
+        case "topicsTicketScreen"://если возвращаемся со скрина просмотра списка билетов в теме
+        {
+            console.log("pop topicsScreen");
+            view.popTo("topicsScreen");
+            return;
+        }
+        case "theoryScreen":
+        {
+            console.log("pop theoryScreen");
+            view.pop();//весь просмотр теории всегда на одной странице, как бы мы на него не попали, выход с него - чисто одним попом
+            return;
+        }
+        default:
+        {
+            if(appEngine.typeOfCurrentSession === "RepeatWithTimer" ||//если это кто то из повторов
+                    appEngine.typeOfCurrentSession === "RepeatDefault" ||
+                    appEngine.typeOfCurrentSession === "LearnFailedFromRepeat")
+            {
+                view.popTo("RepeatScreen");//возвращаемся на экран повтора
+                console.log("pop repeat");
+            }
+            else
+            {
                 view.popTo("StartScreen");//если это экзамен или просто учеба - возвращаемся на старотовый экран
-            break;
             }
 
         }
+        break;
 
         }
+
+    }
 
     function navigateTo(screenName : string){
 
@@ -72,6 +91,10 @@ Item {
             case "topicsTicketScreen":
                 view.push("TicketsOfTopic.qml")
             break;
+            case "theoryScreen":
+                view.push("LearnTheory.qml")
+            break;
+
 
         default: break;
         }
@@ -139,6 +162,16 @@ Item {
         property bool isFinishSessionFuncActive: true
         onCurrentItemChanged:
         {
+            if(currentItem.objectName.includes("CV") || currentItem.objectName.includes("IV"))
+            {
+                currentTicketIndex = currentItem.ticketIndex
+
+
+            }else{
+                currentTicketIndex = 0;
+            }
+            console.log(currentTicketIndex)
+
             //отслеживание finishScreen
             if(isFinishSessionFuncActive)
             {
