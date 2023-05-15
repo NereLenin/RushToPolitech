@@ -13,7 +13,7 @@ ApplicationWindow {
     title: appEngine.title
 
     Component.onCompleted: {
-        appPager.debugPush("LearnTheory.qml");
+        //appPager.debugPush("LearnTheory.qml");
     }
 
     function returnToRegimeMainPage(){
@@ -336,12 +336,14 @@ ApplicationWindow {
         //если пагинатор кинул сигнал последнего экрана
         //в учебной сессии перенаправляем в бэк
         function onFinishLearningSession(){
+            console.log("try finish session FROM PAGER")
             rootItem.finishLearningSession();
         }
 
         //если пагинатор кинул сигнал прерывания учеб сессии
         //перенаправляем в бэк
         function onEndLearningSession(){
+            console.log("try end session FROM PAGER")
             rootItem.endLearningSession();
         }
     }

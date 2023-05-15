@@ -23,6 +23,8 @@ class TheoryTopicTextController : public QObject
 
 private:
     QList<TopicPart> topicParts;
+    int subjIndex;
+    int topicIndex;
     QString name;
 
     QString mainText;
@@ -62,6 +64,10 @@ public:
     int getCurrentHighlighEnd() const;
 
     int getCurrentPage() const;
+
+    int getSubjIndex() const;
+
+    int getTopicIndex() const;
 
 signals:
     void pageChanged();

@@ -19,6 +19,14 @@ Rectangle {
     height: view.height
     color: "#edecec"
 
+
+
+    property bool calledFromLearningTicket: (appEngine.typeOfCurrentSession).toLowerCase().includes("learn") || (appEngine.typeOfCurrentSession).toLowerCase().includes("repeat")
+
+    property int subjIndex: appEngine.topicControllerSubjIndex
+    property int topicIndex: appEngine.topicControllerTopicIndex
+    property string subjectIcon: appEngine.topicControllerSubjIcon
+
     property int startHighlightPoint: appEngine.topicControllerHighlightStart
     property int endHighlightPoint: appEngine.topicControllerHighlighEnd
 
@@ -34,21 +42,18 @@ Rectangle {
 
     property bool isImageUp: ((appEngine.topicControllerCurrentPage % 2) !== 0 )
 
-
-//    property int startHighlightPoint: 10
-//    property int endHighlightPoint: 40
-
-//    property string theoryText: "Обширный лекционный материал по этой теме невероятное количество тексто проверяем количество символов которые нужно здесь уместить чтобы было читаемо скока вот тут щас да хуй его знает но мы все пишим и пишим пишим и пишим и все и пиздец жизнь это что за шутка такая кто я чем я занят венец природы усажен в офисное кресло и подвергнут пыткам а все ради чего что это за симулякр жизни стали ли мы счастливей променяв пещеру из камня на пещеру из стекла и бетона мама помоги я так больше могу и еще смогу и так пока не сдохну  но мы все пишим и пишим пишим и пишим и все и пиздец жизнь это что за шутка такая кто я чем я занят венец природы усажен в офисное кресло и подвергнут пыткам а все ради чего что это за симулякр жизни стали ли мы счастливей променяв пещеру из камня на пещеру из стекла и бетона мама помоги я так больше могу и еще смогу и так пока не сдохну"
-
-//    property string highlightedText: theoryText.substring(0,startHighlightPoint) + "<u><i>" + theoryText.substring(startHighlightPoint,endHighlightPoint) + "</u></i>" + theoryText.substring(endHighlightPoint,theoryText.length)
-
-//    property string outputText: endHighlightPoint > startHighlightPoint && endHighlightPoint < theoryText.length ? highlightedText : theoryText
-
-
-//    property string imageURL: "" // "qrc:/icons/questpic.jpg"
-//    property bool haveImage: imageURL !== ""
-
-//    property bool isImageUp: true
+    onTheoryTextChanged: {//контролим панель от страниц
+      switch(appEngine.topicControllerCurrentPage)
+      {
+        case 1:
+            navigatePanel.state = "FirstPage";
+        break;
+        case appEngine.topicControllerCountOfPages:
+            navigatePanel.state = "LastPage";
+        break;
+        default: navigatePanel.state = "SomewhereMiddleInText"; break;
+      }
+    }
 
 
     Item {
@@ -118,7 +123,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         //anchors.top: textOfTheory.bottom//isImageUp ? parent.top : none
-        anchors.bottom: separatorLine.top //!isImageUp ? separatorLine.top : none
+        anchors.bottom: navigatePanel.top //!isImageUp ? separatorLine.top : none
         anchors.margins: 20
 
 
@@ -141,134 +146,224 @@ Rectangle {
         }
     }
 
-    Rectangle {
-        id: separatorLine
-        anchors.left: prevButtonItem.left
-        anchors.right: nextButtonItem.right
-        anchors.bottom: nextButtonItem.top
-        anchors.bottomMargin: 10
-
-        height: 2
-
-        color: "#7A9DBF"
-        opacity: 0.6
-    }
-
-    Item {
-        id: prevButtonItem
-
-        anchors.bottom: parent.bottom
+    Item{
+        id:navigatePanel
         anchors.left: parent.left
-        anchors.right: parent.horizontalCenter
-
-        anchors.margins: 15
-        anchors.bottomMargin: 15
-        anchors.rightMargin: 10
-
-        height: (parent.height / 2) / 5
-
-        Button {
-            anchors.fill: parent
-
-            font.family: "Courier new"
-            font.pointSize: 14
-            font.styleName: "Полужирный"
-            font.bold: true
-
-            onClicked: {
-                rootItem.topicPreviousPage();
-            }
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            color: "#cc0061c0"
-            radius: 5
-            opacity: 0.5
-        }
-
-        Text {
-            text: "<"
-
-            anchors.fill: parent
-
-            anchors.left: parent.horizontalCenter
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            wrapMode: Text.WordWrap
-            style: Text.Outline
-            scale: 1
-
-            anchors.rightMargin: 5
-            anchors.topMargin: 0
-
-            font.styleName: "Полужирный"
-            padding: 5
-            fontSizeMode: Text.Fit
-            font.family: "Courier new"
-            textFormat: Text.PlainText
-            font.pixelSize: 25
-
-            styleColor: "#383b39"
-        }
-    }
-
-    Item {
-        id: nextButtonItem
-
-        anchors.bottom: parent.bottom
-        anchors.left: parent.horizontalCenter
         anchors.right: parent.right
+        anchors.bottom: parent.bottom
 
-        anchors.margins: 15
-        anchors.bottomMargin: 15
-        anchors.leftMargin: 10
+        height: parent.height/7
 
-        height: (parent.height / 2) / 5
+        Rectangle {
+            id: separatorLine
+            anchors.left: prevButtonItem.left
+            anchors.right: nextButtonItem.right
+            anchors.bottom: nextButtonItem.top
+            anchors.bottomMargin: 10
 
-        Button {
-            anchors.fill: parent
+            height: 2
 
-            font.family: "Courier new"
-            font.pointSize: 14
-            font.styleName: "Полужирный"
-            font.bold: true
+            color: "#7A9DBF"
+            opacity: 0.6
+        }
 
-            onClicked: {
-                rootItem.topicNextPage();
+        property int buttonHeight: (height / 1.5)
+
+        Item {
+            id: prevButtonItem
+
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.horizontalCenter
+
+            anchors.margins: 15
+            anchors.bottomMargin: 15
+            anchors.rightMargin: 10
+
+            height: navigatePanel.buttonHeight
+
+            property string buttonText: "<"
+            property string iconURL: ""
+
+            Button {
+                anchors.fill: parent
+
+                font.family: "Courier new"
+                font.pointSize: 14
+                font.styleName: "Полужирный"
+                font.bold: true
+
+                onClicked: {
+                    if(navigatePanel.state !== "FirstPage")
+                        rootItem.topicPreviousPage();
+                    else
+                        rootItem.returnToRegimeMainPage();
+                }
+            }
+
+            Rectangle {
+                anchors.fill: parent
+                color: "#cc0061c0"
+                radius: 5
+                opacity: 0.5
+            }
+
+            Text {
+                visible: prevButtonItem.iconURL == ""
+                text: prevButtonItem.buttonText
+
+                anchors.fill: parent
+
+                anchors.left: parent.horizontalCenter
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                wrapMode: Text.WordWrap
+                style: Text.Outline
+                scale: 1
+
+                anchors.rightMargin: 5
+                anchors.topMargin: 0
+
+                font.styleName: "Полужирный"
+                padding: 5
+                fontSizeMode: Text.Fit
+                font.family: "Courier new"
+                textFormat: Text.PlainText
+                font.pixelSize: 25
+
+                styleColor: "#383b39"
+            }
+
+            Image {
+                visible: prevButtonItem.iconURL != ""
+                anchors.fill: parent
+                anchors.margins: 10
+                opacity: 1
+                source: prevButtonItem.iconURL
+                fillMode: Image.PreserveAspectFit
             }
         }
 
-        Rectangle {
-            anchors.fill: parent
-            color: "#cc0061c0"
-            radius: 5
-            opacity: 0.5
-        }
+        Item {
+            id: nextButtonItem
 
-        Text {
-            text: ">"
-
-            anchors.fill: parent
-
+            anchors.bottom: parent.bottom
             anchors.left: parent.horizontalCenter
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            wrapMode: Text.WordWrap
-            style: Text.Outline
-            scale: 1
+            anchors.right: parent.right
 
-            anchors.rightMargin: 5
-            anchors.topMargin: 0
+            anchors.margins: 15
+            anchors.bottomMargin: 15
+            anchors.leftMargin: 10
 
-            font.styleName: "Полужирный"
-            padding: 5
-            fontSizeMode: Text.Fit
-            font.family: "Courier new"
-            textFormat: Text.PlainText
-            font.pixelSize: 25
+            height: navigatePanel.buttonHeight
 
-            styleColor: "#383b39"
+            property string buttonText: ">"
+            property string iconURL: ""
+
+            Button {
+                anchors.fill: parent
+
+                font.family: "Courier new"
+                font.pointSize: 14
+                font.styleName: "Полужирный"
+                font.bold: true
+
+                onClicked: {
+
+                    if(navigatePanel.state !== "LastPage")
+                        rootItem.topicNextPage();
+                    else
+                        if(!calledFromLearningTicket)
+                        {
+                          rootItem.showTopicsTickets(subjIndex, topicIndex);
+                        }
+
+                }
+            }
+
+            Rectangle {
+                anchors.fill: parent
+                color: "#cc0061c0"
+                radius: 5
+                opacity: 0.5
+            }
+
+            Text {
+                text: nextButtonItem.buttonText
+                visible: nextButtonItem.iconURL == ""
+
+                anchors.fill: parent
+
+                anchors.left: parent.horizontalCenter
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                wrapMode: Text.WordWrap
+                style: Text.Outline
+                scale: 1
+
+                anchors.rightMargin: 5
+                anchors.topMargin: 0
+
+                font.styleName: "Полужирный"
+                padding: 5
+                fontSizeMode: Text.Fit
+                font.family: "Courier new"
+                textFormat: Text.PlainText
+                font.pixelSize: 25
+
+                styleColor: "#383b39"
+            }
+
+            Image {
+                anchors.fill: parent
+                visible: nextButtonItem.iconURL != ""
+                anchors.margins: 10
+                opacity: 1
+                source: nextButtonItem.iconURL
+                fillMode: Image.PreserveAspectFit
+            }
         }
+
+        states: [
+            //------------хэдеры для самостоятельных экранов------------
+
+            State {//хэдер начального экрана
+                name: "FirstPage"
+                PropertyChanges {
+                    target: nextButtonItem
+                    iconURL: ""
+                }
+                PropertyChanges {
+                    target: prevButtonItem
+                    iconURL: calledFromLearningTicket? "qrc:/icons/bilets.png" : subjectIcon//"qrc:/icons/theory.png"
+                }
+            },
+            State {//хэдер начального экрана
+                name: "SomewhereMiddleInText"
+                PropertyChanges {
+                    target: nextButtonItem
+                    iconURL: ""
+                }
+
+                PropertyChanges {
+                    target: prevButtonItem
+                    iconURL: ""
+                }
+            },
+            State {//хэдер начального экрана
+                name: "LastPage"
+                PropertyChanges {
+                    target: nextButtonItem
+                    iconURL: "qrc:/icons/bilets.png"
+                    visible: !calledFromLearningTicket
+                }
+
+                PropertyChanges {
+                    target: prevButtonItem
+                    iconURL: ""
+                }
+            }//endstate
+        ]//endstates
     }
-}
+
+   }

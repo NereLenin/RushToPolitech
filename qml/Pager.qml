@@ -46,8 +46,8 @@ Item {
         default:
         {
             if(appEngine.typeOfCurrentSession === "RepeatWithTimer" ||//если это кто то из повторов
-                    appEngine.typeOfCurrentSession === "RepeatDefault" ||
-                    appEngine.typeOfCurrentSession === "LearnFailedFromRepeat")
+               appEngine.typeOfCurrentSession === "RepeatDefault"   ||
+               appEngine.typeOfCurrentSession === "LearnFailedFromRepeat")
             {
                 view.popTo("RepeatScreen");//возвращаемся на экран повтора
                 console.log("pop repeat");
@@ -65,37 +65,43 @@ Item {
     }
 
     function navigateTo(screenName : string){
+        console.log("navigate")
 
-        view.countOfViewFinishScreen = 0;
         switch(screenName){
             case "FailedLearnScreen":
+                view.countOfViewFinishScreen = 0;
                 view.push("FailedLearnScreen.qml");
-            break;
+            return;
             case "RepeatScreen":
+                view.countOfViewFinishScreen = 0;
+                console.log("end on pop to repeat")
                 endLearningSessions();
                 if(view.depth > 1)
                     view.popTo("RepeatScreen")
                 if(view.currentItem.objectName !== "RepeatScreen")
                     view.push("RepeatScreen.qml");
-            break;
+            return;
             case "StartScreen":
+                view.countOfViewFinishScreen = 0;
+                console.log("end on pop to start")
                 endLearningSessions();
                 view.popTo("StartScreen")
-            break;
+            return;
             case "subjectsScreen":
+                view.countOfViewFinishScreen = 0;
                 view.push("Subjects.qml")
-            break;
+            return;
             case "topicsScreen":
+                view.countOfViewFinishScreen = 0;
                 view.push("Topics.qml")
-            break;
+            return;
             case "topicsTicketScreen":
+                view.countOfViewFinishScreen = 0;
                 view.push("TicketsOfTopic.qml")
-            break;
+            return;
             case "theoryScreen":
                 view.push("LearnTheory.qml")
-            break;
-
-
+            return;
         default: break;
         }
 
@@ -162,15 +168,13 @@ Item {
         property bool isFinishSessionFuncActive: true
         onCurrentItemChanged:
         {
+
             if(currentItem.objectName.includes("CV") || currentItem.objectName.includes("IV"))
             {
                 currentTicketIndex = currentItem.ticketIndex
-
-
             }else{
                 currentTicketIndex = 0;
             }
-            console.log(currentTicketIndex)
 
             //отслеживание finishScreen
             if(isFinishSessionFuncActive)
@@ -183,7 +187,6 @@ Item {
             {
                 rootPagerItem.finishLearningSession();
 
-                console.log("SessionFinish");
                 view.countOfViewFinishScreen = 0;
             }
             }

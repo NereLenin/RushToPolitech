@@ -7,6 +7,21 @@ Item {
     height: 80
     width: 500
 
+    property bool learningSomething: ((appEngine.typeOfCurrentSession).toLowerCase().includes("learn") || (appEngine.typeOfCurrentSession).toLowerCase().includes("repeat"))
+    property string subjectIcon: appEngine.topicControllerSubjIcon
+
+    onLearningSomethingChanged:
+    {
+        console.log("HEADER: LEARN SOMETHING CHANGED: ", rootHeaderItem.learningSomething)
+    }
+
+    onStateChanged: {
+        //обновляем вспомогательную переменную для понимания, учеба это или нет, каждый раз как меняется окно -> меняется состояние
+        learningSomething =  ((appEngine.typeOfCurrentSession).toLowerCase().includes("learn") || (appEngine.typeOfCurrentSession).toLowerCase().includes("repeat"));
+        //обновляем subjectIcon
+        subjectIcon = appEngine.topicControllerSubjIcon
+    }
+
     property bool showRightButton: false
     property int burgerLineHeight: 6
     property string headerText: "УТС"
@@ -190,6 +205,7 @@ Item {
                 showRightButton: false
                 headerText: "УТС"
                 headerTime:""
+                pathToRightIconButton: ""
             }
         },
 
@@ -200,6 +216,7 @@ Item {
                 showRightButton: false
                 headerText: "Повтор"
                 headerTime:""
+                pathToRightIconButton: ""
 
             }
         },
@@ -211,11 +228,12 @@ Item {
                 showRightButton: false
                 headerText: "Ошибки"
                 headerTime:""
+                pathToRightIconButton: ""
 
             }
         },
 
-        State {
+        State {//это чо бля
             name: "TheoryScreen"
             PropertyChanges {
                 target: rootHeaderItem
@@ -232,6 +250,7 @@ Item {
                 showRightButton: false
                 headerText: "Предметы"
                 headerTime:""
+                pathToRightIconButton: ""
                 //headerTime: ""
             }
         },
@@ -242,6 +261,7 @@ Item {
                 showRightButton: true
                 headerText: "Темы"
                 headerTime:""
+                pathToRightIconButton: "qrc:/icons/studyIcon.png"
                 //headerTime: ""
             }
         },
@@ -252,6 +272,7 @@ Item {
                 showRightButton: true
                 headerText: "Вопросы темы"
                 headerTime:""
+                pathToRightIconButton: "qrc:/icons/studyIcon.png"
                 //headerTime: ""
             }
         },
@@ -263,6 +284,8 @@ Item {
                 showRightButton: true
                 headerText: appEngine.topicControllerName + " (" + appEngine.topicControllerCurrentPage + "/" + appEngine.topicControllerCountOfPages + ")";
                 headerTime:""
+
+                pathToRightIconButton: rootHeaderItem.learningSomething ? "qrc:/icons/bilets.png" : subjectIcon//"qrc:/icons/studyIcon.png"
                 //headerTime: ""
             }
         },
@@ -277,6 +300,7 @@ Item {
                 showRightButton: false
                 headerText: "Результат"
                 headerTime:""
+                pathToRightIconButton: ""//qrc:/icons/studyIcon.png
 
             }
         },
@@ -289,6 +313,7 @@ Item {
                 showRightButton: false
                 headerText: "Результат"
                 headerTime:""
+                pathToRightIconButton: ""//qrc:/icons/studyIcon.png
 
             }
         },
@@ -305,6 +330,7 @@ Item {
                 showRightButton: true
                 headerText: "Учим"
                 headerTime:""
+                pathToRightIconButton: "qrc:/icons/studyIcon.png"//
             }
         },
         State {
@@ -314,6 +340,7 @@ Item {
                 showRightButton: true
                 headerText: "Правим ошибки"
                 headerTime:""
+                pathToRightIconButton: "qrc:/icons/studyIcon.png"//
 
             }
         },
@@ -326,6 +353,7 @@ Item {
                 showRightButton: true
                 headerText: "Повтор"
                 headerTime:""
+                pathToRightIconButton: "qrc:/icons/studyIcon.png"//
 
             }
         },
@@ -336,6 +364,7 @@ Item {
                 showRightButton: false
                 headerText: "Повтор"
                 headerTime: appEngine.timerTime
+                pathToRightIconButton: ""//qrc:/icons/studyIcon.png
 
             }
         },
@@ -346,6 +375,7 @@ Item {
                 showRightButton: true
                 headerText: "Правим ошибки"
                 headerTime:""
+                pathToRightIconButton: "qrc:/icons/studyIcon.png"//
 
             }
         },
@@ -358,6 +388,7 @@ Item {
                 showRightButton: false
                 headerText: appEngine.currentTicketNumber + "/" + appEngine.countOfTicketsInSession
                 headerTime: appEngine.timerTime
+                pathToRightIconButton: ""//qrc:/icons/studyIcon.png
 
             }
         },
@@ -368,6 +399,7 @@ Item {
                 showRightButton: false
                 headerText: "Вопрос"
                 headerTime: ""
+                pathToRightIconButton: ""//qrc:/icons/studyIcon.png
 
             }
         },
@@ -381,6 +413,7 @@ Item {
                 showRightButton: true
                 headerText: "Учим"
                 headerTime:""
+                pathToRightIconButton: "qrc:/icons/studyIcon.png"//
             }
         },
 
@@ -391,6 +424,7 @@ Item {
                 showRightButton: true
                 headerText: "Повтор"
                 headerTime:""
+                pathToRightIconButton: "qrc:/icons/studyIcon.png"//
 
             }
         },
@@ -402,6 +436,7 @@ Item {
                 showRightButton: true
                 headerText: "Правим ошибки"
                 headerTime:""
+                pathToRightIconButton: "qrc:/icons/studyIcon.png"//
 
             }
         },
@@ -413,6 +448,7 @@ Item {
                 showRightButton: true
                 headerText: "Правим ошибки"
                 headerTime:""
+                pathToRightIconButton: "qrc:/icons/studyIcon.png"//
 
             }
         },
@@ -424,6 +460,7 @@ Item {
                 showRightButton: false
                 headerText: "Повтор"
                 headerTime: appEngine.timerTime
+                pathToRightIconButton: ""//qrc:/icons/studyIcon.png
 
             }
         },
@@ -435,6 +472,7 @@ Item {
                 showRightButton: false
                 headerText: appEngine.currentTicketNumber + "/" + appEngine.countOfTicketsInSession
                 headerTime: appEngine.timerTime
+                pathToRightIconButton: ""//qrc:/icons/studyIcon.png
 
             }
         },
@@ -446,6 +484,7 @@ Item {
                 showRightButton: false
                 headerText: "Вопрос"
                 headerTime:""
+                pathToRightIconButton: ""//qrc:/icons/studyIcon.png
             }
         }
 

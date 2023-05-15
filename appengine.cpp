@@ -419,6 +419,7 @@ void AppEngine::onLearnSessionPushFinalPage()
 
 void AppEngine::onEndLearningSessions()
 {
+    qDebug() << "BACK END SESSION";
     if(currentSession == nullptr)
     {
         qDebug() << "try end session then it's null";
@@ -433,6 +434,7 @@ void AppEngine::onEndLearningSessions()
 
 void AppEngine::onFinishLearningSession()
 {
+    qDebug() << "BACK FINISH SESSION";
     emit finishSession();   
 }
 

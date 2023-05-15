@@ -15,7 +15,6 @@
 
 
 
-
 class AppEngine : public QObject
 {
     Q_OBJECT
@@ -24,6 +23,7 @@ class AppEngine : public QObject
     Q_PROPERTY(QString title READ getTitle CONSTANT)
     Q_PROPERTY(QString finishScreenText READ getFinishScreenText NOTIFY finishSession)
     Q_PROPERTY(QString typeOfCurrentSession READ getTypeOfCurrentSession NOTIFY sessionStatisticChanged)
+    //currentSubjectIcon
 
     // statistic
     Q_PROPERTY(int chanceToPassExam   READ getChanceToPassExam   NOTIFY sessionStatisticChanged)
@@ -48,10 +48,15 @@ class AppEngine : public QObject
     //Q_PROPERTY(QString currentTheoryText  READ getLearningSessionTimerTime CONSTANT)
 
     //topic text controller
+    Q_PROPERTY(int topicControllerSubjIndex  READ getTopicTextControllerSubjIndex CONSTANT)
+    Q_PROPERTY(int topicControllerTopicIndex  READ getTopicTextControllerTopicIndex CONSTANT)
+
     Q_PROPERTY(QString topicControllerName  READ getTopicTextControllerName NOTIFY topicControllerPageChanged)
 
     Q_PROPERTY(QString topicControllerMainText  READ getTopicTextControllerText NOTIFY topicControllerPageChanged)
     Q_PROPERTY(QString topicControllerImageUrl  READ getTopicTextControllerImageUrl NOTIFY topicControllerPageChanged)
+
+    Q_PROPERTY(QString topicControllerSubjIcon  READ getSubjIcon NOTIFY topicControllerPageChanged)
 
     Q_PROPERTY(int topicControllerHighlightStart  READ getTopicTextControllerCurrentHighlightStart NOTIFY topicControllerPageChanged)
     Q_PROPERTY(int topicControllerHighlighEnd  READ getTopicTextControllerCurrentHighlighEnd NOTIFY topicControllerPageChanged)
@@ -124,6 +129,15 @@ public:
     QString getLearningSessionTimerTime();
 
     //геттеры для топик контроллера
+
+    int getTopicTextControllerSubjIndex(){
+        return theory.topicController.getSubjIndex();
+    }
+
+    int getTopicTextControllerTopicIndex(){
+        return theory.topicController.getTopicIndex();
+    }
+
     QString getTopicTextControllerText(){
         return theory.topicController.getMainText();
     }
@@ -147,8 +161,22 @@ public:
     int getTopicTextControllerCountOfPages(){
         return theory.topicController.countOfPages();
     }
+
     QString getTopicTextControllerName(){
         return theory.topicController.getName();
+    }
+
+    QString getSubjIcon(){
+        //fillTopicsModelFromTheory(subjectIndex-1);
+
+        Subject * currentSubject = theory.getSubject(getTopicTextControllerSubjIndex()-1);
+
+        if(currentSubject!=nullptr)
+        {
+            return currentSubject->getIconUrl();
+        }
+
+        return "";
     }
 
     ~AppEngine(){
@@ -233,6 +261,8 @@ private slots:
     void onTopicPreviousPage(){
         theory.topicController.previousPage();
     }
+
+
 
     void onPageChanged();
 

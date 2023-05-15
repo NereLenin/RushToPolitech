@@ -3,7 +3,6 @@
 
 void TheoryTopicTextController::showPage(int pageIndex){
     if(pageIndex == 0) pageIndex = currentPage;
-    qDebug() << currentPage;
 
     if(pageIndex >=0 && pageIndex < countOfPages())
     {
@@ -45,7 +44,6 @@ void TheoryTopicTextController::showAnswerTicket(int ticketIndex)//подсве�
     {
         if(topicParts[i].getAnswer().getTicketIndex() == ticketIndex)
         {
-            qDebug() << "Найдена теория для тикета" << topicParts[i].getAnswer().getTicketIndex();
             showPage(i);
             break;
         }
@@ -59,6 +57,9 @@ int TheoryTopicTextController::countOfPages(){
 void TheoryTopicTextController::setTopic(Topic &topic, int textPerPage){
 
     indexHighlitedTicket = currentHighlighEnd = currentHighlightStart = 0;
+
+    subjIndex = topic.getSubjectIndex();
+    topicIndex = topic.getIndex();
 
     topicParts = topic.splitTopicOnParts(textPerPage);
     currentPage = 0;
@@ -106,7 +107,20 @@ int TheoryTopicTextController::getCurrentPage() const
     return currentPage+1;
 }
 
+int TheoryTopicTextController::getSubjIndex() const
+{
+    return subjIndex;
+}
+
+int TheoryTopicTextController::getTopicIndex() const
+{
+    return topicIndex;
+}
+
 TheoryTopicTextController::TheoryTopicTextController(QObject *parent) : QObject(parent){
+    subjIndex = 0;
+    topicIndex = 0;
+
     currentHighlightStart = 0;
     currentHighlighEnd = 0;
 
