@@ -469,6 +469,8 @@ void AppEngine::onShowSingleTicket(int ticketIndex)
 
 void AppEngine::onShowSubjects()
 {
+    onEndLearningSessions();
+
     fillSubjModelFromTheory();
     qmlEngine->rootContext()->setContextProperty("learningSubjectsModel",learningSubjectsModel);
     emit subjectsDataIsReady();
@@ -476,6 +478,8 @@ void AppEngine::onShowSubjects()
 
 void AppEngine::onShowTopics(int subjectIndex)
 {
+    onEndLearningSessions();
+
     fillTopicsModelFromTheory(subjectIndex-1);
     qmlEngine->rootContext()->setContextProperty("learningTopicsModel",learningTopicsModel);
     emit topicsDataIsReady();

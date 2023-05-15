@@ -14,14 +14,14 @@ Rectangle {
     id: mainScreenRectangle
 
     objectName: "theoryScreen"
-    //anchors.fill: parent
+
     width: view.width
     height: view.height
     color: "#edecec"
 
 
 
-    property bool calledFromLearningTicket: (appEngine.typeOfCurrentSession).toLowerCase().includes("learn") || (appEngine.typeOfCurrentSession).toLowerCase().includes("repeat")
+    property bool calledFromLearningTicket: rootItem.doLearnSomethingNow//(appEngine.typeOfCurrentSession).toLowerCase().includes("learn") || (appEngine.typeOfCurrentSession).toLowerCase().includes("repeat")
 
     property int subjIndex: appEngine.topicControllerSubjIndex
     property int topicIndex: appEngine.topicControllerTopicIndex

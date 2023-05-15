@@ -16,17 +16,7 @@ ApplicationWindow {
         //appPager.debugPush("LearnTheory.qml");
     }
 
-    function returnToRegimeMainPage(){
-        appPager.popToRegimeMainScreen();
-    }
-
-    function navigateTo(screenName: string){
-       appPager.navigateTo(screenName);
-    }
-
-    function toNextTicket(){
-       appPager.goToNextScreenInLearningSession();
-    }
+    property bool doLearnSomethingNow: appPager.isLearningSomethingRightNow
 
     header: MyHeader{
         id: myAppHeader
@@ -61,35 +51,31 @@ ApplicationWindow {
 
         }
 
-        onRightButtonClicked: {
+        onRightButtonClicked: {//обработка нажатия на правую кнопку в хэдере
+            switch(state)
+            {
+            case "topicsScreen"://если на экране с списоком тем, возвращаемся на список предметов
+                appPager.popToRegimeMainScreen();
+                return;
 
-        switch(state)
-        {
+            case "topicsTicketScreen"://если на экране со списком билетов темы, возвращаемся на список тем предмета
+                appPager.popToRegimeMainScreen();
+                return;
 
+            case "theoryScreen"://если на содержании темы, возвращаемся на список тем
+                appPager.popToRegimeMainScreen();
+                return;
 
-        case "topicsScreen":
-            appPager.popToRegimeMainScreen();
-        return;
+            default:
+            {
+                if(learningSomething)//если сейчас происходит учеба то показываем теорию для текущего билета
+                {
+                    rootItem.showTopicForTicket(appPager.currentTicketIndex)
+                }
+            }
+            break;
 
-        case "topicsTicketScreen":
-            appPager.popToRegimeMainScreen();
-        return;
-        case "theoryScreen":
-            console.log("theory")
-            appPager.popToRegimeMainScreen();
-        return;
-         default:
-         {
-             if(state.includes("CV") || state.includes("IV"))
-             {
-                 console.log(state)
-                 console.log("pushTheory")
-                 rootItem.showTopicForTicket(appPager.currentTicketIndex)
-             }
-         }
-         break;
-
-        }
+            }
 
 
         }
@@ -163,7 +149,6 @@ ApplicationWindow {
 
                     onClicked: {
                         rootItem.navigateTo("RepeatScreen");
-
                         drawer.close()
                     }
                 }
@@ -178,7 +163,6 @@ ApplicationWindow {
 
                     onClicked: {
                         rootItem.startSession(LearnType.Exam);
-
                         drawer.close()
                     }
                 }
@@ -192,6 +176,7 @@ ApplicationWindow {
                     textOfItem: "Теория"
 
                     onClicked: {
+                        rootItem.showSubjects();
                         drawer.close()
                     }
                 }
@@ -219,7 +204,6 @@ ApplicationWindow {
 
                     onClicked: {
                         rootItem.endLearningSessions();
-
                         drawer.close()
                     }
                 }
@@ -234,7 +218,6 @@ ApplicationWindow {
 
                     onClicked: {
                         rootItem.endLearningSessions();
-
                         drawer.close()
                     }
                 }
@@ -244,10 +227,29 @@ ApplicationWindow {
     }//end drawer
 
 
+
+    //функции-связки между страницами в стеке и пагинатором, чтоб не вызывать напрямую
+
+    function returnToRegimeMainPage()//вернуться на основную страницу, в зависимости от того где мы (в теории, учим билеты и т.д.)
+    {
+        appPager.popToRegimeMainScreen();
+    }
+
+    function navigateTo(screenName: string)//перейти на страницу
+    {
+        appPager.navigateTo(screenName);
+    }
+
+    function toNextTicket()//переключиться на следующий билет во время учебной сессии
+    {
+        appPager.goToNextScreenInLearningSession();
+    }
+
     /*          сигналы и слоты для взаимодействия с бэком        */
 
     // --------сигналы--------
 
+    //------ To Learning Session-----//
     //начать учебную сессию
     signal startSession(type : int);
 
@@ -263,29 +265,43 @@ ApplicationWindow {
     //сигнал для работы с тикетами которые неправильно ответили в ходе сесиии
     signal startLearnFailedTicketsSession();
 
+
+    //------ To Theory-----//
     //отображение только одоного билета без запись в статистику
     signal showSingleTicket(ticketIndex : int);
 
-    //сигнал для подготовки данных под страницу отображения предметов
+    //сигнал для подготовки листа под страницу отображения предметов
     signal showSubjects();
 
+    //сигнал для подготовки листа тем в предмете
     signal showTopics(subjectIndex : int);
 
+    //сигнал для подготовки данных о билетах, ответы которых есть в теме
     signal showTopicsTickets(subjectIndex : int, TopicIndex : int);
 
-    //просмотр теории
+
+    //------ To Theory Topic Controller -----//
+    //просмотр СОДЕРЖАНИЯ темы
     signal showTopic(subjectIndex : int, topicIndex : int);
 
-    //просмотр теории для билета
+    //просмотр СОДЕРЖАНИЯ темы для тикета(сам переключит где ответ в теме)
     signal showTopicForTicket(ticketIndex  : int);
 
+    //переключение след/предыдущую страницу
     signal topicNextPage();
     signal topicPreviousPage();
 
 
     // --------слоты--------
+
     Connections { //для appEngine
         target: appEngine//класс бэка
+
+        //отображаем сообщение в панели сообщений
+        function onShowMessage(textOfMessage : string){
+            myMessagePanel.textOfMessage = textOfMessage;
+            myMessagePanel.open();
+        }
 
         //слоты для заполнения стэка по сигналам с бэка
 
@@ -294,40 +310,36 @@ ApplicationWindow {
             appPager.collectTicketInStack(ticketItem);
         }
 
-
-        //отображаем сообщение в панели сообщений
-        function onShowMessage(textOfMessage : string){
-            myMessagePanel.textOfMessage = textOfMessage;
-            myMessagePanel.open();            
-        }
-
         //сохраняем в пагинатор экран окончания для данного режима
         function onPushFinalPage(){
             appPager.pushFinalPage()
         }
 
-        function onSubjectsDataIsReady(){
+        //Бэк говорит что данные для отображения страниц готовы
+        function onSubjectsDataIsReady()//список предметов готов, можно показывать страницу
+        {
             appPager.navigateTo("subjectsScreen")
         }
 
-        function onTopicsDataIsReady(){
+        function onTopicsDataIsReady()//список тем в предмете готов можно показывать
+        {
             appPager.navigateTo("topicsScreen")
         }
-        function onTopicsTicketsDataIsReady(){
+
+        function onTopicsTicketsDataIsReady()//список билетов для темы
+        {
             appPager.navigateTo("topicsTicketScreen")
         }
 
-        function onTopicDataIsReady(){
+        function onTopicDataIsReady()//содержание темы готово, отображаем
+        {
             appPager.navigateTo("theoryScreen")
         }
 
-        function onTicketTopicDataIsReady(){
+        function onTicketTopicDataIsReady()//содержание темы для билета готовы
+        {
             appPager.navigateTo("theoryScreen")
         }
-        //theoryScreen
-
-
-
     }
 
     Connections { //для пагинатора
@@ -336,14 +348,12 @@ ApplicationWindow {
         //если пагинатор кинул сигнал последнего экрана
         //в учебной сессии перенаправляем в бэк
         function onFinishLearningSession(){
-            console.log("try finish session FROM PAGER")
             rootItem.finishLearningSession();
         }
 
         //если пагинатор кинул сигнал прерывания учеб сессии
         //перенаправляем в бэк
         function onEndLearningSession(){
-            console.log("try end session FROM PAGER")
             rootItem.endLearningSession();
         }
     }

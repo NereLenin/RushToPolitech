@@ -6,18 +6,32 @@ Item {
     width: 10
     height: 30
 
+    //----------свойства----------//
     property string currentItem: view.currentItem.objectName
 
+    //активна ли учебная сессия сейчас(меняется в событии стека при смене экрана)
+    property bool isLearningSomethingRightNow: false
+
+    //на экране ли мы ответа на вопрос(тож)
+    property bool isThisScreenLearningScreen: false
+
+    //если сейчас на экране ответа на вопрос, номер вопроса здесь
     property int currentTicketIndex: 0
+
+    //если ответил все вопросы до конца и нужно останавливать таймеры, обновлять статистику и т.д.
     signal finishLearningSession();
+
+    //удаляем текущую учебнуй сессию
     signal endLearningSession();
 
-    function debugPush(page : string){
+    //----------функции----------//
+    function debugPush(page : string)
+    {
         view.push(page);
     }
 
-
-    function goToNextScreenInLearningSession(){
+    function goToNextScreenInLearningSession()//для экранов выбора ответа на вопрос, чтоб перейти на следующий
+    {
         view.pop(StackView.PushTransition);
     }
 
@@ -27,19 +41,16 @@ Item {
         switch(view.currentItem.objectName){
         case "topicsScreen"://если возвращаемся с скрина просмотра тем
         {
-            console.log("pop subjectsScreen");
             view.popTo("subjectsScreen");
             return;
         }
         case "topicsTicketScreen"://если возвращаемся со скрина просмотра списка билетов в теме
         {
-            console.log("pop topicsScreen");
             view.popTo("topicsScreen");
             return;
         }
-        case "theoryScreen":
+        case "theoryScreen"://если содержимое темы читаем
         {
-            console.log("pop theoryScreen");
             view.pop();//весь просмотр теории всегда на одной странице, как бы мы на него не попали, выход с него - чисто одним попом
             return;
         }
@@ -64,6 +75,7 @@ Item {
 
     }
 
+    //переместится на страницу
     function navigateTo(screenName : string){
         console.log("navigate")
 
@@ -74,7 +86,6 @@ Item {
             return;
             case "RepeatScreen":
                 view.countOfViewFinishScreen = 0;
-                console.log("end on pop to repeat")
                 endLearningSessions();
                 if(view.depth > 1)
                     view.popTo("RepeatScreen")
@@ -121,10 +132,12 @@ Item {
 
     }
 
-    function collectTicketInStack(ticketItem){
+    function collectTicketInStack(ticketItem){//сигналом с бэка приходит информация о ticketItem, засовываем в стек страничку с такими параметрами
         if(ticketItem.type === "selectableAnswerTicket")
         {
-            ticketItem.mixAnswers();
+            //если экран с выбором варианта
+            ticketItem.mixAnswers();//перемешиваем ответы, чтоб не повторялись и тяжелей запомнить
+            //отправляем в стек
             view.push(["LSChooseVariant.qml",{"ticketIndex": ticketItem.ticketIndex,
                                               "textOfQuestion": ticketItem.textOfQuestion,
                                               "pathToImage": ticketItem.pathToImage,
@@ -141,17 +154,21 @@ Item {
         }else
         if(ticketItem.type === "inputAnswerTicket")
         {
+            //если экран с вводом значения
             view.push(["LSInputValue.qml",{   "ticketIndex": ticketItem.ticketIndex,
                           "textOfQuestion": ticketItem.textOfQuestion,
                           "pathToImage": ticketItem.pathToImage,
                           "correctAnswer": ticketItem.correctAnswer}]);
         }
-        else{
+        else
+        {
             console.log("Неизвестный билет немогу запушить");
             myMessagePanel.textOfMessage = "Неизвестный билет немогу запушить\n" + ticketItem.ticketIndex;
             myMessagePanel.open();
         }
     }
+
+    //------------------Компоненты-----------------//
 
     StackView {
         id: view
@@ -160,22 +177,35 @@ Item {
         anchors.fill: parent
         initialItem: "qrc:/qml/StartScreen.qml"
 
-        //вот это вот мерзость пизда просто, но
-        //у нас первый раз стек видит финиш скрин когда мы его пушим в общей пачке
-        //второй когда он пушен таймером или до него дошли из пачки
-        //получается каждый раз когда мы его видим ВТОРОЙ раз у нас окончание учебной сессии
+        //----------свойства------------//
+
+        //счетчик количества посл экранов в сессии, увеличивается на 1 когда в currentItem у нас посл экран, увеличивается раз когда прилетает пачка с вопросами и посл экраном, второй раз когда мы все прорешали(вытащили из стека) и дошли до него
         property int countOfViewFinishScreen: 0
+
+        //управляет насчитыванием верхнего счетчика, если тру - считается, если false не считается, нужна для корректного popTo
         property bool isFinishSessionFuncActive: true
-        onCurrentItemChanged:
+
+        //это последний экран в сессии, включается когда countOfViewFinishScreen > 1
+        property bool isCurrentScreenIsFinishScreenInSession: false
+
+        //-----------функции--------------//
+        function updateFlags(){
+            //обновляем флаг, отмечающий учим сейчас что ни будь или нет
+            isLearningSomethingRightNow = ((appEngine.typeOfCurrentSession).toLowerCase().includes("learn") || (appEngine.typeOfCurrentSession).toLowerCase().includes("repeat"));//(currentItem.includes("learn")) || (currentItem.includes("repeat"))
+
+            //флаг того что мы прям на экране ответа на билет во время учебной сессии
+            isThisScreenLearningScreen = currentItem.objectName.includes("CV") || currentItem.objectName.includes("IV")
+        }
+
+        function updateCurrentTicket()
         {
-
-            if(currentItem.objectName.includes("CV") || currentItem.objectName.includes("IV"))
-            {
+            if(isThisScreenLearningScreen)
                 currentTicketIndex = currentItem.ticketIndex
-            }else{
+            else
                 currentTicketIndex = 0;
-            }
+        }
 
+        function updateFinishScreenView(){
             //отслеживание finishScreen
             if(isFinishSessionFuncActive)
             {
@@ -183,15 +213,19 @@ Item {
                currentItem.objectName === "finishExamScreen")
                 view.countOfViewFinishScreen++;
 
+            //при заполнении стека на учебу финальный экран на некоторое время оказывается текущим,
+            //и счетчик countOfViewFinishScreen увеличивается на 1
+            //когда мы ВО ВТОРОЙ раз видим финиш скрин - значит или время вышло и его запушило, или мы всю пачку скринов из стека проучили
+            //поэтому если count > 1 значит мы на посл экране во второй раз и нужно остановить учебную сессию
             if(view.countOfViewFinishScreen > 1)
             {
-                rootPagerItem.finishLearningSession();
-
+                isCurrentScreenIsFinishScreenInSession = true;
                 view.countOfViewFinishScreen = 0;
             }
+            else
+                isCurrentScreenIsFinishScreenInSession = false;
             }
-
-          }
+        }
 
         //выгребаем все из стека до нужной страницы или до самой первой
         function popTo(objectNamePopTo : string)
@@ -208,8 +242,28 @@ Item {
             isFinishSessionFuncActive = true;
         }
 
+        //---------Слоты-------------//
+
+        onCurrentItemChanged://ПРИ СМЕНЕ ЭКРАНА
+        {
+            //обновляем флаги
+            updateFlags();
+
+            //обновляем текущий изучаемый билет(если ниче не учим он 0)
+            updateCurrentTicket();
+
+            //обновляем отслеживание экран ли это конца сессии
+            updateFinishScreenView();
+
+            //если да, сообщаем об этом сигналом
+            if(isCurrentScreenIsFinishScreenInSession)
+            {
+                rootPagerItem.finishLearningSession();
+            }
+        }
 
 
-    }
+
+    }//endStack
 
 }

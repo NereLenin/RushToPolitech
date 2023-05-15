@@ -7,17 +7,10 @@ Item {
     height: 80
     width: 500
 
-    property bool learningSomething: ((appEngine.typeOfCurrentSession).toLowerCase().includes("learn") || (appEngine.typeOfCurrentSession).toLowerCase().includes("repeat"))
+    property bool learningSomething: rootItem.doLearnSomethingNow
     property string subjectIcon: appEngine.topicControllerSubjIcon
 
-    onLearningSomethingChanged:
-    {
-        console.log("HEADER: LEARN SOMETHING CHANGED: ", rootHeaderItem.learningSomething)
-    }
-
     onStateChanged: {
-        //обновляем вспомогательную переменную для понимания, учеба это или нет, каждый раз как меняется окно -> меняется состояние
-        learningSomething =  ((appEngine.typeOfCurrentSession).toLowerCase().includes("learn") || (appEngine.typeOfCurrentSession).toLowerCase().includes("repeat"));
         //обновляем subjectIcon
         subjectIcon = appEngine.topicControllerSubjIcon
     }
