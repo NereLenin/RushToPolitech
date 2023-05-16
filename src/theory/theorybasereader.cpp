@@ -70,7 +70,7 @@ QList<TheoryTicketAnswerInfo> TheoryBaseReader::parseTicketsAnswerInText(QString
 
           text = text.remove(matchCloseTag.capturedStart(0),matchCloseTag.capturedLength(0));//удаляем тэг из текста
 
-          //если впереди от найденного закрывающегося тэга есть помеченный begin, нужно отнимать у него длинну тэга, а то заползет вперед
+          //если впереди от найденного закрывающегося тэга есть помеченный <begin answer>, нужно отнимать у него длинну тэга, а то заползет вперед
           for(int i = 0; i < openIndex.size();i++)
           {
             if(openIndex[i] > matchCloseTag.capturedStart(0))
@@ -126,7 +126,7 @@ void TheoryBaseReader::readTheoryFromJsonDB(QList<Subject> &subjects, QString pa
                 qDebug() << error.errorString();
                 return;
             }
-    //read end
+
     QJsonArray jsonSubjects = theoryDocument.object().value("subjects").toArray();
     double version = theoryDocument.object().value("version").toDouble();
 
@@ -151,12 +151,14 @@ void TheoryBaseReader::readTheoryFromJsonDB(QList<Subject> &subjects, QString pa
 
         for(int i=0;i<jsonSubjectTopics.size();i++){//шелестим по темам предмета
            jsonTopic = jsonSubjectTopics[i].toObject();
+
            Topic newTopic;
            newTopic.subjectIndex = newSubject.getIndex();
            newTopic.index = jsonTopic.value("topicIndex").toInt();
            newTopic.name = jsonTopic.value("name").toString();
            newTopic.fullText = jsonTopic.value("text").toString();
 
+           //после парса из текста удаляются все наши тэги
            newTopic.images = parseImgTagsInText(newTopic.fullText);
            newTopic.ticketAnswers = parseTicketsAnswerInText(newTopic.fullText);
 
@@ -165,34 +167,7 @@ void TheoryBaseReader::readTheoryFromJsonDB(QList<Subject> &subjects, QString pa
 
         subjects.append(newSubject);
     }
-    qDebug() << "Количество считаных предметов" << subjects.size();
+
     qDebug() << "Loaded" << subjects.size() << "subjects, baseName|version:" <<  theoryDocument.object().value("name").toString() << "|" << version ;
 
-
-  /*  for(int i=0;i<subjects.size();i++)
-    {
-        qDebug() << "---------------------------------------------";
-        qDebug() << "   ind:" << subjects[i].index << subjects[i].name;
-        qDebug() << " Количество тем:" << subjects[i].topics.size();
-        qDebug() << " Темы:";
-        for(int j=0;j<subjects[i].topics.size();j++)
-        {
-         qDebug() << "  -" << subjects[i].topics[j].index << subjects[i].topics[j].name ;
-         qDebug() << "  Таблица изображений:";
-         for(int k = 0; k < subjects[i].topics[j].images.size(); k++)
-         {
-             qDebug() << "  -" << subjects[i].topics[j].images[k].getImageUrl() << subjects[i].topics[j].images[k].getPositionInText();
-         }
-         qDebug() << "  Таблица ответов:";
-         for(int k = 0; k < subjects[i].topics[j].ticketAnswers.size(); k++)
-         {
-             qDebug() << "  - index:" << subjects[i].topics[j].ticketAnswers[k].ticketIndex << "s:" << subjects[i].topics[j].ticketAnswers[k].getIndexOfStartAnswerInText() << "e:"<< subjects[i].topics[j].ticketAnswers[k].getIndexOfEndAnswerInText();
-         }
-        }
-
-
-    }
-
-    qDebug() << subjects[0].topics[2].fullText;
-    */
 }

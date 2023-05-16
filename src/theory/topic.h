@@ -6,6 +6,7 @@
 #include "theoryticketinfo.h"
 
 class TopicPart;
+class TheoryBaseReader;
 
 class Topic : public QObject
 {
@@ -17,14 +18,6 @@ class Topic : public QObject
     Q_PROPERTY(QString fullText READ getFullText CONSTANT)
 
 private:
-     QString subStringWithWordWrap(QString text, int subStrStart, int subStrSize);
-
-     QString findImgInTextPart(int startPart,int endPart);
-
-     TheoryTicketAnswerInfo getTicketInTextPart(int startPart,int endPart);
-
-     bool isTextPositionInTextPart(int positionInText, int startOfTextPart, int endOfTextPart);
-public:
     int subjectIndex;
     int index;
     QString name;
@@ -33,6 +26,15 @@ public:
     QList <TheoryImgInfo> images;
     QList <TheoryTicketAnswerInfo> ticketAnswers;
 
+    //func for split on parts
+    QString subStringWithWordWrap(QString text, int subStrStart, int subStrSize);
+
+    QString findImgInTextPart(int startPart,int endPart);
+
+    TheoryTicketAnswerInfo getTicketInTextPart(int startPart,int endPart);
+
+    bool isTextPositionInTextPart(int positionInText, int startOfTextPart, int endOfTextPart);
+public:
     int getIndex();
     QString getName();
     const QString &getFullText() const;
@@ -48,6 +50,8 @@ public:
     int getSubjectIndex() const;
 
     QList<TopicPart> splitTopicOnParts(int textSizeOfOnePart = 20);
+
+    friend class TheoryBaseReader;
 };
 
 class TopicPart : public QObject
@@ -60,7 +64,6 @@ private:
     QString text;
     QString img;
     TheoryTicketAnswerInfo answer;
-
 
 public:
     explicit TopicPart(QObject *parent = nullptr);

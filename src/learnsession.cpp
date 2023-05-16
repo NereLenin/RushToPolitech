@@ -110,6 +110,8 @@ LearnSession::LearnSession(QObject *parent)
     : QObject{parent}
 {
     base = nullptr;
+    currentLearnedTopic = nullptr;
+
     countOfRightAnswer = countOfWrongAnswer =
     currentLearnedTicketNumber = 0;
 
@@ -148,11 +150,17 @@ void LearnSession::StartSession()
     case RepeatWithTimer: repeatWithTimerSession(); break;
     case RepeatRandom: repeatRandomSession(); break;
     case RepeatForgotten: repeatForgottenSession(); break;
+    case LearnTicketsInTopic: learnTicketsInTopic(currentLearnedTopic); break;
     case Exam: ExamSession(); break;
     default:
         qDebug() << "Can't do this session from controller";
         break;
     }
+}
+
+void LearnSession::setCurrentLearnedTopic(Topic *newCurrentLearnedTopic)
+{
+    currentLearnedTopic = newCurrentLearnedTopic;
 }
 
 LearnSession::TypeLearning LearnSession::getCurrentRegime() const

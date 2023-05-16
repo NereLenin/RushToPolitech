@@ -148,7 +148,7 @@ QString Topic::subStringWithWordWrap(QString text, int subStrStart, int subStrSi
 QString Topic::findImgInTextPart(int startPart, int endPart){
 
     for(int i=0;i<images.size();i++){
-        if(isTextPositionInTextPart(images[i].positionInText, startPart, endPart))
+        if(isTextPositionInTextPart(images[i].getPositionInText(), startPart, endPart))
             return images[i].getImageUrl();
     }
     return "";

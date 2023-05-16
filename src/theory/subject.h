@@ -13,13 +13,12 @@ class Subject : public QObject
     Q_PROPERTY(QString subjName READ getName CONSTANT)
     Q_PROPERTY(QString subjIconUrl READ getIconUrl CONSTANT)
 private:
-public:
-    explicit Subject(QObject *parent = nullptr);
-    Subject(const Subject& subj);
-
     int index;
     QString name;
     QString iconUrl;
+public:
+    explicit Subject(QObject *parent = nullptr);
+    Subject(const Subject& subj);
 
     QList <Topic> topics;
 
@@ -30,6 +29,8 @@ public:
     const QString &getIconUrl() const;
 
     Subject& operator=(const Subject& subj);
+
+    friend class TheoryBaseReader;
 };
 
 #endif // SUBJECT_H

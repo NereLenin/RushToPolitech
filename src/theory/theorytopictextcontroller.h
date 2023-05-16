@@ -54,13 +54,10 @@ public:
 public:
 
     const QString &getName() const;
-
     const QString &getMainText() const;
-
     const QString &getImageUrl() const;
 
     int getCurrentHighlightStart() const;
-
     int getCurrentHighlighEnd() const;
 
     int getCurrentPage() const;

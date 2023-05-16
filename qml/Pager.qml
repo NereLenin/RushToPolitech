@@ -56,12 +56,16 @@ Item {
         }
         default:
         {
-            if(appEngine.typeOfCurrentSession === "RepeatWithTimer" ||//если это кто то из повторов
+            if(appEngine.typeOfCurrentSession === "RepeatWithTimer" || //если это кто то из повторов
                appEngine.typeOfCurrentSession === "RepeatDefault"   ||
                appEngine.typeOfCurrentSession === "LearnFailedFromRepeat")
             {
                 view.popTo("RepeatScreen");//возвращаемся на экран повтора
                 console.log("pop repeat");
+            }
+            else if(appEngine.typeOfCurrentSession === "LearnTicketsInTopic")
+            {
+                view.popTo("topicsScreen");
             }
             else
             {

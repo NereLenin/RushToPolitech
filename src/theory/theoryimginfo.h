@@ -6,17 +6,14 @@
 class TheoryImgInfo
 {
 private:
-    public:
     QString imageUrl;
-
     int positionInText;
-
+public:
     TheoryImgInfo();
     TheoryImgInfo(QString tag, int position);
 
-    QString getImageUrl();
-
-    int getPositionInText();
+    const QString& getImageUrl() const;
+    int getPositionInText() const;
 };
 
 #endif // THEORYIMGINFO_H

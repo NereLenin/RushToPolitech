@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
 
+import TypeLearning 0.1
+
 Rectangle {
     id: mainScreenRectangle
 
@@ -31,6 +33,10 @@ Rectangle {
             font.pointSize: 14
             font.styleName: "Полужирный"
             font.bold: true
+
+            onClicked:{
+                rootItem.startSession(LearnType.LearnTicketsInTopic)
+            }
         }
 
         Rectangle {

@@ -27,7 +27,6 @@
         <file>qml/FinishLearnScreen.qml</file>
         <file>qml/ItemOfDrawer.qml</file>
         <file>qml/LearnTheory.qml</file>
-        <file>qml/LearnTheoryLastScreen.qml</file>
         <file>qml/LSChooseVariant.qml</file>
         <file>qml/LSInputValue.qml</file>
         <file>qml/MyProgressBar.ui.qml</file>

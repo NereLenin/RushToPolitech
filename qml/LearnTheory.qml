@@ -19,53 +19,76 @@ Rectangle {
     height: view.height
     color: "#edecec"
 
+    //проверяем вызван ли экран из ответа на вопросы или нет
+    property bool calledFromLearningTicket: rootItem.doLearnSomethingNow
 
-
-    property bool calledFromLearningTicket: rootItem.doLearnSomethingNow//(appEngine.typeOfCurrentSession).toLowerCase().includes("learn") || (appEngine.typeOfCurrentSession).toLowerCase().includes("repeat")
-
+    //данные о теории которую сейчас учим
     property int subjIndex: appEngine.topicControllerSubjIndex
     property int topicIndex: appEngine.topicControllerTopicIndex
     property string subjectIcon: appEngine.topicControllerSubjIcon
 
+    //начало и конец подчеркивания для ответов на вопросы
     property int startHighlightPoint: appEngine.topicControllerHighlightStart
     property int endHighlightPoint: appEngine.topicControllerHighlighEnd
 
+    //кусок текста темы из контроллера
     property string theoryText: appEngine.topicControllerMainText
 
+    //текст с подсветкой
     property string highlightedText: theoryText.substring(0,startHighlightPoint) + "<u><i>" + theoryText.substring(startHighlightPoint,endHighlightPoint) + "</u></i>" + theoryText.substring(endHighlightPoint,theoryText.length)
 
+    //если подсветка присутствует и нормальная, выводим ее, если нет то прост текст
     property string outputText: (endHighlightPoint > startHighlightPoint) && (endHighlightPoint <= theoryText.length) ? highlightedText : theoryText
 
-
-    property string imageURL: appEngine.topicControllerImageUrl // "qrc:/icons/questpic.jpg"
+    //изображение и вспомогательные переменные для их отображения
+    property string imageURL: appEngine.topicControllerImageUrl
     property bool haveImage: imageURL !== ""
 
     property bool isImageUp: ((appEngine.topicControllerCurrentPage % 2) !== 0 )
 
-    onTheoryTextChanged: {//контролим панель от страниц
-      switch(appEngine.topicControllerCurrentPage)
-      {
+    //контролим панель навигации от текущей страницы в контроллере
+    onTheoryTextChanged:
+    {
+        switch(appEngine.topicControllerCurrentPage)
+        {
         case 1:
             navigatePanel.state = "FirstPage";
-        break;
+            break;
         case appEngine.topicControllerCountOfPages:
             navigatePanel.state = "LastPage";
-        break;
+            break;
         default: navigatePanel.state = "SomewhereMiddleInText"; break;
-      }
+        }
     }
 
+    //переключаем страницы по стрелочкам
+    Keys.onPressed: (event)=> {
+                        switch(event.key)
+                        {
+                            case Qt.Key_Left:
+                            if(prevButtonItem.visible)
+                                prevButtonItemButton.clicked()
+                            break;
 
-    Item {
+                            case Qt.Key_Right:
+                            if(nextButtonItem.visible)
+                                nextButtonItemButton.clicked()
+                            break;
+                        }
+
+                        event.accepted = true;
+                    }
+
+
+    Item {//верхняя картинка
         id: upImageWithBorder
-        visible: haveImage && isImageUp
+        visible: haveImage && isImageUp //отображаем только если выпало изображение сверху и оно вообще есть
 
         height: (haveImage && isImageUp)? (parent.height / 4) : 1
 
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.top: parent.top//isImageUp ? parent.top : none
-//        anchors.bottom: !isImageUp ? separatorLine.top : none
+        anchors.top: parent.top
         anchors.margins: 20
 
         Rectangle {
@@ -86,11 +109,11 @@ Rectangle {
         }
     }
 
-    Text {
+    Text {//основной текст
         id: textOfTheory
         text: outputText
-        anchors.top: upImageWithBorder.bottom//isImageUp ? imageWithBorder.bottom : parent.top
-        anchors.bottom: downImageWithBorder.top//isImageUp ? separatorLine.top : imageWithBorder.top
+        anchors.top: upImageWithBorder.bottom
+        anchors.bottom: downImageWithBorder.top
 
         anchors.left: parent.left
         anchors.right: parent.right
@@ -114,7 +137,7 @@ Rectangle {
         color: "#383b39"
     }
 
-    Item {
+    Item {//нижняя картинка
         id: downImageWithBorder
         visible: haveImage && !isImageUp
 
@@ -122,11 +145,8 @@ Rectangle {
 
         anchors.left: parent.left
         anchors.right: parent.right
-        //anchors.top: textOfTheory.bottom//isImageUp ? parent.top : none
-        anchors.bottom: navigatePanel.top //!isImageUp ? separatorLine.top : none
+        anchors.bottom: navigatePanel.top
         anchors.margins: 20
-
-
 
         Rectangle {
             id: downImageBorder
@@ -146,7 +166,7 @@ Rectangle {
         }
     }
 
-    Item{
+    Item{//панель навигации (лево право)
         id:navigatePanel
         anchors.left: parent.left
         anchors.right: parent.right
@@ -167,7 +187,7 @@ Rectangle {
             opacity: 0.6
         }
 
-        property int buttonHeight: (height / 1.5)
+        property int buttonHeight: (height / 1.5)//размер кнопок на панели
 
         Item {
             id: prevButtonItem
@@ -186,6 +206,7 @@ Rectangle {
             property string iconURL: ""
 
             Button {
+                id: prevButtonItemButton
                 anchors.fill: parent
 
                 font.family: "Courier new"
@@ -261,6 +282,7 @@ Rectangle {
             property string iconURL: ""
 
             Button {
+                id: nextButtonItemButton
                 anchors.fill: parent
 
                 font.family: "Courier new"
@@ -275,7 +297,7 @@ Rectangle {
                     else
                         if(!calledFromLearningTicket)
                         {
-                          rootItem.showTopicsTickets(subjIndex, topicIndex);
+                            rootItem.showTopicsTickets(subjIndex, topicIndex);
                         }
 
                 }
@@ -324,10 +346,10 @@ Rectangle {
             }
         }
 
-        states: [
-            //------------хэдеры для самостоятельных экранов------------
+        states: [//меняем состояния панели, если на первом экране, левая кнопка ведет назад, если на последнем, правая кнопка ведет к темам или к билету который учили
 
-            State {//хэдер начального экрана
+
+            State {//панель на первой странице
                 name: "FirstPage"
                 PropertyChanges {
                     target: nextButtonItem
@@ -335,10 +357,10 @@ Rectangle {
                 }
                 PropertyChanges {
                     target: prevButtonItem
-                    iconURL: calledFromLearningTicket? "qrc:/icons/bilets.png" : subjectIcon//"qrc:/icons/theory.png"
+                    iconURL: calledFromLearningTicket? "qrc:/icons/bilets.png" : subjectIcon //если отвечали на вопрос показываем иконку учебы билетов, если из теории читать начали, показываем иконку предмета
                 }
             },
-            State {//хэдер начального экрана
+            State {//панель при чтении текста посередине
                 name: "SomewhereMiddleInText"
                 PropertyChanges {
                     target: nextButtonItem
@@ -350,7 +372,7 @@ Rectangle {
                     iconURL: ""
                 }
             },
-            State {//хэдер начального экрана
+            State {//панель при чтении последней страницы
                 name: "LastPage"
                 PropertyChanges {
                     target: nextButtonItem
@@ -362,8 +384,20 @@ Rectangle {
                     target: prevButtonItem
                     iconURL: ""
                 }
+            },
+            State {//Если первая страничка и есть последняя страничка
+                name: "OnePageText"
+                PropertyChanges {
+                    target: nextButtonItem
+                    iconURL: ""
+                }
+
+                PropertyChanges {
+                    target: prevButtonItem
+                    iconURL: ""
+                }
             }//endstate
         ]//endstates
     }
 
-   }
+}

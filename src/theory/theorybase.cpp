@@ -10,7 +10,7 @@ QMap<int, Topic *> TheoryBase::readTopicsForTickets(){
 
     for(int currentSubjIndex=0; currentSubjIndex < getSubjects().size(); currentSubjIndex++)//по всем предметам
     {
-        currentSubj = getSubject(currentSubjIndex);
+        currentSubj = getSubject(currentSubjIndex+1);
         if(currentSubj == nullptr)
         {
             qDebug() << "readTopicsForTickets : Попытка получить несуществующий предмет с индексом" << currentSubjIndex;
@@ -19,7 +19,7 @@ QMap<int, Topic *> TheoryBase::readTopicsForTickets(){
 
         for(int currentTopicIndex = 0; currentTopicIndex < currentSubj->getTopics().size(); currentTopicIndex++)//по всем темам
         {
-            currentTopic = getTopic(currentSubjIndex,currentTopicIndex);
+            currentTopic = getTopic(currentSubjIndex+1,currentTopicIndex+1);
 
             if(currentTopic == nullptr)
             {
@@ -57,19 +57,30 @@ const QList<Subject> &TheoryBase::getSubjects()
 
 Subject *TheoryBase::getSubject(int index)
 {
-    if(index >= 0 && index < subjects.size())
+//    if(index >= 0 && index < subjects.size())
+//    {
+//        return &subjects[index];//в листе с 0, в базе с 1
+//    }
+
+    if(index > 0 && index <= subjects.size())
     {
-        return &subjects[index];//в листе с 0, в базе с 1
+        return &subjects[index-1];//в листе с 0, в базе с 1
     }
+
     return nullptr;
 }
 
 Topic *TheoryBase::getTopic(int subjectIndex, int topicIndex)
 {
 
-    if(topicIndex >= 0 && topicIndex < getSubject(subjectIndex)->getTopics().size())
+//    if(topicIndex >= 0 && topicIndex < getSubject(subjectIndex)->getTopics().size())
+//    {
+//        return &(getSubject(subjectIndex)->topics[topicIndex]);//в листе с 0, в базе с 1
+//    }
+
+    if(topicIndex > 0 && topicIndex <= (getSubject(subjectIndex)->getTopics().size()) )
     {
-        return &(getSubject(subjectIndex)->topics[topicIndex]);//в листе с 0, в базе с 1
+        return &(getSubject(subjectIndex)->topics[topicIndex-1]);//в листе с 0, в базе с 1
     }
 
     return nullptr;

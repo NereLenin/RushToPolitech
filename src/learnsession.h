@@ -1,16 +1,21 @@
 ﻿#ifndef LEARNSESSION_H
 #define LEARNSESSION_H
+#include <QObject>
+#include <QQmlEngine>//?
+
 #include "ticketbase.h"
 #include "mytimer.h"
+#include "theory/topic.h"
 
-#include <QObject>
-#include <QQmlEngine>
+
 
 class LearnSession : public QObject
 {
     Q_OBJECT
 public:
-    enum TypeLearning{DefaultLearning, RepeatHard,RepeatWithTimer,RepeatRandom,RepeatForgotten,Exam, LearnFailedFromRepeat, LearnFailedFromLearnOrExam};
+    enum TypeLearning{DefaultLearning, RepeatHard, RepeatWithTimer,
+                      RepeatRandom, RepeatForgotten, Exam, LearnFailedFromRepeat,
+                      LearnFailedFromLearnOrExam, LearnTicketsInTopic};
     Q_ENUMS(TypeLearning)
 
     static void initializeTypeLearningForQml(){
@@ -48,6 +53,28 @@ private:
 
     void learnFailedTicketsSession();
 
+    void learnTicketsInTopic(const Topic *topic){
+        qDebug() << "LearnSession::learnTicketsInTopic";
+        if(topic == nullptr)
+        {
+            qDebug() << "LS: learnTicketsInTopic try to learn null topic";
+            return;
+        }
+
+        QList<Ticket*> topicTickets;
+
+        for(int i = 0; i < topic->getTicketAnswers().size(); i++)
+        {
+            Ticket *currentTopicTicket = base->getTicket(topic->getTicketAnswers()[i].getTicketIndex());
+
+            if(currentTopicTicket != nullptr)
+                topicTickets.append(currentTopicTicket);
+        }
+
+        if(topicTickets.size() > 0)
+            pushListOfTickets(topicTickets);
+    }
+
     void ExamSession();
 
     void saveTicketInList(Ticket* ticket);
@@ -58,6 +85,8 @@ public:
     static LearnSession* createSession(TicketBase *ticketBase, TypeLearning regime);
 
     void StartSession();
+
+    Topic *currentLearnedTopic;
 
     TypeLearning getCurrentRegime() const;
 
@@ -75,6 +104,8 @@ public:
     ~LearnSession(){
         qDebug() << "LS destructor";
     }
+
+    void setCurrentLearnedTopic(Topic *newCurrentLearnedTopic);
 
 signals:
     void pushListOfTickets(QList <Ticket*> listOfTickets);

@@ -15,10 +15,11 @@ TheoryImgInfo::TheoryImgInfo(QString tag, int position){
     positionInText = position;
 }
 
-QString TheoryImgInfo::getImageUrl() {
+const QString &TheoryImgInfo::getImageUrl() const{
     return imageUrl;
 }
 
-int TheoryImgInfo::getPositionInText(){
+int TheoryImgInfo::getPositionInText() const{
     return positionInText;
 }
+

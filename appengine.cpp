@@ -140,16 +140,19 @@ void AppEngine::startLearningSession(LearnSession::TypeLearning regime)
         onEndLearningSessions();
 
     currentSession = LearnSession::createSession(&tickets,regime);
+
+    if(regime == LearnSession::LearnTicketsInTopic && currentShowedTopic != nullptr)
+        currentSession->setCurrentLearnedTopic(currentShowedTopic);
+
     connectCurrentSessionWithEngine();
     currentSession->StartSession();//фу блять с большой буквы почему
-
-
 }
 
 void AppEngine::initialize()
 {
     qmlEngine = nullptr;
     currentSession = nullptr;
+    currentShowedTopic = nullptr;
 
     //к topic контроллеру
     QObject::connect(&(theory.topicController), &TheoryTopicTextController::pageChanged, this, &AppEngine::onPageChanged);
@@ -250,6 +253,7 @@ QString AppEngine::getTypeOfCurrentSession(){
         case LearnSession::RepeatWithTimer: return "RepeatWithTimer"; break;
         case LearnSession::LearnFailedFromRepeat: return "LearnFailedFromRepeat"; break;
         case LearnSession::LearnFailedFromLearnOrExam: return "LearnFailed"; break;
+        case LearnSession::LearnTicketsInTopic: return "LearnTicketsInTopic"; break;
         default:  return "RepeatDefault"; break;
         }
     }else{
@@ -277,7 +281,7 @@ void AppEngine::fillSubjModelFromTheory()
     learningSubjectsModel.clear();
     QList <QObject*> modelList;
 
-    for(int i=0;i < theory.getSubjects().size();i++)
+    for(int i=1;i <= theory.getSubjects().size();i++)
          modelList.append(theory.getSubject(i) );
 
     learningSubjectsModel.setValue(modelList);
@@ -295,9 +299,16 @@ void AppEngine::fillTopicsModelFromTheory(int subjIndex)
         qDebug() << "fillTopicsModelFromTheory : нет такого предмета ind" << subjIndex;
     }
 
-    for(int i=0;i < currentSubject->topics.size();i++)
+    for(int i=1;i <= currentSubject->topics.size();i++)
     {
-        modelList.append(theory.getTopic(subjIndex,i));
+        Topic *currentTopic = theory.getTopic(subjIndex,i);
+
+        if(currentTopic == nullptr){
+            qDebug() << "fillTopicsModelFromTheory : нет такой темы" << subjIndex << i;
+            return;
+        }
+
+        modelList.append(currentTopic);
     }
 
     learningTopicsModel.setValue(modelList);
@@ -312,13 +323,15 @@ void AppEngine::fillTopicsTicketModel(int subjIndex, int topicIndex)
     if(currentTopic == nullptr)
     {
         qDebug() << "fillTopicsTicketModel : нет такой темы subj" << subjIndex << "topic" << topicIndex;
+        return;
     }
 
+    currentShowedTopic = currentTopic;
     int sizeOfAnswersInTicket = currentTopic->getTicketAnswers().size();
 
     for(int i=0;i < sizeOfAnswersInTicket;i++)
     {
-        int indexOfTicket = currentTopic->getTicketAnswers()[i].ticketIndex;
+        int indexOfTicket = currentTopic->getTicketAnswers()[i].getTicketIndex();
         Ticket *currentTicket = tickets.getTicket(indexOfTicket);
         if(currentTicket == nullptr) continue;
 
@@ -359,6 +372,54 @@ QString AppEngine::getLearningSessionTimerTime()
     }
 
     return currentSession->getTimerTime().toString("mm:ss");
+}
+
+int AppEngine::getTopicTextControllerSubjIndex(){
+    return theory.topicController.getSubjIndex();
+}
+
+int AppEngine::getTopicTextControllerTopicIndex(){
+    return theory.topicController.getTopicIndex();
+}
+
+QString AppEngine::getTopicTextControllerText(){
+    return theory.topicController.getMainText();
+}
+
+QString AppEngine::getTopicTextControllerImageUrl(){
+    return theory.topicController.getImageUrl();
+}
+
+int AppEngine::getTopicTextControllerCurrentHighlightStart(){
+    return theory.topicController.getCurrentHighlightStart();
+}
+
+int AppEngine::getTopicTextControllerCurrentHighlighEnd(){
+    return theory.topicController.getCurrentHighlighEnd();
+}
+
+int AppEngine::getTopicTextControllerCurrentPage(){
+    return theory.topicController.getCurrentPage();
+}
+
+int AppEngine::getTopicTextControllerCountOfPages(){
+    return theory.topicController.countOfPages();
+}
+
+QString AppEngine::getTopicTextControllerName(){
+    return theory.topicController.getName();
+}
+
+QString AppEngine::getSubjIcon(){
+
+    Subject *currentSubject = theory.getSubject(getTopicTextControllerSubjIndex());
+
+    if(currentSubject!=nullptr)
+    {
+        return currentSubject->getIconUrl();
+    }
+
+    return "";
 }
 
 QString AppEngine::getFinishScreenText(){
@@ -480,16 +541,53 @@ void AppEngine::onShowTopics(int subjectIndex)
 {
     onEndLearningSessions();
 
-    fillTopicsModelFromTheory(subjectIndex-1);
+    fillTopicsModelFromTheory(subjectIndex);//-1
     qmlEngine->rootContext()->setContextProperty("learningTopicsModel",learningTopicsModel);
     emit topicsDataIsReady();
 }
 
 void AppEngine::onShowTopicsTickets(int subjectIndex, int topicIndex)
 {
-    fillTopicsTicketModel(subjectIndex-1,topicIndex-1);
+    fillTopicsTicketModel(subjectIndex,topicIndex);//-1 -1
     qmlEngine->rootContext()->setContextProperty("topicsTicketModel",topicsTicketModel);
     emit topicsTicketsDataIsReady();
+}
+
+void AppEngine::onShowTopic(int subjectIndex, int topicIndex){
+
+    Topic *currentTopic = theory.getTopic(subjectIndex,topicIndex);
+
+    if(currentTopic != nullptr)
+    {
+        currentShowedTopic = currentTopic;//сохраняем текущий просматриваемую тему
+        theory.topicController.setTopic(*currentShowedTopic,sizeOfTextPageInTopic);
+        emit topicDataIsReady();
+    }
+}
+
+
+void AppEngine::onShowTopicForTicket(int ticketIndex){
+    Ticket *neededTicket = tickets.getTicket(ticketIndex);
+
+    if(neededTicket != nullptr)
+    {
+        Topic *topicForTicket = theory.getTopicForTicket(ticketIndex);
+        if(topicForTicket != nullptr)
+        {
+            theory.topicController.setTopic(*topicForTicket,sizeOfTextPageInTopic);
+            theory.topicController.showAnswerTicket(neededTicket->getIndex());
+            emit ticketTopicDataIsReady();
+        }
+
+    }
+}
+
+void AppEngine::onTopicNextPage(){
+    theory.topicController.nextPage();
+}
+
+void AppEngine::onTopicPreviousPage(){
+    theory.topicController.previousPage();
 }
 
 void AppEngine::onPageChanged(){

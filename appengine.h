@@ -20,8 +20,8 @@ class AppEngine : public QObject
     Q_OBJECT
 
     /*  for QML */
-    Q_PROPERTY(QString title READ getTitle CONSTANT)
-    Q_PROPERTY(QString finishScreenText READ getFinishScreenText NOTIFY finishSession)
+    Q_PROPERTY(QString title                READ getTitle                CONSTANT)
+    Q_PROPERTY(QString finishScreenText     READ getFinishScreenText     NOTIFY finishSession)
     Q_PROPERTY(QString typeOfCurrentSession READ getTypeOfCurrentSession NOTIFY sessionStatisticChanged)
     //currentSubjectIcon
 
@@ -48,24 +48,29 @@ class AppEngine : public QObject
     //Q_PROPERTY(QString currentTheoryText  READ getLearningSessionTimerTime CONSTANT)
 
     //topic text controller
-    Q_PROPERTY(int topicControllerSubjIndex  READ getTopicTextControllerSubjIndex CONSTANT)
-    Q_PROPERTY(int topicControllerTopicIndex  READ getTopicTextControllerTopicIndex CONSTANT)
+    Q_PROPERTY(int topicControllerSubjIndex  READ getTopicTextControllerSubjIndex  CONSTANT)
+    Q_PROPERTY(int topicControllerTopicIndex READ getTopicTextControllerTopicIndex CONSTANT)
+    //вот этих двоих пиздюков сверху наверно можно буит порезать
 
-    Q_PROPERTY(QString topicControllerName  READ getTopicTextControllerName NOTIFY topicControllerPageChanged)
+    //Q_PROPERTY(int currentSubjIndex  READ getСurrentSubjIndex  CONSTANT)
+    //Q_PROPERTY(int currentTopicIndex READ getСurrentTopicIndex CONSTANT)
 
-    Q_PROPERTY(QString topicControllerMainText  READ getTopicTextControllerText NOTIFY topicControllerPageChanged)
+    Q_PROPERTY(QString topicControllerName   READ getTopicTextControllerName NOTIFY topicControllerPageChanged)
+
+    Q_PROPERTY(QString topicControllerMainText  READ getTopicTextControllerText     NOTIFY topicControllerPageChanged)
     Q_PROPERTY(QString topicControllerImageUrl  READ getTopicTextControllerImageUrl NOTIFY topicControllerPageChanged)
 
     Q_PROPERTY(QString topicControllerSubjIcon  READ getSubjIcon NOTIFY topicControllerPageChanged)
 
     Q_PROPERTY(int topicControllerHighlightStart  READ getTopicTextControllerCurrentHighlightStart NOTIFY topicControllerPageChanged)
-    Q_PROPERTY(int topicControllerHighlighEnd  READ getTopicTextControllerCurrentHighlighEnd NOTIFY topicControllerPageChanged)
+    Q_PROPERTY(int topicControllerHighlighEnd     READ getTopicTextControllerCurrentHighlighEnd    NOTIFY topicControllerPageChanged)
 
-    Q_PROPERTY(int topicControllerCurrentPage  READ getTopicTextControllerCurrentPage NOTIFY topicControllerPageChanged)
+    Q_PROPERTY(int topicControllerCurrentPage   READ getTopicTextControllerCurrentPage  NOTIFY topicControllerPageChanged)
     Q_PROPERTY(int topicControllerCountOfPages  READ getTopicTextControllerCountOfPages NOTIFY topicControllerPageChanged)
 
 private:
     const int procWrongAnswerForBadMood = 70;
+    const int sizeOfTextPageInTopic = 200;
 
     QQmlApplicationEngine *qmlEngine;
 
@@ -74,6 +79,7 @@ private:
     Exclamations exclamations;//база с восклицаниями для финишскрина
 
     LearnSession *currentSession;//указатель на текущую сессию
+    Topic *currentShowedTopic;
 
     void initialize();//инициализация полей, функция для конструктора
     void bindQMLSlotSignalConnections();//соединяем сигналы/слоты движка и QML
@@ -84,22 +90,22 @@ private:
     void startLearningSession(LearnSession::TypeLearning regime);//создание учебной сессии
 
     void emitPushSignalForTicket(Ticket *ticket);//парсим билет и шлем сигнал в QML, чтоб засунуть билет в стек
-public:
-    explicit AppEngine(QObject *parent = nullptr, QQmlApplicationEngine *qmlEngine = nullptr);
-
-    void connectToEngine(QQmlApplicationEngine *newEngine = nullptr);
 
     QVariant wrongTicketsModel;//вот об этом хорошенько подумать, модель для листа неправильных билетов
-
     QVariant learningSubjectsModel;//для списка предметов
     QVariant learningTopicsModel;//для списка предметов
     QVariant topicsTicketModel;//для списка предметов
 
-    //чтука ниже в private надо
+    //заполнение моделей
     void fillTicketModelFromSession();//ее заполнение/переподключение к движку
     void fillSubjModelFromTheory();
     void fillTopicsModelFromTheory(int subjIndex);
     void fillTopicsTicketModel(int subjIndex,int topicIndex);
+
+public:
+    explicit AppEngine(QObject *parent = nullptr, QQmlApplicationEngine *qmlEngine = nullptr);
+
+    void connectToEngine(QQmlApplicationEngine *newEngine = nullptr);
 
     //Геттеры для QML
     const QString getTitle() const;
@@ -128,56 +134,32 @@ public:
     QString getSessionLasting();
     QString getLearningSessionTimerTime();
 
-    //геттеры для топик контроллера
-
-    int getTopicTextControllerSubjIndex(){
-        return theory.topicController.getSubjIndex();
+    //геттеры для темы
+    int getСurrentSubjIndex(){
+        if(currentShowedTopic!=nullptr) return currentShowedTopic->getSubjectIndex();
+        else return 0;
     }
 
-    int getTopicTextControllerTopicIndex(){
-        return theory.topicController.getTopicIndex();
+    int getСurrentTopicIndex(){
+        if(currentShowedTopic!=nullptr) return currentShowedTopic->getIndex();
+        else return 0;
     }
 
-    QString getTopicTextControllerText(){
-        return theory.topicController.getMainText();
-    }
+    //геттеры для контроллера чтения темы
+    int getTopicTextControllerSubjIndex();
+    int getTopicTextControllerTopicIndex();
 
-    QString getTopicTextControllerImageUrl(){
-        return theory.topicController.getImageUrl();
-    }
+    QString getTopicTextControllerText();
+    QString getTopicTextControllerImageUrl();
 
-    int getTopicTextControllerCurrentHighlightStart(){
-        return theory.topicController.getCurrentHighlightStart();
-    }
+    int getTopicTextControllerCurrentHighlightStart();
+    int getTopicTextControllerCurrentHighlighEnd();
 
-    int getTopicTextControllerCurrentHighlighEnd(){
-        return theory.topicController.getCurrentHighlighEnd();
-    }
+    int getTopicTextControllerCurrentPage();
+    int getTopicTextControllerCountOfPages();
 
-    int getTopicTextControllerCurrentPage(){
-        return theory.topicController.getCurrentPage();
-    }
-
-    int getTopicTextControllerCountOfPages(){
-        return theory.topicController.countOfPages();
-    }
-
-    QString getTopicTextControllerName(){
-        return theory.topicController.getName();
-    }
-
-    QString getSubjIcon(){
-        //fillTopicsModelFromTheory(subjectIndex-1);
-
-        Subject * currentSubject = theory.getSubject(getTopicTextControllerSubjIndex()-1);
-
-        if(currentSubject!=nullptr)
-        {
-            return currentSubject->getIconUrl();
-        }
-
-        return "";
-    }
+    QString getTopicTextControllerName();
+    QString getSubjIcon();
 
     ~AppEngine(){
         qDebug() << "Деструктор для app Engine";
@@ -224,47 +206,20 @@ private slots:
 
     //подготавливаем данные для показа тем
     void onShowTopics(int subjectIndex);
+
     //показываем вопросы темы
     void onShowTopicsTickets(int subjectIndex, int topicIndex);
+    //показываем содержание темы
+    void onShowTopic(int subjectIndex, int topicIndex);
 
-    void onShowTopic(int subjectIndex, int topicIndex){
+    //билеты темы
+    void onShowTopicForTicket(int ticketIndex);
 
-        Topic *currentTopic = theory.getTopic(subjectIndex-1,topicIndex-1);
-
-        if(currentTopic != nullptr)
-        {
-            theory.topicController.setTopic(*currentTopic,20);
-            emit topicDataIsReady();
-        }
-    }
-
-    void onShowTopicForTicket(int ticketIndex){
-        Ticket *neededTicket = tickets.getTicket(ticketIndex);
-
-        if(neededTicket != nullptr)
-        {
-            Topic *topicForTicket = theory.getTopicForTicket(ticketIndex);
-            if(topicForTicket != nullptr)
-            {
-                theory.topicController.setTopic(*topicForTicket,20);
-                theory.topicController.showAnswerTicket(neededTicket->getIndex());
-                emit ticketTopicDataIsReady();
-            }
-
-        }
-    }
-
-    void onTopicNextPage(){
-        theory.topicController.nextPage();
-    }
-
-    void onTopicPreviousPage(){
-        theory.topicController.previousPage();
-    }
-
-
+    void onTopicNextPage();
+    void onTopicPreviousPage();
 
     void onPageChanged();
+
 
     /*Learning*/
     //окончание учебной сессии (сьебался в процессе или ушел с экрана с результатами)

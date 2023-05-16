@@ -226,17 +226,7 @@ Item {
             }
         },
 
-        State {//это чо бля
-            name: "TheoryScreen"
-            PropertyChanges {
-                target: rootHeaderItem
-                showRightButton: true
-                headerText: "Тема 1 (12/20)"
-                headerTime:""
-                //headerTime: ""
-            }
-        },
-        State {
+        State {//страница список предметов при чтении теории
             name: "subjectsScreen"
             PropertyChanges {
                 target: rootHeaderItem
@@ -244,10 +234,9 @@ Item {
                 headerText: "Предметы"
                 headerTime:""
                 pathToRightIconButton: ""
-                //headerTime: ""
             }
         },
-        State {
+        State {//страница список тем в предмете
             name: "topicsScreen"
             PropertyChanges {
                 target: rootHeaderItem
@@ -255,10 +244,9 @@ Item {
                 headerText: "Темы"
                 headerTime:""
                 pathToRightIconButton: "qrc:/icons/studyIcon.png"
-                //headerTime: ""
             }
         },
-        State {
+        State {//страница список билетов в теме
             name: "topicsTicketScreen"
             PropertyChanges {
                 target: rootHeaderItem
@@ -266,11 +254,10 @@ Item {
                 headerText: "Вопросы темы"
                 headerTime:""
                 pathToRightIconButton: "qrc:/icons/studyIcon.png"
-                //headerTime: ""
             }
         },
 
-        State {
+        State {//страница изучения темы, учебы теории
             name: "theoryScreen"
             PropertyChanges {
                 target: rootHeaderItem
@@ -279,7 +266,6 @@ Item {
                 headerTime:""
 
                 pathToRightIconButton: rootHeaderItem.learningSomething ? "qrc:/icons/bilets.png" : subjectIcon//"qrc:/icons/studyIcon.png"
-                //headerTime: ""
             }
         },
 
@@ -293,7 +279,7 @@ Item {
                 showRightButton: false
                 headerText: "Результат"
                 headerTime:""
-                pathToRightIconButton: ""//qrc:/icons/studyIcon.png
+                pathToRightIconButton: ""
 
             }
         },
@@ -396,6 +382,17 @@ Item {
 
             }
         },
+        State {
+            name: "CVLearnTicketsInTopic"//экран выбора вариантов для экзамена
+            PropertyChanges {
+                target: rootHeaderItem
+                showRightButton: false
+                headerText: "Вопросы темы"
+                headerTime: ""
+                pathToRightIconButton: ""//qrc:/icons/studyIcon.png
+
+            }
+        },
 
         //----хэдеры экранов ввода значения-----
         State {
@@ -479,8 +476,18 @@ Item {
                 headerTime:""
                 pathToRightIconButton: ""//qrc:/icons/studyIcon.png
             }
-        }
+        },
+        State {
+            name: "IVLearnTicketsInTopic"//хэдер для экрана ввода значения для отображения одного билета
+            PropertyChanges {
+                target: rootHeaderItem
 
+                showRightButton: false
+                headerText: "Вопросы темы"
+                headerTime:""
+                pathToRightIconButton: ""//qrc:/icons/studyIcon.png
+            }
+        }
 
     ]
 
