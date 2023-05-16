@@ -386,10 +386,10 @@ Item {
             name: "CVLearnTicketsInTopic"//экран выбора вариантов для экзамена
             PropertyChanges {
                 target: rootHeaderItem
-                showRightButton: false
+                showRightButton: true
                 headerText: "Вопросы темы"
                 headerTime: ""
-                pathToRightIconButton: ""//qrc:/icons/studyIcon.png
+                pathToRightIconButton: "qrc:/icons/studyIcon.png"//
 
             }
         },

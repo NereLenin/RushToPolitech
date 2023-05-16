@@ -50,10 +50,6 @@ class AppEngine : public QObject
     //topic text controller
     Q_PROPERTY(int topicControllerSubjIndex  READ getTopicTextControllerSubjIndex  CONSTANT)
     Q_PROPERTY(int topicControllerTopicIndex READ getTopicTextControllerTopicIndex CONSTANT)
-    //вот этих двоих пиздюков сверху наверно можно буит порезать
-
-    //Q_PROPERTY(int currentSubjIndex  READ getСurrentSubjIndex  CONSTANT)
-    //Q_PROPERTY(int currentTopicIndex READ getСurrentTopicIndex CONSTANT)
 
     Q_PROPERTY(QString topicControllerName   READ getTopicTextControllerName NOTIFY topicControllerPageChanged)
 
@@ -134,17 +130,6 @@ public:
     QString getSessionLasting();
     QString getLearningSessionTimerTime();
 
-    //геттеры для темы
-    int getСurrentSubjIndex(){
-        if(currentShowedTopic!=nullptr) return currentShowedTopic->getSubjectIndex();
-        else return 0;
-    }
-
-    int getСurrentTopicIndex(){
-        if(currentShowedTopic!=nullptr) return currentShowedTopic->getIndex();
-        else return 0;
-    }
-
     //геттеры для контроллера чтения темы
     int getTopicTextControllerSubjIndex();
     int getTopicTextControllerTopicIndex();
@@ -161,9 +146,7 @@ public:
     QString getTopicTextControllerName();
     QString getSubjIcon();
 
-    ~AppEngine(){
-        qDebug() << "Деструктор для app Engine";
-    }
+    ~AppEngine();
 signals:
     /* to QML */
     void collectLearningTicket(Ticket *ticketItem);

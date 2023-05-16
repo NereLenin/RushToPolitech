@@ -68,9 +68,13 @@ ApplicationWindow {
 
             default:
             {
-                if(learningSomething)//если сейчас происходит учеба то показываем теорию для текущего билета
+                if(learningSomething && !state.includes("LearnTicketsInTopic") )//если сейчас происходит учеба то показываем теорию для текущего билета
                 {
+                    console.log(state)
                     rootItem.showTopicForTicket(appPager.currentTicketIndex)
+                }
+                else{
+                    appPager.popToRegimeMainScreen();
                 }
             }
             break;

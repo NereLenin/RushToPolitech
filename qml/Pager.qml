@@ -60,15 +60,18 @@ Item {
                appEngine.typeOfCurrentSession === "RepeatDefault"   ||
                appEngine.typeOfCurrentSession === "LearnFailedFromRepeat")
             {
+                endLearningSessions();
                 view.popTo("RepeatScreen");//возвращаемся на экран повтора
                 console.log("pop repeat");
             }
             else if(appEngine.typeOfCurrentSession === "LearnTicketsInTopic")
             {
+                endLearningSessions();
                 view.popTo("topicsScreen");
             }
             else
             {
+                endLearningSessions();
                 view.popTo("StartScreen");//если это экзамен или просто учеба - возвращаемся на старотовый экран
             }
 

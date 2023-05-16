@@ -422,6 +422,10 @@ QString AppEngine::getSubjIcon(){
     return "";
 }
 
+AppEngine::~AppEngine(){
+    qDebug() << "Деструктор для app Engine";
+}
+
 QString AppEngine::getFinishScreenText(){
     if(currentSession!=nullptr)
     {
