@@ -327,6 +327,7 @@ void AppEngine::fillTopicsTicketModel(int subjIndex, int topicIndex)
     }
 
     currentShowedTopic = currentTopic;
+
     int sizeOfAnswersInTicket = currentTopic->getTicketAnswers().size();
 
     for(int i=0;i < sizeOfAnswersInTicket;i++)
@@ -375,11 +376,15 @@ QString AppEngine::getLearningSessionTimerTime()
 }
 
 int AppEngine::getTopicTextControllerSubjIndex(){
-    return theory.topicController.getSubjIndex();
+
+    if(currentShowedTopic != nullptr) return currentShowedTopic->getSubjectIndex();
+    else return 0;//theory.topicController.getSubjIndex();
 }
 
 int AppEngine::getTopicTextControllerTopicIndex(){
-    return theory.topicController.getTopicIndex();
+    if(currentShowedTopic != nullptr) return currentShowedTopic->getIndex();
+    else return 0;
+    //return theory.topicController.getTopicIndex();
 }
 
 QString AppEngine::getTopicTextControllerText(){

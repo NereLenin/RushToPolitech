@@ -53,6 +53,10 @@ Rectangle {
         {
         case 1:
             navigatePanel.state = "FirstPage";
+
+            if(appEngine.topicControllerCountOfPages === 1)
+                navigatePanel.state = "OnePageText";
+
             break;
         case appEngine.topicControllerCountOfPages:
             navigatePanel.state = "LastPage";
@@ -215,8 +219,10 @@ Rectangle {
                 font.bold: true
 
                 onClicked: {
-                    if(navigatePanel.state !== "FirstPage")
+                    if(navigatePanel.state !== "FirstPage" && navigatePanel.state !== "OnePageText" )
+                    {
                         rootItem.topicPreviousPage();
+                    }
                     else
                         rootItem.returnToRegimeMainPage();
                 }
@@ -390,11 +396,12 @@ Rectangle {
                 PropertyChanges {
                     target: nextButtonItem
                     iconURL: ""
+                    visible:false
                 }
 
                 PropertyChanges {
                     target: prevButtonItem
-                    iconURL: ""
+                    iconURL: calledFromLearningTicket? "qrc:/icons/bilets.png" : subjectIcon
                 }
             }//endstate
         ]//endstates

@@ -47,7 +47,7 @@
     {
       "type": "selectableAnswerTicket",
       "index": 3,
-      "text": "ВОпрос 2",
+      "text": "ВОпрос 3",
       "imageURL": "qrc:/ticketBase/questionImage/questpic.jpg",
 
 "answers": [

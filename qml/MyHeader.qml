@@ -389,7 +389,7 @@ Item {
                 showRightButton: true
                 headerText: "Вопросы темы"
                 headerTime: ""
-                pathToRightIconButton: "qrc:/icons/studyIcon.png"//
+                pathToRightIconButton: subjectIcon//
 
             }
         },
@@ -482,10 +482,10 @@ Item {
             PropertyChanges {
                 target: rootHeaderItem
 
-                showRightButton: false
+                showRightButton: true
                 headerText: "Вопросы темы"
                 headerTime:""
-                pathToRightIconButton: ""//qrc:/icons/studyIcon.png
+                pathToRightIconButton: subjectIcon//qrc:/icons/studyIcon.png
             }
         }
 

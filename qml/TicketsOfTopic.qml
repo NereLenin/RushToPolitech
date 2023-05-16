@@ -88,7 +88,7 @@ Rectangle {
             height: listView.height / 6
 
             canBeLearned: false
-            ticketNumber: ticketIndex +1
+            ticketNumber: ticketIndex
             shortText: questionText
 
             onClicked: {
