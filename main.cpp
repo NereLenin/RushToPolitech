@@ -3,9 +3,11 @@
 #include "appengine.h"
 #include <iostream>
 
-
 int main(int argc, char *argv[])
 {
+//   TheoryBase test;
+
+
     QGuiApplication app(argc, argv);
     AppEngine appEngine(&app);
 
@@ -22,5 +24,5 @@ int main(int argc, char *argv[])
     qmlEngine.load(url);
     return app.exec();
 
-  //  return 0;
+//    return 0;
 }

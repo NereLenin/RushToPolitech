@@ -149,18 +149,38 @@ void TheoryBaseReader::readTheoryFromJsonDB(QList<Subject> &subjects, QString pa
         QJsonArray jsonSubjectTopics = jsonSubject.value("topics").toArray();
         QJsonObject jsonTopic;
 
-        for(int i=0;i<jsonSubjectTopics.size();i++){//шелестим по темам предмета
-           jsonTopic = jsonSubjectTopics[i].toObject();
+        for(int j=0;j<jsonSubjectTopics.size();j++){//шелестим по темам предмета
+           jsonTopic = jsonSubjectTopics[j].toObject();
 
            Topic newTopic;
            newTopic.subjectIndex = newSubject.getIndex();
            newTopic.index = jsonTopic.value("topicIndex").toInt();
            newTopic.name = jsonTopic.value("name").toString();
-           newTopic.fullText = jsonTopic.value("text").toString();
 
-           //после парса из текста удаляются все наши тэги
-           newTopic.images = parseImgTagsInText(newTopic.fullText);
-           newTopic.ticketAnswers = parseTicketsAnswerInText(newTopic.fullText);
+           QJsonArray jsonTopicSubtopics = jsonTopic.value("subtopics").toArray();
+           QJsonObject jsonSubtopic;
+
+           for(int k=0;k<jsonTopicSubtopics.size();k++)
+           {
+               jsonSubtopic = jsonTopicSubtopics[k].toObject();
+
+               Subtopic newSubtopic;
+               newSubtopic.subjectIndex = newSubject.getIndex();
+               newSubtopic.topicIndex = newTopic.getIndex();
+               newSubtopic.index = jsonSubtopic.value("subtopicIndex").toInt();
+
+               newSubtopic.name = jsonSubtopic.value("name").toString();
+               newSubtopic.fullText = jsonSubtopic.value("text").toString();
+
+               //после парса из текста удаляются все наши тэги
+               newSubtopic.images = parseImgTagsInText(newSubtopic.fullText);
+               newSubtopic.ticketAnswers = parseTicketsAnswerInText(newSubtopic.fullText);
+
+               newSubtopic.debugPrint();
+               newTopic.subtopics.append(newSubtopic);
+
+
+           }
 
            newSubject.topics.append(newTopic);//добавляем тему в предмет
         }

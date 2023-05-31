@@ -12,13 +12,13 @@ import QtQuick.Controls.Material
 
 Rectangle {
     id: mainScreenRectangle
-    objectName: "topicsScreen"
+    objectName: "subtopicsScreen"
     //anchors.fill: parent
     width: view.width
     height: view.height
     color: "#edecec"
 
-    property bool showLearnTicketButton: false
+    property bool showLearnTicketButton: true
 
     ListView {
         id: listView
@@ -27,11 +27,11 @@ Rectangle {
         anchors.margins: 15
         anchors.bottomMargin: 20
 
-        model: learningTopicsModel
+        model: learningSubtopicsModel
         delegate: Topic {
 
             subtopic: showLearnTicketButton
-            nameTopic: topicIndex + ". " + topicName
+            nameTopic: subtopicIndex + ". " + subtopicName
             //pathTopicIcon: myPathTopicIcon
 
             anchors.left: parent.left
@@ -39,15 +39,15 @@ Rectangle {
             height: listView.height / 7
 
             onClicked: {
-                rootItem.showSubtopics(subjIndex, topicIndex);
+                rootItem.showSubtopic(subjIndex, topicIndex, subtopicIndex);
                 //просмотр содержания
                }
 
-            /*onInnerButtonClicked: {
+            onInnerButtonClicked: {
                 //вопросы по теме
-                console.log(subjIndex, topicIndex);
-                rootItem.showTopicsTickets(subjIndex, topicIndex);
-            }*/
+                console.log(subjIndex, topicIndex, subtopicIndex);
+                rootItem.showSubtopicTickets(subjIndex, topicIndex, subtopicIndex);
+            }
 
         }
         currentIndex: 1

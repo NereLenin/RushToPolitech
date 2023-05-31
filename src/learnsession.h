@@ -53,9 +53,9 @@ private:
 
     void learnFailedTicketsSession();
 
-    void learnTicketsInTopic(const Topic *topic){
+    void learnTicketsInSubtopic(const Subtopic *subtopic){
         qDebug() << "LearnSession::learnTicketsInTopic";
-        if(topic == nullptr)
+        if(subtopic == nullptr)
         {
             qDebug() << "LS: learnTicketsInTopic try to learn null topic";
             return;
@@ -63,17 +63,18 @@ private:
 
         QList<Ticket*> topicTickets;
 
-        for(int i = 0; i < topic->getTicketAnswers().size(); i++)
-        {
-            Ticket *currentTopicTicket = base->getTicket(topic->getTicketAnswers()[i].getTicketIndex());
+            for(int i = 0; i < subtopic->getTicketAnswers().size(); i++)
+            {
+            Ticket *currentSubtopicTicket = base->getTicket(subtopic->getTicketAnswers()[i].getTicketIndex());
 
-            if(currentTopicTicket != nullptr)
-                topicTickets.append(currentTopicTicket);
-        }
+            if(currentSubtopicTicket != nullptr)
+                topicTickets.append(currentSubtopicTicket);
+            }
 
         if(topicTickets.size() > 0)
             pushListOfTickets(topicTickets);
     }
+
 
     void ExamSession();
 
@@ -86,7 +87,7 @@ public:
 
     void StartSession();
 
-    Topic *currentLearnedTopic;
+    Subtopic *currentLearnedSubtopic;
 
     TypeLearning getCurrentRegime() const;
 
@@ -105,7 +106,7 @@ public:
         qDebug() << "LS destructor";
     }
 
-    void setCurrentLearnedTopic(Topic *newCurrentLearnedTopic);
+    void setCurrentLearnedSubtopic(Subtopic *newCurrentLearnedTopic);
 
 signals:
     void pushListOfTickets(QList <Ticket*> listOfTickets);

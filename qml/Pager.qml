@@ -44,9 +44,14 @@ Item {
             view.popTo("subjectsScreen");
             return;
         }
-        case "topicsTicketScreen"://если возвращаемся со скрина просмотра списка билетов в теме
+        case "subtopicsScreen"://если возвращаемся с скрина просмотра тем
         {
             view.popTo("topicsScreen");
+            return;
+        }
+        case "subtopicsTicketScreen"://если возвращаемся со скрина просмотра списка билетов в теме
+        {
+            view.popTo("subtopicsScreen");
             return;
         }
         case "theoryScreen"://если содержимое темы читаем
@@ -113,9 +118,13 @@ Item {
                 view.countOfViewFinishScreen = 0;
                 view.push("Topics.qml")
             return;
-            case "topicsTicketScreen":
+            case "subtopicsScreen":
                 view.countOfViewFinishScreen = 0;
-                view.push("TicketsOfTopic.qml")
+                view.push("Subtopics.qml")
+            return;
+            case "subtopicsTicketScreen":
+                view.countOfViewFinishScreen = 0;
+                view.push("TicketsOfSubtopic.qml")
             return;
             case "theoryScreen":
                 view.push("LearnTheory.qml")

@@ -8,11 +8,11 @@ Item {
     width: 500
 
     property bool learningSomething: rootItem.doLearnSomethingNow
-    property string subjectIcon: appEngine.topicControllerSubjIcon
+    property string subjectIcon: appEngine.subtopicControllerSubjIcon
 
     onStateChanged: {
         //обновляем subjectIcon
-        subjectIcon = appEngine.topicControllerSubjIcon
+        subjectIcon = appEngine.subtopicControllerSubjIcon
     }
 
     property bool showRightButton: false
@@ -246,23 +246,34 @@ Item {
                 pathToRightIconButton: "qrc:/icons/studyIcon.png"
             }
         },
+        State {//страница список тем в предмете
+            name: "subtopicsScreen"
+            PropertyChanges {
+                target: rootHeaderItem
+                showRightButton: true
+                headerText: "Подтемы"
+                headerTime:""
+                pathToRightIconButton: "qrc:/icons/studyIcon.png"
+            }
+        },
         State {//страница список билетов в теме
-            name: "topicsTicketScreen"
+            name: "subtopicsTicketScreen"
             PropertyChanges {
                 target: rootHeaderItem
                 showRightButton: true
                 headerText: "Вопросы темы"
                 headerTime:""
-                pathToRightIconButton: "qrc:/icons/studyIcon.png"
+                pathToRightIconButton: subjectIcon
             }
         },
+
 
         State {//страница изучения темы, учебы теории
             name: "theoryScreen"
             PropertyChanges {
                 target: rootHeaderItem
                 showRightButton: true
-                headerText: appEngine.topicControllerName + " (" + appEngine.topicControllerCurrentPage + "/" + appEngine.topicControllerCountOfPages + ")";
+                headerText: appEngine.subtopicControllerName + " (" + appEngine.subtopicControllerCurrentPage + "/" + appEngine.subtopicControllerCountOfPages + ")";
                 headerTime:""
 
                 pathToRightIconButton: rootHeaderItem.learningSomething ? "qrc:/icons/bilets.png" : subjectIcon//"qrc:/icons/studyIcon.png"

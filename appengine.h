@@ -48,21 +48,22 @@ class AppEngine : public QObject
     //Q_PROPERTY(QString currentTheoryText  READ getLearningSessionTimerTime CONSTANT)
 
     //topic text controller
-    Q_PROPERTY(int topicControllerSubjIndex  READ getTopicTextControllerSubjIndex  CONSTANT)
-    Q_PROPERTY(int topicControllerTopicIndex READ getTopicTextControllerTopicIndex CONSTANT)
+    Q_PROPERTY(int subtopicControllerSubjIndex  READ getSubtopicTextControllerSubjIndex  CONSTANT)
+    Q_PROPERTY(int subtopicControllerTopicIndex READ getSubtopicTextControllerTopicIndex CONSTANT)
+    Q_PROPERTY(int subtopicControllerSubtopicIndex READ getSubtopicTextControllerSubtopicIndex CONSTANT)
 
-    Q_PROPERTY(QString topicControllerName   READ getTopicTextControllerName NOTIFY topicControllerPageChanged)
+    Q_PROPERTY(QString subtopicControllerName   READ getSubtopicTextControllerName NOTIFY subtopicControllerPageChanged)
 
-    Q_PROPERTY(QString topicControllerMainText  READ getTopicTextControllerText     NOTIFY topicControllerPageChanged)
-    Q_PROPERTY(QString topicControllerImageUrl  READ getTopicTextControllerImageUrl NOTIFY topicControllerPageChanged)
+    Q_PROPERTY(QString subtopicControllerMainText  READ getSubtopicTextControllerText     NOTIFY subtopicControllerPageChanged)
+    Q_PROPERTY(QString subtopicControllerImageUrl  READ getSubtopicTextControllerImageUrl NOTIFY subtopicControllerPageChanged)
 
-    Q_PROPERTY(QString topicControllerSubjIcon  READ getSubjIcon NOTIFY topicControllerPageChanged)
+    Q_PROPERTY(QString subtopicControllerSubjIcon  READ getSubjIcon NOTIFY subtopicControllerPageChanged)
 
-    Q_PROPERTY(int topicControllerHighlightStart  READ getTopicTextControllerCurrentHighlightStart NOTIFY topicControllerPageChanged)
-    Q_PROPERTY(int topicControllerHighlighEnd     READ getTopicTextControllerCurrentHighlighEnd    NOTIFY topicControllerPageChanged)
+    Q_PROPERTY(int subtopicControllerHighlightStart  READ getSubtopicTextControllerCurrentHighlightStart NOTIFY subtopicControllerPageChanged)
+    Q_PROPERTY(int subtopicControllerHighlighEnd     READ getSubtopicTextControllerCurrentHighlighEnd    NOTIFY subtopicControllerPageChanged)
 
-    Q_PROPERTY(int topicControllerCurrentPage   READ getTopicTextControllerCurrentPage  NOTIFY topicControllerPageChanged)
-    Q_PROPERTY(int topicControllerCountOfPages  READ getTopicTextControllerCountOfPages NOTIFY topicControllerPageChanged)
+    Q_PROPERTY(int subtopicControllerCurrentPage   READ getSubtopicTextControllerCurrentPage  NOTIFY subtopicControllerPageChanged)
+    Q_PROPERTY(int subtopicControllerCountOfPages  READ getSubtopicTextControllerCountOfPages NOTIFY subtopicControllerPageChanged)
 
 private:
     const int procWrongAnswerForBadMood = 70;
@@ -75,7 +76,7 @@ private:
     Exclamations exclamations;//база с восклицаниями для финишскрина
 
     LearnSession *currentSession;//указатель на текущую сессию
-    Topic *currentShowedTopic;
+    Subtopic *currentShowedSubtopic;
 
     void initialize();//инициализация полей, функция для конструктора
     void bindQMLSlotSignalConnections();//соединяем сигналы/слоты движка и QML
@@ -89,14 +90,17 @@ private:
 
     QVariant wrongTicketsModel;//вот об этом хорошенько подумать, модель для листа неправильных билетов
     QVariant learningSubjectsModel;//для списка предметов
-    QVariant learningTopicsModel;//для списка предметов
-    QVariant topicsTicketModel;//для списка предметов
+    QVariant learningTopicsModel;//для списка тем
+    QVariant learningSubtopicsModel;//для списка тем
+
+    QVariant subtopicsTicketModel;//для списка предметов
 
     //заполнение моделей
     void fillTicketModelFromSession();//ее заполнение/переподключение к движку
     void fillSubjModelFromTheory();
     void fillTopicsModelFromTheory(int subjIndex);
-    void fillTopicsTicketModel(int subjIndex,int topicIndex);
+    void fillSubtopicsModelFromTheory(int subjIndex,int topicIndex);
+    void fillSubtopicsTicketModel(int subjIndex,int topicIndex, int subjectIndex);
 
 public:
     explicit AppEngine(QObject *parent = nullptr, QQmlApplicationEngine *qmlEngine = nullptr);
@@ -131,19 +135,23 @@ public:
     QString getLearningSessionTimerTime();
 
     //геттеры для контроллера чтения темы
-    int getTopicTextControllerSubjIndex();
-    int getTopicTextControllerTopicIndex();
+    int getSubtopicTextControllerSubjIndex();
+    int getSubtopicTextControllerTopicIndex();
+    int getSubtopicTextControllerSubtopicIndex(){
+        if(currentShowedSubtopic != nullptr) return currentShowedSubtopic->getIndex();
+        else return 0;
+    }
 
-    QString getTopicTextControllerText();
-    QString getTopicTextControllerImageUrl();
+    QString getSubtopicTextControllerText();
+    QString getSubtopicTextControllerImageUrl();
 
-    int getTopicTextControllerCurrentHighlightStart();
-    int getTopicTextControllerCurrentHighlighEnd();
+    int getSubtopicTextControllerCurrentHighlightStart();
+    int getSubtopicTextControllerCurrentHighlighEnd();
 
-    int getTopicTextControllerCurrentPage();
-    int getTopicTextControllerCountOfPages();
+    int getSubtopicTextControllerCurrentPage();
+    int getSubtopicTextControllerCountOfPages();
 
-    QString getTopicTextControllerName();
+    QString getSubtopicTextControllerName();
     QString getSubjIcon();
 
     ~AppEngine();
@@ -161,12 +169,14 @@ signals:
     //for theory
     void subjectsDataIsReady();
     void topicsDataIsReady();
-    void topicsTicketsDataIsReady();
+    void subtopicsDataIsReady();
 
-    void topicDataIsReady();
-    void ticketTopicDataIsReady();
+    void subtopicTicketsDataIsReady();//билеты в подтеме
+    void ticketSubtopicDataIsReady();//когда учим билет и вызываем тему для него
 
-    void topicControllerPageChanged();
+    void subtopicDataIsReady();//когда готово содержимое подтемы
+
+    void subtopicControllerPageChanged();
 
     /* To LearningSession */
     void saveStatisticInLearningSession(int index, TicketAnswerType correctness);
@@ -190,16 +200,20 @@ private slots:
     //подготавливаем данные для показа тем
     void onShowTopics(int subjectIndex);
 
-    //показываем вопросы темы
-    void onShowTopicsTickets(int subjectIndex, int topicIndex);
-    //показываем содержание темы
-    void onShowTopic(int subjectIndex, int topicIndex);
+    //подготавливаем данные для показа подтем
+    void onShowSubtopics(int subjectIndex, int topicIndex);
 
-    //билеты темы
-    void onShowTopicForTicket(int ticketIndex);
+    //показываем вопросы подтемы
+    void onShowSubtopicTickets(int subjectIndex, int topicIndex, int subtopicIndex);
 
-    void onTopicNextPage();
-    void onTopicPreviousPage();
+    //показываем содержание подтемы
+    void onShowSubtopic(int subjectIndex, int topicIndex, int subtopicIndex);
+
+    //для билета показыавем подтему
+    void onShowSubtopicForTicket(int ticketIndex);
+
+    void onSubtopicNextPage();
+    void onSubtopicPreviousPage();
 
     void onPageChanged();
 

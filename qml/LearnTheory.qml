@@ -23,16 +23,17 @@ Rectangle {
     property bool calledFromLearningTicket: rootItem.doLearnSomethingNow
 
     //данные о теории которую сейчас учим
-    property int subjIndex: appEngine.topicControllerSubjIndex
-    property int topicIndex: appEngine.topicControllerTopicIndex
-    property string subjectIcon: appEngine.topicControllerSubjIcon
+    property int subjIndex: appEngine.subtopicControllerSubjIndex
+    property int topicIndex: appEngine.subtopicControllerTopicIndex
+    property int subtopicIndex: appEngine.subtopicControllerSubtopicIndex
+    property string subjectIcon: appEngine.subtopicControllerSubjIcon
 
     //начало и конец подчеркивания для ответов на вопросы
-    property int startHighlightPoint: appEngine.topicControllerHighlightStart
-    property int endHighlightPoint: appEngine.topicControllerHighlighEnd
+    property int startHighlightPoint: appEngine.subtopicControllerHighlightStart
+    property int endHighlightPoint: appEngine.subtopicControllerHighlighEnd
 
     //кусок текста темы из контроллера
-    property string theoryText: appEngine.topicControllerMainText
+    property string theoryText: appEngine.subtopicControllerMainText
 
     //текст с подсветкой
     property string highlightedText: theoryText.substring(0,startHighlightPoint) + "<u><i>" + theoryText.substring(startHighlightPoint,endHighlightPoint) + "</u></i>" + theoryText.substring(endHighlightPoint,theoryText.length)
@@ -41,24 +42,24 @@ Rectangle {
     property string outputText: (endHighlightPoint > startHighlightPoint) && (endHighlightPoint <= theoryText.length) ? highlightedText : theoryText
 
     //изображение и вспомогательные переменные для их отображения
-    property string imageURL: appEngine.topicControllerImageUrl
+    property string imageURL: appEngine.subtopicControllerImageUrl
     property bool haveImage: imageURL !== ""
 
-    property bool isImageUp: ((appEngine.topicControllerCurrentPage % 2) !== 0 )
+    property bool isImageUp: ((appEngine.subtopicControllerCurrentPage % 2) !== 0 )
 
     //контролим панель навигации от текущей страницы в контроллере
     onTheoryTextChanged:
     {
-        switch(appEngine.topicControllerCurrentPage)
+        switch(appEngine.subtopicControllerCurrentPage)
         {
         case 1:
             navigatePanel.state = "FirstPage";
 
-            if(appEngine.topicControllerCountOfPages === 1)
+            if(appEngine.subtopicControllerCountOfPages === 1)
                 navigatePanel.state = "OnePageText";
 
             break;
-        case appEngine.topicControllerCountOfPages:
+        case appEngine.subtopicControllerCountOfPages:
             navigatePanel.state = "LastPage";
             break;
         default: navigatePanel.state = "SomewhereMiddleInText"; break;
@@ -221,7 +222,7 @@ Rectangle {
                 onClicked: {
                     if(navigatePanel.state !== "FirstPage" && navigatePanel.state !== "OnePageText" )
                     {
-                        rootItem.topicPreviousPage();
+                        rootItem.subtopicPreviousPage();
                     }
                     else
                         rootItem.returnToRegimeMainPage();
@@ -299,11 +300,11 @@ Rectangle {
                 onClicked: {
 
                     if(navigatePanel.state !== "LastPage")
-                        rootItem.topicNextPage();
+                        rootItem.subtopicNextPage();
                     else
                         if(!calledFromLearningTicket)
                         {
-                            rootItem.showTopicsTickets(subjIndex, topicIndex);
+                            rootItem.showSubtopicTickets(subjIndex, topicIndex,subtopicIndex);
                         }
 
                 }

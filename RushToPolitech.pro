@@ -8,6 +8,7 @@ SOURCES += \
         src/mytimer.cpp \
         src/random.cpp \
         src/theory/subject.cpp \
+        src/theory/subtopic.cpp \
         src/theory/theorybase.cpp \
         src/theory/theorybasereader.cpp \
         src/theory/theoryimginfo.cpp \
@@ -55,8 +56,10 @@ DISTFILES += \
     qml/SquareButton.ui.qml \
     qml/StartScreen.qml \
     qml/Subjects.qml \
+    qml/Subtopics.qml \
     qml/Ticket.qml \
     qml/Ticket.ui.qml \
+    qml/TicketsOfSubtopic.qml \
     qml/TicketsOfTopic.qml \
     qml/TicketsOfTopic.ui.qml \
     qml/Topic.qml \
@@ -74,6 +77,7 @@ HEADERS += \
     src/mytimer.h \
     src/random.h \
     src/theory/subject.h \
+    src/theory/subtopic.h \
     src/theory/theorybase.h \
     src/theory/theorybasereader.h \
     src/theory/theoryimginfo.h \

@@ -56,7 +56,7 @@ TicketInfo *TicketsStatisticService::getTicketInfo(const Ticket *ticket)
         if((ticketIndex >=0) && (ticketIndex < ticketStatisticBase.size()))
         {
             //получаем информацию о тикете
-            TicketInfo *ticketInfo = &(ticketStatisticBase[ticket->getIndex()]);
+            TicketInfo *ticketInfo = &(ticketStatisticBase[ticket->getIndex()-1]);
 
             //смотрим наш ли это билет
             if(ticketInfo->getTicketIndex() == ticketIndex)

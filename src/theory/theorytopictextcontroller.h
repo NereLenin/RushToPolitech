@@ -4,7 +4,7 @@
 #include <QObject>
 #include "topic.h"
 
-class TheoryTopicTextController : public QObject
+class TheorySubtopicTextController : public QObject
 {
     Q_OBJECT
     // в appEnine
@@ -22,7 +22,7 @@ class TheoryTopicTextController : public QObject
     //property
 
 private:
-    QList<TopicPart> topicParts;
+    QList<SubtopicPart> subtopicParts;
     int subjIndex;
     int topicIndex;
     QString name;
@@ -38,11 +38,11 @@ private:
     int currentPage;
 
 public:
-    explicit TheoryTopicTextController(QObject *parent = nullptr);
+    explicit TheorySubtopicTextController(QObject *parent = nullptr);
 
     int countOfPages();
 
-    void setTopic(Topic &topic, int textPerPage = 20);
+    void setSubtopic(Subtopic &subtopic, int textPerPage = 20);
 
     void showPage(int pageIndex = 0);
     void showAnswerTicket(int ticketIndex);

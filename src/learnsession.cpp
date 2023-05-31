@@ -110,7 +110,7 @@ LearnSession::LearnSession(QObject *parent)
     : QObject{parent}
 {
     base = nullptr;
-    currentLearnedTopic = nullptr;
+    currentLearnedSubtopic = nullptr;
 
     countOfRightAnswer = countOfWrongAnswer =
     currentLearnedTicketNumber = 0;
@@ -150,7 +150,7 @@ void LearnSession::StartSession()
     case RepeatWithTimer: repeatWithTimerSession(); break;
     case RepeatRandom: repeatRandomSession(); break;
     case RepeatForgotten: repeatForgottenSession(); break;
-    case LearnTicketsInTopic: learnTicketsInTopic(currentLearnedTopic); break;
+    case LearnTicketsInTopic: learnTicketsInSubtopic(currentLearnedSubtopic); break;
     case Exam: ExamSession(); break;
     default:
         qDebug() << "Can't do this session from controller";
@@ -158,9 +158,9 @@ void LearnSession::StartSession()
     }
 }
 
-void LearnSession::setCurrentLearnedTopic(Topic *newCurrentLearnedTopic)
+void LearnSession::setCurrentLearnedSubtopic(Subtopic *newCurrentLearnedSubtopic)
 {
-    currentLearnedTopic = newCurrentLearnedTopic;
+    currentLearnedSubtopic = newCurrentLearnedSubtopic;
 }
 
 LearnSession::TypeLearning LearnSession::getCurrentRegime() const

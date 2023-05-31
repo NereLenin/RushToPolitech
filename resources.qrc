@@ -150,5 +150,7 @@
         <file>qml/Topic.qml</file>
         <file>qml/TicketsOfTopic.qml</file>
         <file>qml/Ticket.qml</file>
+        <file>qml/Subtopics.qml</file>
+        <file>qml/TicketsOfSubtopic.qml</file>
     </qresource>
 </RCC>

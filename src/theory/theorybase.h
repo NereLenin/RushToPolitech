@@ -6,27 +6,27 @@
 #include "theorybasereader.h"
 #include "theorytopictextcontroller.h"
 
-
 class TheoryBase
 {
 private:
     QList <Subject> subjects;
-    QMap <int,Topic*> topicsForTickets;
-    QMap <int,Topic*> readTopicsForTickets();
+    QMap <int,Subtopic*> subtopicsForTickets;
+    QMap <int,Subtopic*> readSubtopicsForTickets();
 public:
 
     TheoryBase(QString pathToJsonDB = ":/ticketBase/TheoryBase.json");
     void clear();
 
-    TheoryTopicTextController topicController;
+    TheorySubtopicTextController subtopicController;
 
     const QList <Subject>& getSubjects();
     Subject* getSubject(int index);
 
     Topic* getTopic(int subjectIndex, int topicIndex);
-    Topic* getTopicForTicket(int ticketIndex);
+    Subtopic *getSubtopic(int subjectIndex, int topicIndex, int subtopicIndex);
+    Subtopic *getSubtopicForTicket(int ticketIndex);
 
-    TheoryTopicTextController& getTopicController(Topic &topic, int sizeOfOnePage = 20);
+    TheorySubtopicTextController& getTopicController(Subtopic &subtopic, int sizeOfOnePage = 20);
 
     ~TheoryBase(){
         qDebug() << "Деструктор для базы теории";

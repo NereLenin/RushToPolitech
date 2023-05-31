@@ -1,23 +1,23 @@
 #include "theorytopictextcontroller.h"
 
 
-void TheoryTopicTextController::showPage(int pageIndex){
+void TheorySubtopicTextController::showPage(int pageIndex){
     if(pageIndex == 0) pageIndex = currentPage;
 
     if(pageIndex >=0 && pageIndex < countOfPages())
     {
         currentPage = pageIndex;
 
-        name = topicParts[currentPage].getName();
-        mainText = topicParts[currentPage].getText();
-        imageUrl = topicParts[currentPage].getImg();
+        name = subtopicParts[currentPage].getName();
+        mainText = subtopicParts[currentPage].getText();
+        imageUrl = subtopicParts[currentPage].getImg();
 
         //если на этой странице есть ответ на вопрос, который нужно подсвечивать
-        if(indexHighlitedTicket == topicParts[currentPage].getAnswer().getTicketIndex())
+        if(indexHighlitedTicket == subtopicParts[currentPage].getAnswer().getTicketIndex())
         {
 
-            currentHighlightStart = topicParts[currentPage].getAnswer().getIndexOfStartAnswerInText();
-            currentHighlighEnd = topicParts[currentPage].getAnswer().getIndexOfEndAnswerInText();
+            currentHighlightStart = subtopicParts[currentPage].getAnswer().getIndexOfStartAnswerInText();
+            currentHighlighEnd = subtopicParts[currentPage].getAnswer().getIndexOfEndAnswerInText();
 
         }
         else{
@@ -32,7 +32,7 @@ void TheoryTopicTextController::showPage(int pageIndex){
 
 }
 
-void TheoryTopicTextController::showAnswerTicket(int ticketIndex)//подсветить тикет и включить сразу его начало
+void TheorySubtopicTextController::showAnswerTicket(int ticketIndex)//подсветить тикет и включить сразу его начало
 {
     if(ticketIndex == 0) return;
 
@@ -40,9 +40,9 @@ void TheoryTopicTextController::showAnswerTicket(int ticketIndex)//подсве�
 
 
 
-    for(int i=0;i < topicParts.size();i++)
+    for(int i=0;i < subtopicParts.size();i++)
     {
-        if(topicParts[i].getAnswer().getTicketIndex() == ticketIndex)
+        if(subtopicParts[i].getAnswer().getTicketIndex() == ticketIndex)
         {
             showPage(i);
             break;
@@ -50,74 +50,74 @@ void TheoryTopicTextController::showAnswerTicket(int ticketIndex)//подсве�
     }
 }
 
-int TheoryTopicTextController::countOfPages(){
-    return topicParts.size();
+int TheorySubtopicTextController::countOfPages(){
+    return subtopicParts.size();
 }
 
-void TheoryTopicTextController::setTopic(Topic &topic, int textPerPage){
+void TheorySubtopicTextController::setSubtopic(Subtopic &subtopic, int textPerPage){
 
     indexHighlitedTicket = currentHighlighEnd = currentHighlightStart = 0;
 
-    subjIndex = topic.getSubjectIndex();
-    topicIndex = topic.getIndex();
+    subjIndex = subtopic.getSubjectIndex();
+    topicIndex = subtopic.getIndex();
 
-    topicParts = topic.splitTopicOnParts(textPerPage);
+    subtopicParts = subtopic.splitSubtopicOnParts(textPerPage);
     currentPage = 0;
     showPage(currentPage);
 }
 
-void TheoryTopicTextController::nextPage(){
+void TheorySubtopicTextController::nextPage(){
     if(currentPage < countOfPages()-1)
         showPage(++currentPage);
 }
 
-void TheoryTopicTextController::previousPage(){
+void TheorySubtopicTextController::previousPage(){
     if(currentPage > 0)
         showPage(--currentPage);
 
 }
 
-const QString &TheoryTopicTextController::getName() const
+const QString &TheorySubtopicTextController::getName() const
 {
     return name;
 }
 
-const QString &TheoryTopicTextController::getMainText() const
+const QString &TheorySubtopicTextController::getMainText() const
 {
     return mainText;
 }
 
-const QString &TheoryTopicTextController::getImageUrl() const
+const QString &TheorySubtopicTextController::getImageUrl() const
 {
     return imageUrl;
 }
 
-int TheoryTopicTextController::getCurrentHighlightStart() const
+int TheorySubtopicTextController::getCurrentHighlightStart() const
 {
     return currentHighlightStart;
 }
 
-int TheoryTopicTextController::getCurrentHighlighEnd() const
+int TheorySubtopicTextController::getCurrentHighlighEnd() const
 {
     return currentHighlighEnd;
 }
 
-int TheoryTopicTextController::getCurrentPage() const
+int TheorySubtopicTextController::getCurrentPage() const
 {
     return currentPage+1;
 }
 
-int TheoryTopicTextController::getSubjIndex() const
+int TheorySubtopicTextController::getSubjIndex() const
 {
     return subjIndex;
 }
 
-int TheoryTopicTextController::getTopicIndex() const
+int TheorySubtopicTextController::getTopicIndex() const
 {
     return topicIndex;
 }
 
-TheoryTopicTextController::TheoryTopicTextController(QObject *parent) : QObject(parent){
+TheorySubtopicTextController::TheorySubtopicTextController(QObject *parent) : QObject(parent){
     subjIndex = 0;
     topicIndex = 0;
 
@@ -127,7 +127,7 @@ TheoryTopicTextController::TheoryTopicTextController(QObject *parent) : QObject(
     currentPage = 0;
 }
 
-void TheoryTopicTextController::setHighlightAnswerForTicket(int newHighlightAnswerForTicket)
+void TheorySubtopicTextController::setHighlightAnswerForTicket(int newHighlightAnswerForTicket)
 {
     indexHighlitedTicket = newHighlightAnswerForTicket;
 }

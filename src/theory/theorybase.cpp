@@ -1,11 +1,12 @@
 #include "theorybase.h"
 
-QMap<int, Topic *> TheoryBase::readTopicsForTickets(){
-    QMap <int,Topic*> newtopicsForTickets;
-    int ticketIndexForThisTopic = 0;
+QMap<int, Subtopic*> TheoryBase::readSubtopicsForTickets(){
+    QMap <int,Subtopic*> newtopicsForTickets;
 
     Subject* currentSubj;
     Topic* currentTopic;
+    Subtopic* currentSubtopic;
+    TheoryTicketAnswerInfo currentTicket;
 
 
     for(int currentSubjIndex=0; currentSubjIndex < getSubjects().size(); currentSubjIndex++)//по всем предметам
@@ -27,13 +28,28 @@ QMap<int, Topic *> TheoryBase::readTopicsForTickets(){
                 return newtopicsForTickets;
             }
 
-            for(int currentAnswerTicketInfoIndex = 0; currentAnswerTicketInfoIndex < currentTopic->getTicketAnswers().size(); currentAnswerTicketInfoIndex++)//по всем ответам на вопросы в них
+            for(int currentSubtopicIndex = 0; currentSubtopicIndex < currentTopic->getSubtopics().size(); currentSubtopicIndex++)//по всем ответам на вопросы в них
             {
-                //получаем номер билета на ответ на который содержится в этой теме
-                ticketIndexForThisTopic = currentTopic->getTicketAnswers()[currentAnswerTicketInfoIndex].getTicketIndex();
 
-                //записываем по номеру билета ссылку на тему
-                newtopicsForTickets[ticketIndexForThisTopic] = &(subjects[currentSubjIndex].topics[currentTopicIndex]);
+                currentSubtopic = getSubtopic(currentSubjIndex+1,currentTopicIndex+1,currentSubtopicIndex+1);
+
+                if(currentSubtopic == nullptr)
+                {
+                    qDebug() << "readTopicsForTickets : Попытка получить несуществую тему с индексом subj:" << currentSubjIndex << "topic: " << currentTopicIndex;
+                    return newtopicsForTickets;
+                }
+
+                for(int currentAnswerInSubtopic = 0; currentAnswerInSubtopic < currentSubtopic->getTicketAnswers().size();currentAnswerInSubtopic++)
+                {
+                    //получаем номер билета на ответ на который содержится в этой теме
+                    currentTicket = (currentSubtopic->getTicketAnswers()[currentAnswerInSubtopic]);
+
+                    //записываем по номеру билета ссылку на подтему
+                    newtopicsForTickets[currentTicket.getTicketIndex()] = (currentSubtopic);
+                }
+
+
+
             }
         }
     }
@@ -43,7 +59,7 @@ QMap<int, Topic *> TheoryBase::readTopicsForTickets(){
 
 TheoryBase::TheoryBase(QString pathToJsonDB){
     TheoryBaseReader::readTheoryFromJsonDB(subjects, pathToJsonDB);
-    topicsForTickets = readTopicsForTickets();
+    subtopicsForTickets = readSubtopicsForTickets();
 }
 void TheoryBase::clear()
 {
@@ -85,17 +101,31 @@ Topic *TheoryBase::getTopic(int subjectIndex, int topicIndex)
 
     return nullptr;
 }
-Topic *TheoryBase::getTopicForTicket(int ticketIndex)
+
+Subtopic *TheoryBase::getSubtopic(int subjectIndex, int topicIndex, int subtopicIndex)
 {
-    if(!topicsForTickets.contains(ticketIndex))
+    Topic *currentTopic = getTopic(subjectIndex,topicIndex);
+
+    if(currentTopic!=nullptr)
+    if(subtopicIndex > 0 && subtopicIndex <= (currentTopic->getSubtopics().size()) )
+    {
+        return &(currentTopic->getSubtopics()[subtopicIndex-1]);//в листе с 0, в базе с 1
+    }
+
+    return nullptr;
+}
+
+Subtopic *TheoryBase::getSubtopicForTicket(int ticketIndex)
+{
+    if(!subtopicsForTickets.contains(ticketIndex))
     {
       qDebug() << "Не найдена тема для билета с номером " << ticketIndex;
       return nullptr;
     }
-    return topicsForTickets[ticketIndex];
+    return subtopicsForTickets[ticketIndex];
 }
 
-TheoryTopicTextController &TheoryBase::getTopicController(Topic &topic, int sizeOfOnePage){
-    topicController.setTopic(topic,sizeOfOnePage);
-    return topicController;
+TheorySubtopicTextController &TheoryBase::getTopicController(Subtopic &subtopic, int sizeOfOnePage){
+    subtopicController.setSubtopic(subtopic,sizeOfOnePage);
+    return subtopicController;
 }

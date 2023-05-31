@@ -58,10 +58,12 @@ ApplicationWindow {
                 appPager.popToRegimeMainScreen();
                 return;
 
-            case "topicsTicketScreen"://если на экране со списком билетов темы, возвращаемся на список тем предмета
+            case "subtopicsTicketScreen"://если на экране со списком билетов темы, возвращаемся на список тем предмета
                 appPager.popToRegimeMainScreen();
                 return;
-
+            case "subtopicsScreen"://если на экране со списком билетов темы, возвращаемся на список тем предмета
+                appPager.popToRegimeMainScreen();
+                return;
             case "theoryScreen"://если на содержании темы, возвращаемся на список тем
                 appPager.popToRegimeMainScreen();
                 return;
@@ -71,7 +73,7 @@ ApplicationWindow {
                 if(learningSomething && !state.includes("LearnTicketsInTopic") )//если сейчас происходит учеба то показываем теорию для текущего билета
                 {
                     console.log(state)
-                    rootItem.showTopicForTicket(appPager.currentTicketIndex)
+                    rootItem.showSubtopicForTicket(appPager.currentTicketIndex)
                 }
                 else{
                     appPager.popToRegimeMainScreen();
@@ -278,20 +280,22 @@ ApplicationWindow {
     //сигнал для подготовки листа тем в предмете
     signal showTopics(subjectIndex : int);
 
-    //сигнал для подготовки данных о билетах, ответы которых есть в теме
-    signal showTopicsTickets(subjectIndex : int, TopicIndex : int);
+    //сигнал для подготовки листа подтем в теме
+    signal showSubtopics(subjectIndex : int, topicIndex : int);
 
+    //сигнал для подготовки данных о билетах, ответы которых есть в подтеме
+    signal showSubtopicTickets(subjectIndex : int, topicIndex : int, subtopicIndex : int);
 
     //------ To Theory Topic Controller -----//
     //просмотр СОДЕРЖАНИЯ темы
-    signal showTopic(subjectIndex : int, topicIndex : int);
+    signal showSubtopic(subjectIndex : int, topicIndex : int, subtopicIndex : int);
 
     //просмотр СОДЕРЖАНИЯ темы для тикета(сам переключит где ответ в теме)
-    signal showTopicForTicket(ticketIndex  : int);
+    signal showSubtopicForTicket(ticketIndex  : int);
 
     //переключение след/предыдущую страницу
-    signal topicNextPage();
-    signal topicPreviousPage();
+    signal subtopicNextPage();
+    signal subtopicPreviousPage();
 
 
     // --------слоты--------
@@ -328,17 +332,21 @@ ApplicationWindow {
             appPager.navigateTo("topicsScreen")
         }
 
-        function onTopicsTicketsDataIsReady()//список билетов для темы
+        function onSubtopicTicketsDataIsReady()//список билетов для темы
         {
-            appPager.navigateTo("topicsTicketScreen")
+            appPager.navigateTo("subtopicsTicketScreen")
         }
 
-        function onTopicDataIsReady()//содержание темы готово, отображаем
+        function onSubtopicsDataIsReady(){
+            appPager.navigateTo("subtopicsScreen")
+        }
+
+        function onSubtopicDataIsReady()//содержание темы готово, отображаем
         {
             appPager.navigateTo("theoryScreen")
         }
 
-        function onTicketTopicDataIsReady()//содержание темы для билета готовы
+        function onTicketSubtopicDataIsReady()//содержание темы для билета готовы
         {
             appPager.navigateTo("theoryScreen")
         }

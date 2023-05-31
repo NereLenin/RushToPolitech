@@ -67,26 +67,31 @@ void AppEngine::bindQMLSlotSignalConnections()
     QObject::connect(rootObject,SIGNAL(showTopics(int)),
                      this,SLOT(onShowTopics(int)));
 
-    //просит показать билеты темы
-    QObject::connect(rootObject,SIGNAL(showTopicsTickets(int,int)),
-                     this,SLOT(onShowTopicsTickets(int,int)));
+    //просит показать подтемы предмета
+    QObject::connect(rootObject,SIGNAL(showSubtopics(int,int)),
+                     this,SLOT(onShowSubtopics(int,int)));
 
-    //просит показать билеты темы
+
+    //просит показать билеты подтемы
+    QObject::connect(rootObject,SIGNAL(showSubtopicTickets(int,int,int)),
+                     this,SLOT(onShowSubtopicTickets(int,int,int)));
+
+    //просит показать один билет
     QObject::connect(rootObject,SIGNAL(showSingleTicket(int)),
                      this,SLOT(onShowSingleTicket(int)));
 
+    //показать содержимое подтемы
+    QObject::connect(rootObject,SIGNAL(showSubtopic(int,int,int)),
+                     this,SLOT(onShowSubtopic(int,int,int)));
 
-    QObject::connect(rootObject,SIGNAL(showTopic(int,int)),
-                     this,SLOT(onShowTopic(int,int)));
+    QObject::connect(rootObject,SIGNAL(showSubtopicForTicket(int)),
+                     this,SLOT(onShowSubtopicForTicket(int)));
 
-    QObject::connect(rootObject,SIGNAL(showTopicForTicket(int)),
-                     this,SLOT(onShowTopicForTicket(int)));
+    QObject::connect(rootObject,SIGNAL(subtopicNextPage()),
+                     this,SLOT(onSubtopicNextPage()) );
 
-    QObject::connect(rootObject,SIGNAL(topicNextPage()),
-                     this,SLOT(onTopicNextPage()) );
-
-    QObject::connect(rootObject,SIGNAL(topicPreviousPage()),
-                     this,SLOT(onTopicPreviousPage()));
+    QObject::connect(rootObject,SIGNAL(subtopicPreviousPage()),
+                     this,SLOT(onSubtopicPreviousPage()));
 
 }
 
@@ -141,8 +146,8 @@ void AppEngine::startLearningSession(LearnSession::TypeLearning regime)
 
     currentSession = LearnSession::createSession(&tickets,regime);
 
-    if(regime == LearnSession::LearnTicketsInTopic && currentShowedTopic != nullptr)
-        currentSession->setCurrentLearnedTopic(currentShowedTopic);
+    if(regime == LearnSession::LearnTicketsInTopic && currentShowedSubtopic != nullptr)
+        currentSession->setCurrentLearnedSubtopic(currentShowedSubtopic);
 
     connectCurrentSessionWithEngine();
     currentSession->StartSession();//фу блять с большой буквы почему
@@ -152,10 +157,10 @@ void AppEngine::initialize()
 {
     qmlEngine = nullptr;
     currentSession = nullptr;
-    currentShowedTopic = nullptr;
+    currentShowedSubtopic = nullptr;
 
     //к topic контроллеру
-    QObject::connect(&(theory.topicController), &TheoryTopicTextController::pageChanged, this, &AppEngine::onPageChanged);
+    QObject::connect(&(theory.subtopicController), &TheorySubtopicTextController::pageChanged, this, &AppEngine::onPageChanged);
 
     LearnSession::initializeTypeLearningForQml();
 }
@@ -314,32 +319,60 @@ void AppEngine::fillTopicsModelFromTheory(int subjIndex)
     learningTopicsModel.setValue(modelList);
 }
 
-void AppEngine::fillTopicsTicketModel(int subjIndex, int topicIndex)
+void AppEngine::fillSubtopicsModelFromTheory(int subjIndex, int topicIndex)
 {
-    topicsTicketModel.clear();
+    learningSubtopicsModel.clear();
     QList <QObject*> modelList;
 
     Topic *currentTopic = theory.getTopic(subjIndex,topicIndex);
     if(currentTopic == nullptr)
     {
+        qDebug() << "fillSubtopicsModelFromTheory : нет такой темы " << subjIndex << topicIndex;
+        return;
+    }
+
+    for(int i=1;i <= currentTopic->getSubtopics().size();i++)
+    {
+        Subtopic *currentSubtopic = theory.getSubtopic(subjIndex,topicIndex,i);
+
+        if(currentSubtopic == nullptr){
+            qDebug() << "fillSubtopicsModelFromTheory : нет такой подтемы" << subjIndex << i;
+            return;
+        }
+
+        modelList.append(currentSubtopic);
+    }
+
+    learningSubtopicsModel.setValue(modelList);
+}
+
+void AppEngine::fillSubtopicsTicketModel(int subjIndex, int topicIndex, int subjectIndex)
+{
+    subtopicsTicketModel.clear();
+    QList <QObject*> modelList;
+
+    Subtopic *currentSubtopic = theory.getSubtopic(subjIndex,topicIndex,subjectIndex);
+
+    if(currentSubtopic == nullptr)
+    {
         qDebug() << "fillTopicsTicketModel : нет такой темы subj" << subjIndex << "topic" << topicIndex;
         return;
     }
 
-    currentShowedTopic = currentTopic;
+    currentShowedSubtopic = currentSubtopic;
 
-    int sizeOfAnswersInTicket = currentTopic->getTicketAnswers().size();
+    int sizeOfAnswersInTicket = currentSubtopic->getTicketAnswers().size();
 
     for(int i=0;i < sizeOfAnswersInTicket;i++)
     {
-        int indexOfTicket = currentTopic->getTicketAnswers()[i].getTicketIndex();
+        int indexOfTicket = currentSubtopic->getTicketAnswers()[i].getTicketIndex();
         Ticket *currentTicket = tickets.getTicket(indexOfTicket);
         if(currentTicket == nullptr) continue;
 
         modelList.append(currentTicket);
     }
 
-    topicsTicketModel.setValue(modelList);
+    subtopicsTicketModel.setValue(modelList);
 }
 
 
@@ -375,49 +408,49 @@ QString AppEngine::getLearningSessionTimerTime()
     return currentSession->getTimerTime().toString("mm:ss");
 }
 
-int AppEngine::getTopicTextControllerSubjIndex(){
+int AppEngine::getSubtopicTextControllerSubjIndex(){
 
-    if(currentShowedTopic != nullptr) return currentShowedTopic->getSubjectIndex();
+    if(currentShowedSubtopic != nullptr) return currentShowedSubtopic->getSubjectIndex();
     else return 0;//theory.topicController.getSubjIndex();
 }
 
-int AppEngine::getTopicTextControllerTopicIndex(){
-    if(currentShowedTopic != nullptr) return currentShowedTopic->getIndex();
+int AppEngine::getSubtopicTextControllerTopicIndex(){
+    if(currentShowedSubtopic != nullptr) return currentShowedSubtopic->getTopicIndex();
     else return 0;
     //return theory.topicController.getTopicIndex();
 }
 
-QString AppEngine::getTopicTextControllerText(){
-    return theory.topicController.getMainText();
+QString AppEngine::getSubtopicTextControllerText(){
+    return theory.subtopicController.getMainText();
 }
 
-QString AppEngine::getTopicTextControllerImageUrl(){
-    return theory.topicController.getImageUrl();
+QString AppEngine::getSubtopicTextControllerImageUrl(){
+    return theory.subtopicController.getImageUrl();
 }
 
-int AppEngine::getTopicTextControllerCurrentHighlightStart(){
-    return theory.topicController.getCurrentHighlightStart();
+int AppEngine::getSubtopicTextControllerCurrentHighlightStart(){
+    return theory.subtopicController.getCurrentHighlightStart();
 }
 
-int AppEngine::getTopicTextControllerCurrentHighlighEnd(){
-    return theory.topicController.getCurrentHighlighEnd();
+int AppEngine::getSubtopicTextControllerCurrentHighlighEnd(){
+    return theory.subtopicController.getCurrentHighlighEnd();
 }
 
-int AppEngine::getTopicTextControllerCurrentPage(){
-    return theory.topicController.getCurrentPage();
+int AppEngine::getSubtopicTextControllerCurrentPage(){
+    return theory.subtopicController.getCurrentPage();
 }
 
-int AppEngine::getTopicTextControllerCountOfPages(){
-    return theory.topicController.countOfPages();
+int AppEngine::getSubtopicTextControllerCountOfPages(){
+    return theory.subtopicController.countOfPages();
 }
 
-QString AppEngine::getTopicTextControllerName(){
-    return theory.topicController.getName();
+QString AppEngine::getSubtopicTextControllerName(){
+    return theory.subtopicController.getName();
 }
 
 QString AppEngine::getSubjIcon(){
 
-    Subject *currentSubject = theory.getSubject(getTopicTextControllerSubjIndex());
+    Subject *currentSubject = theory.getSubject(getSubtopicTextControllerSubjIndex());
 
     if(currentSubject!=nullptr)
     {
@@ -555,52 +588,59 @@ void AppEngine::onShowTopics(int subjectIndex)
     emit topicsDataIsReady();
 }
 
-void AppEngine::onShowTopicsTickets(int subjectIndex, int topicIndex)
+void AppEngine::onShowSubtopics(int subjectIndex, int topicIndex)
 {
-    fillTopicsTicketModel(subjectIndex,topicIndex);//-1 -1
-    qmlEngine->rootContext()->setContextProperty("topicsTicketModel",topicsTicketModel);
-    emit topicsTicketsDataIsReady();
+    fillSubtopicsModelFromTheory(subjectIndex,topicIndex);//-1
+    qmlEngine->rootContext()->setContextProperty("learningSubtopicsModel",learningSubtopicsModel);
+    emit subtopicsDataIsReady();
 }
 
-void AppEngine::onShowTopic(int subjectIndex, int topicIndex){
+void AppEngine::onShowSubtopicTickets(int subjectIndex, int topicIndex, int subtopicIndex)
+{
+    fillSubtopicsTicketModel(subjectIndex,topicIndex,subtopicIndex);//-1 -1
+    qmlEngine->rootContext()->setContextProperty("subtopicsTicketModel",subtopicsTicketModel);
+    emit subtopicTicketsDataIsReady();
+}
 
-    Topic *currentTopic = theory.getTopic(subjectIndex,topicIndex);
+void AppEngine::onShowSubtopic(int subjectIndex, int topicIndex, int subtopicIndex){
 
-    if(currentTopic != nullptr)
+    Subtopic *currentSubtopic = theory.getSubtopic(subjectIndex,topicIndex,subtopicIndex);
+
+    if(currentSubtopic != nullptr)
     {
-        currentShowedTopic = currentTopic;//сохраняем текущий просматриваемую тему
-        theory.topicController.setTopic(*currentShowedTopic,sizeOfTextPageInTopic);
-        emit topicDataIsReady();
+        currentShowedSubtopic = currentSubtopic;//сохраняем текущий просматриваемую тему
+        theory.subtopicController.setSubtopic(*currentSubtopic,sizeOfTextPageInTopic);
+        emit subtopicDataIsReady();
     }
 }
 
 
-void AppEngine::onShowTopicForTicket(int ticketIndex){
+void AppEngine::onShowSubtopicForTicket(int ticketIndex){
     Ticket *neededTicket = tickets.getTicket(ticketIndex);
 
     if(neededTicket != nullptr)
     {
-        Topic *topicForTicket = theory.getTopicForTicket(ticketIndex);
-        if(topicForTicket != nullptr)
+        Subtopic *subtopicForTicket = theory.getSubtopicForTicket(ticketIndex);
+        if(subtopicForTicket != nullptr)
         {
-            theory.topicController.setTopic(*topicForTicket,sizeOfTextPageInTopic);
-            theory.topicController.showAnswerTicket(neededTicket->getIndex());
-            emit ticketTopicDataIsReady();
+            theory.subtopicController.setSubtopic(*subtopicForTicket,sizeOfTextPageInTopic);
+            theory.subtopicController.showAnswerTicket(neededTicket->getIndex());
+            emit ticketSubtopicDataIsReady();
         }
 
     }
 }
 
-void AppEngine::onTopicNextPage(){
-    theory.topicController.nextPage();
+void AppEngine::onSubtopicNextPage(){
+    theory.subtopicController.nextPage();
 }
 
-void AppEngine::onTopicPreviousPage(){
-    theory.topicController.previousPage();
+void AppEngine::onSubtopicPreviousPage(){
+    theory.subtopicController.previousPage();
 }
 
 void AppEngine::onPageChanged(){
-    emit topicControllerPageChanged();
+    emit subtopicControllerPageChanged();
 }
 
 
