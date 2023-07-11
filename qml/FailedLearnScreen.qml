@@ -178,7 +178,7 @@ Rectangle {
             }
 
             onTheoryButtonClicked: {
-               rootItem.showTopicForTicket(ticketIndex);
+               rootItem.showSubtopicForTicket(ticketIndex);
             }
 
 

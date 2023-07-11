@@ -28,6 +28,8 @@ QList<TheoryImgInfo> TheoryBaseReader::parseImgTagsInText(QString &text)
 
 QList<TheoryTicketAnswerInfo> TheoryBaseReader::parseTicketsAnswerInText(QString &text)
 {
+
+    /* какая мысля - сделать не один тикет индекс а много, сделав двойной QList*/
     QRegularExpression answerOpenTagRegular("<?.begin answer for?.[^<>]+>");
     QRegularExpression answerCloseTagRegular("<?./?.end[^<>]+?.>");
 
@@ -36,7 +38,9 @@ QList<TheoryTicketAnswerInfo> TheoryBaseReader::parseTicketsAnswerInText(QString
 
     QList <int> openIndex;//вместо листов можно массивы по lastCapturedIndex();
     QList <int> closeIndex;
-    QList <int> tickets;
+    //QList <int> tickets;
+
+    QList <QList<int>> ticketsIndexesLists;
 
     QList <TheoryTicketAnswerInfo> ticketAnswers;
 
@@ -46,15 +50,35 @@ QList<TheoryTicketAnswerInfo> TheoryBaseReader::parseTicketsAnswerInText(QString
     //обрабатываем открывающиеся тэги
 
     QString ticketIndex;
-    QRegularExpression notNumbers("[^\\d]+");
+    QString stringOfTicketIndexes;
+
+
+    //QRegularExpression notNumbers("[^\\d]+");
+    QRegularExpression notNumbers("[^\\d,]+");
 
         matchOpenTag = answerOpenTagRegular.match(text);//ищем дальше
 
         while(matchOpenTag.hasMatch())
         {
-          ticketIndex = ((matchOpenTag.captured(0)).remove(notNumbers) );
+          QList<int> ticketIndexes;//обьявляем массив индексов билетов ответ на который может быть в этом билете
 
-          tickets.append(ticketIndex.toInt());
+          stringOfTicketIndexes = ((matchOpenTag.captured(0)).remove(notNumbers) );//удаляем из строки все кроме запятых и цифр
+
+          QStringList indexes = stringOfTicketIndexes.split(u',', Qt::SkipEmptyParts);//делим по запятым
+
+          for(int i=0;i<indexes.size();i++){
+            ticketIndexes.append(indexes[i].toInt());//записываем все найденное в массив
+          }
+
+          ticketsIndexesLists.append(ticketIndexes);
+
+          //ticketIndex = ((matchOpenTag.captured(0)).remove(notNumbers) );
+
+          //читаем перечисление внутри <begin answer НОМЕРА>
+          //split( QRegExp( "\\d", QString::SkipEmptyParts )
+
+
+          //tickets.append(ticketIndex.toInt());
 
           openIndex.append(matchOpenTag.capturedStart(0));
 
@@ -95,8 +119,13 @@ QList<TheoryTicketAnswerInfo> TheoryBaseReader::parseTicketsAnswerInText(QString
 
 
     for(int i=0; i < countOfOpen;i++){
-        TheoryTicketAnswerInfo newTicketAnswerInfo(tickets[i],openIndex[i],closeIndex[i]);
-        ticketAnswers.append(newTicketAnswerInfo);
+        qDebug() << "ВНИМАНИЕ ДОБАВЛЯЕМ ТИКЕТ ОТВЕТ С ИНДЕКСАМИ";
+        for(int j=0;j<ticketsIndexesLists[i].size();j++)
+        {
+            qDebug() << ticketsIndexesLists[i][j];
+            TheoryTicketAnswerInfo newTicketAnswerInfo(ticketsIndexesLists[i][j],openIndex[i],closeIndex[i]);
+            ticketAnswers.append(newTicketAnswerInfo);
+        }
     }
 
     }//has match
